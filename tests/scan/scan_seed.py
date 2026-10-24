@@ -18,7 +18,8 @@ def seed_account(db, handle, platform="tiktok", lang="de", followers=25000, post
         for i, (pid, desc, pinned) in enumerate(posts):
             conn.execute(
                 "INSERT INTO competitor_post (account_id, post_id, posted_at, views, description,"
-                " pinned_comment, in_reach_window, captured_at) VALUES (?, ?, ?, 100, ?, ?, 1, 'x')",
+                " pinned_comment, in_reach_window, captured_at)"
+                " VALUES (?, ?, ?, 100, ?, ?, 1, 'x')",
                 (aid, pid, 1_700_000_000 - i * 86400, desc, pinned),
             )
         for vid, transcript, status in videos:

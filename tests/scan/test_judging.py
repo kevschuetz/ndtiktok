@@ -5,8 +5,8 @@ import json
 from pathlib import Path
 
 import pytest
-from scan_seed import obs_rows, seed_account, sheet_row
 from pydantic import ValidationError
+from scan_seed import obs_rows, seed_account, sheet_row
 
 from ndc.cli import app
 from ndc.scan import judging
@@ -190,6 +190,12 @@ def test_cli_import(db, tmp_path, runner):
 
 
 def test_no_anthropic_anywhere():
+    """D-21: no anthropic import or dependency (the env status line in ndc/cli.py only reports
+    whether ANTHROPIC_API_KEY is set, for Phase 2)."""
+    import re
+
     root = Path(__file__).resolve().parents[2]
-    for p in list((root / "src").rglob("*.py")) + [root / "pyproject.toml"]:
-        assert "anthropic" not in p.read_text(encoding="utf-8").lower(), p
+    pat = re.compile(r"^\s*(import|from)\s+anthropic\b", re.M)
+    for p in (root / "src").rglob("*.py"):
+        assert not pat.search(p.read_text(encoding="utf-8")), p
+    assert "anthropic" not in (root / "pyproject.toml").read_text(encoding="utf-8").lower()

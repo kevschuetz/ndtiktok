@@ -298,3 +298,83 @@ def discover_modash_cmd(
         _gate_errors(exc)
         return
     _print_discover(rep)
+
+
+# --- judgments, operator queue and spot-check (plan 01-06, D-01, D-17, D-21) -----------------
+
+
+@app.command("import-judgments")
+def import_judgments_cmd(path: Path = typer.Argument(..., exists=True, dir_okay=False)) -> None:
+    """Import an in-session judgment file (config/judging_rubric.md) as provenance llm_session.
+
+    The whole file is validated first; any invalid account refuses the file (exit 2)."""
+    from ndc.scan import judging
+
+    db = Database(db_path())
+    try:
+        run_id = prereg.record_scan_run(db, "import_judgments", config_dir())
+        rep = judging.import_judgments(db, path, config_dir(), run_id=run_id)
+    except judging.JudgmentFileError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(2) from exc
+    scan_fetch.finish_run(db, run_id)
+    typer.echo(
+        f"imported {rep.accounts} accounts (scan_run {run_id}): {rep.downgraded} citation(s) "
+        f"downgraded by the evidence guard, {len(rep.queued)} queued for the operator"
+    )
+    for key in rep.queued:
+        typer.echo(f"  queued {key}")
+
+
+@app.command("queue")
+def queue_cmd() -> None:
+    """Recompute needs_operator_check for every account and print the counts."""
+    from ndc.scan import queue
+
+    counts = queue.recompute_all(Database(db_path()))
+    typer.echo(f"queued {counts['queued']}, clear {counts['clear']}")
+
+
+@app.command("verify")
+def verify_cmd(
+    handle: str | None = typer.Argument(None, help="Account handle to set values for."),
+    show_queue: bool = typer.Option(False, "--queue", help="List queued accounts (DACH first)."),
+    platform: str | None = typer.Option(None, "--platform", help="tiktok | youtube"),
+    sets: list[str] = typer.Option([], "--set", help="FIELD=VALUE (repeatable)."),
+    note: str | None = typer.Option(None, "--note", help="What you checked (logged)."),
+) -> None:
+    """Operator spot-check: `--queue` lists what needs a look; HANDLE --set writes
+    operator_verified values that win in the competitor sheet."""
+    from ndc.scan import verify
+
+    db = Database(db_path())
+    if show_queue:
+        entries = verify.list_queue(db)
+        typer.echo(f"{len(entries)} account(s) queued")
+        for e in entries:
+            typer.echo(f"\n{e.key} [{e.language}]  why: {e.reasons}")
+            for f, value, prov, conf, method in e.fields:
+                typer.echo(f"  {f}: {value} ({prov}, {conf or '-'}, {method or '-'})")
+            for source, level, claimed, guard, ev in e.evidence:
+                extra = f" claimed {claimed}" if guard == "downgraded" else ""
+                typer.echo(f"  cite {source} L{level}{extra} [{guard}]: {ev!r}")
+    if handle is None:
+        if not show_queue:
+            typer.echo("give --queue or HANDLE --platform P --set FIELD=VALUE", err=True)
+            raise typer.Exit(2)
+        return
+    if platform not in ("tiktok", "youtube"):
+        typer.echo("--platform must be tiktok or youtube", err=True)
+        raise typer.Exit(2)
+    if not sets:
+        typer.echo("give at least one --set FIELD=VALUE", err=True)
+        raise typer.Exit(2)
+    try:
+        flag, reasons = verify.set_fields(db, handle, platform, sets, note)
+    except verify.VerifyError as exc:
+        typer.echo(f"refused: {exc}", err=True)
+        raise typer.Exit(2) from exc
+    typer.echo(
+        f"stored {len(sets)} operator_verified value(s) for {platform}:{handle}; "
+        f"needs_operator_check {'true' if flag else 'false'}"
+    )
