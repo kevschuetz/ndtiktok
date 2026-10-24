@@ -686,7 +686,7 @@ def lemmas(text: str, lang: str) -> list[tuple[str, int, int]]:
 | A10 | Sonnet 5.5 pricing/model IDs per STACK.md | Scoring cost | Config-driven; trivial |
 | A11 | `ghcr.io/astral-sh/uv:0.13.5` image tag exists (ghcr returned 401 to an anonymous probe) | Dockerfile | Fall back to `pip install uv==0.13.5` in the image |
 
-## Open Questions
+## Open Questions (RESOLVED — see 01-CONTEXT.md D-17 walkthrough automated, D-18 TikTok-only Q, D-19 reviewed seed file; D-21 no API in Phase 1)
 
 1. **Operator time for the field walkthrough (A3/A4).**
    - What we know: face/voice/format/on-screen citations can't be scraped.
