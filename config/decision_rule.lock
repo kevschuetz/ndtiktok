@@ -1,0 +1,6 @@
+{
+  "sha256": "ea401c5d7fd18e598fa8f18e759b75c45cbae982e066261c4e90df0b1f904b04",
+  "approved_by": "operator",
+  "approved_at": "2026-10-24T21:02:55Z",
+  "rule_file": "config/decision_rule.yaml"
+}

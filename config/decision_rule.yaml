@@ -3,8 +3,8 @@
 # Any byte change after approval changes the sha256 in config/decision_rule.lock;
 # after the first scan_run, `ndc scan decide` refuses a changed rule unless --amend "reason".
 version: 1
-approved_by: null
-approved_at: null
+approved_by: operator
+approved_at: "2026-10-24T21:02:55Z"
 
 # Size tiers by followers (TikTok) or subscribers (YouTube). Bounds are inclusive.
 # Accounts under 1000 followers are excluded from the sample entirely.

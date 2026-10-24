@@ -80,6 +80,15 @@ row. The log must explicitly answer: **does a sourced, male, faceless German acc
 
 ## Approval
 
-- approved_by:
-- approved_at:
-- sha256:
+- approved_by: operator
+- approved_at: 2026-10-24T21:02:55Z
+- sha256: ea401c5d7fd18e598fa8f18e759b75c45cbae982e066261c4e90df0b1f904b04
+
+Operator reply (verbatim): "Rule approved" — the rule exactly as drafted above (V/R1/R2/R3/R4 per D-20,
+Q from TikTok mid-tier accounts only, YouTube Shorts reach reported but never used in Q).
+
+The operator also explicitly approved counting one creator once across TikTok and YouTube: rows are
+merged by lower-cased handle, so a creator counts toward N_lang if any of its rows scores >= 2, and
+toward S_lang if any row scores >= 2 AND is faceless AND male.
+
+After this approval the rule can only change through a logged `ndc scan decide --amend "reason"`.
