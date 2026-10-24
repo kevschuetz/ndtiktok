@@ -8,7 +8,9 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from ndc.checks.engine import CheckResult, check
+from ndc.checks.engine import CheckResult, check, record_override, rule_tier
+from ndc.config import db_path
+from ndc.db import Database
 
 app = typer.Typer(
     help="Terminology and safety checks.",
@@ -48,6 +50,11 @@ def run(
     text: str | None = typer.Option(None, "--text", help="Check this text instead of a file."),
     lang: str = typer.Option(..., "--lang", help="de or en."),
     level: str = typer.Option("script", "--level", help="topic, script or claim."),
+    override: list[str] | None = typer.Option(
+        None,
+        "--override",
+        help='Record a warn override for this exact text: RULE_ID="reason" (repeatable).',
+    ),
 ) -> None:
     """Check text for terminology findings (block/warn) and blacklisted subjects."""
     if (file is None) == (text is None):
@@ -59,6 +66,31 @@ def run(
     body = text if text is not None else file.read_text(encoding="utf-8")
     lang_l: Literal["de", "en"] = lang  # type: ignore[assignment]
     level_l: Literal["topic", "script", "claim"] = level  # type: ignore[assignment]
-    res = check(body, lang_l, level_l)
+    pairs = [_parse_override(o) for o in override or []]
+    for rule_id, _reason in pairs:
+        tier = rule_tier(rule_id)
+        if tier == "block":
+            _console().print(f"{rule_id}: block findings cannot be overridden (D-12).")
+            raise typer.Exit(1)
+        if tier is None:
+            raise typer.BadParameter(f"unknown rule_id {rule_id!r}", param_hint="--override")
+    db = Database(db_path())
+    for rule_id, reason in pairs:
+        try:
+            record_override(db, body, rule_id, level_l, reason)
+        except ValueError as exc:
+            raise typer.BadParameter(str(exc), param_hint="--override") from exc
+        _console().print(f"override recorded: {rule_id} ({reason})")
+    res = check(body, lang_l, level_l, db=db)
     _render(res)
     raise typer.Exit(_EXIT[res.status])
+
+
+def _parse_override(raw: str) -> tuple[str, str]:
+    if "=" not in raw:
+        raise typer.BadParameter(f'expected RULE_ID="reason", got {raw!r}', param_hint="--override")
+    rule_id, reason = raw.split("=", 1)
+    reason = reason.strip()
+    if len(reason) >= 2 and reason[0] == reason[-1] and reason[0] in "\"'":
+        reason = reason[1:-1]
+    return rule_id.strip(), reason.strip()
