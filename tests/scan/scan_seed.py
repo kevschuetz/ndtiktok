@@ -66,3 +66,35 @@ def add_obs(db, aid, field, value, provenance="auto", confidence="medium", metho
         )
     finally:
         conn.close()
+
+
+def make_video(path, hz=120, seconds=2.0, w=64, h=96, fps=10, sr=16000):
+    """Tiny real mp4 (mpeg4 + aac) with a voice-like tone, for analysis tests."""
+    import fractions
+
+    import av
+    import numpy as np
+
+    with av.open(str(path), "w") as c:
+        vs = c.add_stream("mpeg4", rate=fps)
+        vs.width, vs.height, vs.pix_fmt = w, h, "yuv420p"
+        aus = c.add_stream("aac", rate=sr)
+        aus.layout = "mono"
+        for i in range(int(seconds * fps)):
+            img = np.full((h, w, 3), (i * 10) % 255, dtype=np.uint8)
+            for p in vs.encode(av.VideoFrame.from_ndarray(img, format="rgb24")):
+                c.mux(p)
+        t = np.arange(int(sr * seconds)) / sr
+        y = (0.3 * np.sin(2 * np.pi * hz * t) + 0.15 * np.sin(4 * np.pi * hz * t)).astype(
+            np.float32
+        )
+        for k in range(0, len(y), 1024):
+            f = av.AudioFrame.from_ndarray(y[k : k + 1024].reshape(1, -1), format="fltp", layout="mono")
+            f.sample_rate, f.pts, f.time_base = sr, k, fractions.Fraction(1, sr)
+            for p in aus.encode(f):
+                c.mux(p)
+        for p in vs.encode():
+            c.mux(p)
+        for p in aus.encode():
+            c.mux(p)
+    return path
