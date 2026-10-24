@@ -1,0 +1,33 @@
+{
+ "id": "abcdefghi00",
+ "title": "Short 0",
+ "upload_date": "20261001",
+ "timestamp": 1790841600,
+ "view_count": 10123,
+ "like_count": 812,
+ "comment_count": 44,
+ "duration": 58,
+ "description": "Source: Faraone et al. 2021, doi:10.1016/j.neubiorev.2021.01.022",
+ "channel_id": "UCabcdefghijklmnopqrstuv",
+ "channel_follower_count": 1750000,
+ "comments": [
+  {
+   "id": "c1",
+   "text": "great video",
+   "is_pinned": false,
+   "author_is_uploader": false
+  },
+  {
+   "id": "c2",
+   "text": "pinned by someone else?",
+   "is_pinned": true,
+   "author_is_uploader": false
+  },
+  {
+   "id": "c3",
+   "text": "Sources: Barkley 2015; NICE NG87",
+   "is_pinned": true,
+   "author_is_uploader": true
+  }
+ ]
+}
