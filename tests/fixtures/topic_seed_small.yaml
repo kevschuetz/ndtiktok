@@ -1,0 +1,77 @@
+# Test fixture only (not the real seed; plan 15 imports that after the language decision).
+version: 1
+language: de
+topics:
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: time_perception
+    audience: nd_adults
+    angle: mechanism_why
+    working_title: Warum fünf Minuten sich wie zwei anfühlen
+    summary: Zeitwahrnehmung bei ADHS, was Studien über Zeitschätzung zeigen.
+    list_tag: whitelist
+    source_likely: "yes"
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: sleep
+    audience: nd_adults
+    angle: mechanism_why
+    working_title: Melatonin und der verschobene Schlafrhythmus
+    summary: Warum der Schlafrhythmus bei ADHS oft später liegt.
+    list_tag: whitelist
+    source_likely: maybe
+  - pillar: strengths
+    condition: autism
+    domain: focus_attention
+    audience: nd_adults
+    angle: strength_with_caveat
+    working_title: Intensive Interessen als Ressource
+    summary: Was Forschung über Interessen und Wohlbefinden autistischer Menschen sagt.
+    list_tag: whitelist
+    source_likely: "yes"
+  - pillar: strengths
+    condition: dyslexia
+    domain: school_learning
+    audience: general_public
+    angle: myth_vs_research
+    working_title: Legasthenie und räumliches Denken
+    summary: Ein verbreiteter Mythos im Abgleich mit Übersichtsarbeiten.
+    list_tag: whitelist
+    source_likely: maybe
+  - pillar: parents
+    condition: adhd
+    domain: routines_household
+    audience: parents
+    angle: try_this_strategy
+    working_title: Morgenroutine mit Bildkarten
+    summary: Visuelle Abläufe für den Schulweg am Morgen.
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: Fixture-Notiz, wird nicht gespeichert.
+  - pillar: parents
+    condition: autism
+    domain: parenting_coregulation
+    audience: parents
+    angle: what_research_doesnt_know
+    working_title: Ist mein Kind autistisch? Die Checkliste
+    summary: Eine Diagnosefrage, bewusst ausgeschlossen.
+    list_tag: blacklist
+    source_likely: "no"
+  - pillar: men_dads_partners
+    condition: adhd
+    domain: relationships
+    audience: partners
+    angle: human_not_only_adhd
+    working_title: Wenn der Partner ständig vergisst
+    summary: Vergesslichkeit in Beziehungen, ADHS und ganz normale Menschen.
+    list_tag: whitelist
+    source_likely: maybe
+  - pillar: men_dads_partners
+    condition: nd_general
+    domain: energy_burnout
+    audience: men
+    angle: lived_story_consented
+    working_title: Männer, die nicht über Erschöpfung reden
+    summary: Bewusst ausgeschlossen, zu nah an Krisenthemen.
+    list_tag: blacklist
+    source_likely: "no"

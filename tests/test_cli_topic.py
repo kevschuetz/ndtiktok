@@ -1,7 +1,10 @@
 import os
 import sqlite3
+from pathlib import Path
 
 from ndc.cli import app
+
+FIXTURE = str(Path(__file__).parent / "fixtures" / "topic_seed_small.yaml")
 
 ADD_ARGS = [
     "topic",
@@ -38,7 +41,10 @@ def test_list_csv_header(runner):
     res = runner.invoke(app, ["topic", "list", "--format", "csv"])
     assert res.exit_code == 0, res.output
     header = res.output.splitlines()[0]
-    assert header == ("id,pillar,condition,domain,audience,angle,working_title,list_tag,status")
+    assert header == (
+        "id,pillar,condition,domain,audience,angle,working_title,list_tag,safety_status,"
+        "source_likely,status"
+    )
     assert "Morgenroutine" in res.output
 
 
@@ -70,3 +76,63 @@ def test_doctor_reports_missing_key(runner):
     res = runner.invoke(app, ["doctor"])
     assert res.exit_code == 0, res.output
     assert "ANTHROPIC_API_KEY: missing" in res.output
+
+
+def test_import_and_filter(runner):
+    res = runner.invoke(app, ["topic", "import", FIXTURE])
+    assert res.exit_code == 0, res.output
+    assert "inserted 8" in res.output
+    res = runner.invoke(app, ["topic", "import", FIXTURE])
+    assert res.exit_code == 0, res.output
+    assert "inserted 0" in res.output
+    res = runner.invoke(
+        app, ["topic", "list", "--pillar", "parents", "--condition", "adhd", "--format", "csv"]
+    )
+    assert res.exit_code == 0, res.output
+    lines = res.output.splitlines()
+    assert len(lines) == 2
+    assert "Morgenroutine mit Bildkarten" in lines[1]
+    assert ",whitelist,ok," in lines[1]
+    for flag, value, n in [
+        ("--domain", "sleep", 1),
+        ("--audience", "partners", 1),
+        ("--angle", "mechanism_why", 2),
+        ("--tag", "blacklist", 2),
+        ("--status", "proposed", 8),
+    ]:
+        res = runner.invoke(app, ["topic", "list", flag, value, "--format", "csv"])
+        assert res.exit_code == 0, res.output
+        assert len(res.output.splitlines()) == n + 1, (flag, res.output)
+
+
+def test_list_table_shows_tag_and_safety(runner):
+    runner.invoke(app, ["topic", "import", FIXTURE])
+    res = runner.invoke(app, ["topic", "list", "--domain", "sleep"])
+    assert res.exit_code == 0, res.output
+    assert "whitelist" in res.output and "blocked" in res.output
+
+
+def test_list_unknown_filter_value(runner):
+    res = runner.invoke(app, ["topic", "list", "--pillar", "foo"])
+    assert res.exit_code != 0
+    assert "challenge_science_help" in res.output
+
+
+def test_import_bad_vocab_exits_nonzero(runner, tmp_path):
+    bad = tmp_path / "bad.yaml"
+    bad.write_text(
+        Path(FIXTURE).read_text(encoding="utf-8").replace("condition: dyslexia", "condition: adhs"),
+        encoding="utf-8",
+    )
+    res = runner.invoke(app, ["topic", "import", str(bad)])
+    assert res.exit_code != 0
+    assert "adhs" in res.output
+    res = runner.invoke(app, ["topic", "list", "--format", "csv"])
+    assert len(res.output.splitlines()) == 1
+
+
+def test_add_rejects_unknown_vocab(runner):
+    args = [a if a != "adhd" else "adhs" for a in ADD_ARGS]
+    res = runner.invoke(app, [*args, "--tag", "whitelist"])
+    assert res.exit_code != 0
+    assert "adhs" in res.output
