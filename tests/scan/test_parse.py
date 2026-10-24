@@ -22,8 +22,18 @@ def test_parse_listing_keeps_documented_fields():
     posts = tiktok.parse_listing(_load("tt_flat.json"))
     assert len(posts) == 23
     first = posts[0]
-    for k in ("id", "timestamp", "view_count", "like_count", "comment_count", "repost_count",
-              "save_count", "duration", "description", "pinned"):
+    for k in (
+        "id",
+        "timestamp",
+        "view_count",
+        "like_count",
+        "comment_count",
+        "repost_count",
+        "save_count",
+        "duration",
+        "description",
+        "pinned",
+    ):
         assert k in first
     assert first["pinned"] is True
     assert posts[1]["pinned"] is False
