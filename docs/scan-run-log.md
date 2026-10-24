@@ -1,0 +1,150 @@
+# Competitor scan run log (MKT-01, plan 01-07)
+
+All runs on the real DB `/data/ndc.db`, inside the `ndc` container, single-threaded, with built-in
+3–6 s pacing. Every scan_run is recorded under rule sha256
+`ea401c5d7fd18e598fa8f18e759b75c45cbae982e066261c4e90df0b1f904b04`. All runs were outside the
+00:15–06:00 UTC quiet hours, and no `--force` was used: `scan_run` rows with
+`quiet_hours_override` = 0.
+
+## Config changes made for this run (config/scan.yaml, not the decision rule)
+
+- `discovery.min_niche_shorts` 3 → **2**. With 3, ytsearch kept 5 DE / 0 new EN channels (01-04
+  finding); most channels appear only 1–2 times across a language's queries.
+- `discovery.ytsearch_results` 30 → **60**. This widens the YouTube pool. Each query is still one
+  ytsearch call; yt-dlp pages internally.
+- `config/decision_rule.yaml` and its lock are untouched.
+
+## Discovery
+
+| Source | Command | UTC start–end | scan_run | Requests | Seen | New |
+|---|---|---|---|---|---|---|
+| D-04 seeds | `scan import-candidates scan/candidates.csv` | 21:57 | — | 0 | 11 | 0 (already imported in 01-04) |
+| YouTube ytsearch DE (N=30, min 2) | `scan discover youtube --lang de` | 21:57:29–21:58:23 | 12 | 10 | 89 | 4 |
+| YouTube ytsearch EN (N=30, min 2) | `scan discover youtube --lang en` | 21:58:28–21:59:17 | 13 | 10 | 101 | 6 |
+| YouTube ytsearch DE (N=60, min 2) | `scan discover youtube --lang de` | 21:59:45–22:00:40 | 14 | 10 | 174 | 10 |
+| YouTube ytsearch EN (N=60, min 2) | `scan discover youtube --lang en` | 22:00:41–22:01:34 | 15 | 10 | 182 | 5 |
+| Modash public pages | not run | 22:00 (1 index GET) | — | 1 | — | — |
+| TikTok Creative Center / Exolyt / Favikon / in-app | operator-browser | — | — | — | — | — |
+
+- **Modash:** one GET of the `find-influencers` index listed 851 public page paths. None is about
+  ADHD, autism, neurodivergence, mental health or psychology. The nearest are generic
+  `tiktok/{country}`, `tiktok/{country}/health|parenting|dad` pages: top-20 general influencers
+  who would be off-niche here. Running them would add rows the operator must exclude, so
+  `discover modash` was not run. **No scripted TikTok discovery source is niche-specific, so the
+  TikTok pool depends on the operator (Task 2).**
+- **Language mislabelling.** 11 channels found by DE queries were also found by EN queries
+  ("Tourette", "AuDHD" and "Dyspraxie/dyspraxia" overlap). Most are English channels sitting
+  under `de`. They are flagged in `notes`. Per the 01-04 decision nothing was relabelled
+  automatically; the operator changes the `language` column.
+- **Off-niche hits.** ytsearch also returns news outlets (CBC, BBC, local US news), brands
+  (Goally, Healthgrades) and kids' news (logo!) that published a one-off ADHD/autism Short.
+  `notes` carry an `executor suggestion: exclude …` for these. `operator_decision` is left blank,
+  so the decision stays explicitly the operator's.
+
+## Profile fetch
+
+`scan fetch --stage profile` (scan_run 16), 22:01:53–22:05:08 UTC: ok 33, skipped fresh 2 (the
+01-04 smoke accounts), failed 6, stopped platforms 0. TikTok blocked nothing.
+
+Failures:
+- 4 YouTube channels have no Shorts tab: @bvlegasthenie, @autismusspektruminfo,
+  @AdventuresofNeryn, @RDXMixer. They are not usable for a Shorts sample.
+- 2 TikTok seeds returned no data: verena_eisbrenner, guardianofmind. See seeds below.
+
+## Candidate selection
+
+`scan select --lang de` (scan_run 17) and `--lang en` (scan_run 18), 22:05 UTC.
+
+### Pool per language × platform
+
+| Language | Platform | Candidates | Followers fetched | ≥ 1000 followers |
+|---|---|---|---|---|
+| de | tiktok | 5 | 3 | 2 |
+| de | youtube | 19 | 15 | 9 |
+| en | tiktok | 4 | 4 | 4 |
+| en | youtube | 13 | 13 | 12 |
+| **total** | | **41** | **35** | **27** |
+
+### Tier counts of the pool (followers ≥ 1000)
+
+| Language | micro (1k–10k) | mid (10k–100k) | macro (100k–1M) | mega (> 1M) |
+|---|---|---|---|---|
+| de | 6 (TT 1, YT 5) | 1 (YT 1) | 3 (TT 1, YT 2) | 1 (YT 1) |
+| en | 3 (TT 1, YT 2) | 3 (TT 1, YT 2) | 8 (TT 2, YT 6) | 2 (YT 2) |
+
+### Proposed sample (status `selected`)
+
+| Language | mid | micro | macro | mega | total | TikTok | YouTube | target |
+|---|---|---|---|---|---|---|---|---|
+| de | 1 | 6 | 3 | 1 | **11** | 2 | 9 | 40 (28 TT / 12 YT) |
+| en | 3 | 3 | 8 | 2 | **16** | 4 | 12 | 40 (28 TT / 12 YT) |
+
+Shortfalls, verbatim from `scan select`:
+- de: `mid tier shortfall: 1 of 12`
+- en: `mid tier shortfall: 3 of 12`
+
+The selected set is everything with ≥ 1000 followers. The pool is far below the quota, so the
+quota itself never cut anything.
+
+**What is actually usable is smaller than "selected".** After the executor's exclude/relabel
+suggestions (news outlets, brands, and English channels under `de`):
+- DE: about 3 German ND accounts are left: TikTok nessadhs (macro), TikTok kirmesimkopf (micro),
+  and YouTube @adhsautismus (micro).
+- EN: TikTok danidonovan, howtoadhd (macro), adhddude (mid), adhd_alien (micro); YouTube
+  @HowtoADHD (mega), @ADHDDude (mid), @additudemag (macro), plus about 4 relabelled DE→EN
+  micro channels and 4 "check niche" channels.
+
+**Validity floor (≥ 8 usable mid-tier TikTok accounts per language): DE 0 of 8, EN 1 of 8.**
+
+### Seeds (D-04)
+
+| Seed | Platform | Handle | Status |
+|---|---|---|---|
+| kirmesimkopf | TikTok | kirmesimkopf | resolved, 5,046 followers (micro), selected |
+| kirmesimkopf | YouTube | — | no handle known; not searched (not in ytsearch results) |
+| nessadhs | TikTok | nessadhs | resolved, 122,400 (macro), selected |
+| nessadhs | YouTube | — | no handle known; not in ytsearch results |
+| hey_mamaleben | TikTok | hey_mamaleben | fetched, 3 followers: handle probably wrong. Not selected; operator to supply the correct handle |
+| hey_mamaleben | YouTube | — | no handle known |
+| verena_eisbrenner | TikTok | verena_eisbrenner | no data (handle wrong, private or absent). Recorded "not on platform" by `select`; operator to confirm or supply the handle |
+| verena_eisbrenner | YouTube | — | no handle known |
+| guardianofmind | TikTok | guardianofmind | no data. Recorded "not on platform"; operator to confirm or supply the handle |
+| guardianofmind | YouTube | — | no handle known |
+| How to ADHD | TikTok | howtoadhd | resolved, 100,800 (macro), selected (guess confirmed as existing; operator to confirm it is the official account) |
+| How to ADHD | YouTube | @HowtoADHD | resolved, 1.96 M (mega), selected |
+| Dani Donovan | TikTok | danidonovan | resolved, 623,200 (macro), selected (guess; operator to confirm identity) |
+| Dani Donovan | YouTube | — | no handle known |
+| ADHD Alien | TikTok | adhd_alien | resolved, 1,061 (micro), selected. **Suspicious:** the real ADHD Alien is much larger, so this is probably the wrong account. Operator to check |
+| ADHD Alien | YouTube | — | no handle known |
+| ADHD Dude | TikTok | adhddude | resolved, 58,000 (mid), selected (guess; operator to confirm) |
+| ADHD Dude | YouTube | @ADHDDude | resolved, 92,900 (mid), selected (guess; operator to confirm) |
+
+### What the operator needs to do (Task 2)
+
+TikTok has no niche-specific scripted source, so the TikTok sample must come from operator
+collection. Use one or more of these:
+- **TikTok in-app search (D-16 fallback, ~30–45 min).** For each config query (DE: ADHS,
+  Autismus, ADHS Eltern, ADHS Männer, ADHS Papa, Neurodivergenz, Legasthenie, Dyspraxie, Tourette,
+  AuDHD; EN: ADHD, autism, ADHD parenting, ADHD men, ADHD dad, neurodivergent, dyslexia,
+  dyspraxia, Tourette, AuDHD), open the Accounts tab and the top videos. Note recurring creators
+  with ≥ 10 niche posts. Prioritise **mid tier (10k–100k followers)**.
+- **Creative Center / Exolyt / Favikon.** Click paths are in `docs/scan-discovery-sources.md`.
+
+Row format for each added handle (8 columns, header unchanged):
+
+```
+handle,platform,language,discovery_source,query,seed_named,operator_decision,notes
+someadhscreator,tiktok,de,tiktok_app,ADHS Papa,0,include,
+someadhdcreator,tiktok,en,creative_center,ADHD men,0,,
+```
+
+- `handle`: the TikTok handle without `@` (`^[A-Za-z0-9._]{2,24}$`).
+- `discovery_source`: one of `tiktok_app`, `creative_center`, `exolyt`, `favikon` or `modash`.
+- `operator_decision`: `include`, `exclude` or blank (quota decides).
+
+For existing rows, act on the `executor suggestion` notes: set `exclude`, or edit `language` for
+the English channels currently under `de`. Fix the seed handles hey_mamaleben, verena_eisbrenner,
+guardianofmind and adhd_alien if the correct ones are known.
+
+Targets: ~40 per language (28 TikTok / 12 YouTube), and **≥ 8 usable mid-tier TikTok accounts per
+language**. Currently: DE has 2 TikTok and 0 mid TikTok; EN has 4 TikTok and 1 mid TikTok.

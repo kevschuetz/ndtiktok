@@ -46,8 +46,8 @@ queries:
        Tourette, AuDHD]
 
 discovery:
-  ytsearch_results: 30        # ytsearchN per query
-  min_niche_shorts: 3         # keep a channel only with >= this many results across the queries
+  ytsearch_results: 60        # ytsearchN per query (30 -> 60 in plan 01-07 to widen the YouTube pool)
+  min_niche_shorts: 2         # keep a channel only with >= this many results across the queries (3 -> 2 in plan 01-07: 3 kept ~5 DE / 0 EN)
 
 # Per-language selection quotas (D-02). Tier bounds come from config/decision_rule.yaml.
 quotas:
