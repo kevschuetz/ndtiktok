@@ -92,4 +92,4 @@ def list_cmd(
         table.add_column(c, overflow="fold")
     for r in rows:
         table.add_row(*[str(r[c]) for c in LIST_COLUMNS])
-    Console(width=200).print(table)
+    Console(width=None if sys.stdout.isatty() else 200).print(table)

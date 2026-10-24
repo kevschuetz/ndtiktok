@@ -1,0 +1,23 @@
+# nd-content: CLI-only container on the shared host. Resource-capped so it can
+# never starve polymarkt-watch. No ports, no restart policy, own volume.
+name: nd-content
+
+services:
+  ndc:
+    build: .
+    image: nd-content:dev
+    mem_limit: 1g
+    memswap_limit: 1g
+    cpus: "1.0"
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - /home/nd-content-volumes/data:/data
+      - ./config:/app/config:ro
+      - ./docs:/app/docs
+      - ./scan:/app/scan
+      - ./src:/app/src
+      - ./tests:/app/tests
+    working_dir: /app
+    entrypoint: ["uv", "run", "--no-sync", "ndc"]
