@@ -33,8 +33,13 @@ def _add(conn, handle, platform, followers, lang="de", seed=0, decision=None, st
 def _pool(db, n_mid=40):
     """120 DE candidates: 10 sub-1k, 30 micro, n_mid mid, 30 macro, 10 mega; 70% TikTok."""
     conn = db.connect()
-    spec = [("sub", 10, 500), ("mic", 30, 5000), ("mid", n_mid, 50000), ("mac", 30, 500000),
-            ("meg", 10, 5000000)]
+    spec = [
+        ("sub", 10, 500),
+        ("mic", 30, 5000),
+        ("mid", n_mid, 50000),
+        ("mac", 30, 500000),
+        ("meg", 10, 5000000),
+    ]
     for prefix, n, f in spec:
         for i in range(n):
             plat = "tiktok" if i % 10 < 7 else "youtube"

@@ -11,10 +11,28 @@ from ndc.scan import sheet
 from ndc.scan.cli import _read_accounts
 
 COLUMNS = [
-    "handle", "platform", "language", "followers", "tier", "median_views_15", "n_reach_posts",
-    "source_citing_score", "source_citing_provenance", "face", "face_provenance", "voice_gender",
-    "voice_gender_provenance", "format", "cadence_posts_per_week", "pillars", "audiences",
-    "monetization_signals", "saves_per_1k", "shares_per_1k", "needs_operator_check", "seed_named",
+    "handle",
+    "platform",
+    "language",
+    "followers",
+    "tier",
+    "median_views_15",
+    "n_reach_posts",
+    "source_citing_score",
+    "source_citing_provenance",
+    "face",
+    "face_provenance",
+    "voice_gender",
+    "voice_gender_provenance",
+    "format",
+    "cadence_posts_per_week",
+    "pillars",
+    "audiences",
+    "monetization_signals",
+    "saves_per_1k",
+    "shares_per_1k",
+    "needs_operator_check",
+    "seed_named",
     "discovery_source",
 ]
 DAY = 86400

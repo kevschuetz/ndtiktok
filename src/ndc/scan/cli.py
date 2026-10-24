@@ -199,3 +199,41 @@ def add_manual_cmd(
         f"stored {platform}:{handle} (operator_entered): tier {res['tier']}, "
         f"{res['n']} views, median {res['reach_median']}"
     )
+
+
+@app.command("select")
+def select_cmd(
+    lang: str | None = typer.Option(None, "--lang", help="de | en (default both)"),
+) -> None:
+    """Tier-stratified ~40-per-language sample (D-02); prints counts and any shortfall."""
+    from ndc.scan import select as scan_select
+
+    db = Database(db_path())
+    for language in [lang] if lang else ["de", "en"]:
+        if language not in ("de", "en"):
+            typer.echo("--lang must be de or en", err=True)
+            raise typer.Exit(2)
+        res = scan_select.select(db, language, config_dir())
+        typer.echo(f"{language}: " + ", ".join(f"{k} {v}" for k, v in res.counts.items()))
+        for note in res.notes:
+            typer.echo(f"  {note}")
+
+
+@app.command("export")
+def export_cmd(
+    csv_path: Path | None = typer.Option(None, "--csv", help="Full competitor sheet."),
+    accounts_csv: Path | None = typer.Option(None, "--accounts-csv", help="AccountRow CSV."),
+    all_accounts: bool = typer.Option(False, "--all", help="Accounts CSV: all, not just selected."),
+) -> None:
+    """Write the competitor sheet and/or the AccountRow CSV for `scan decide`."""
+    from ndc.scan import sheet
+
+    if not csv_path and not accounts_csv:
+        typer.echo("give --csv PATH and/or --accounts-csv PATH", err=True)
+        raise typer.Exit(2)
+    db = Database(db_path())
+    if csv_path:
+        typer.echo(f"sheet: {sheet.export_sheet(db, csv_path)} rows -> {csv_path}")
+    if accounts_csv:
+        n = sheet.export_accounts(db, accounts_csv, selected_only=not all_accounts)
+        typer.echo(f"accounts: {n} rows -> {accounts_csv}")
