@@ -79,11 +79,38 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
+| MKT-01 | Phase 1 | Pending |
+| MKT-02 | Phase 1 | Pending |
+| MKT-03 | Phase 1 | Pending |
+| CONT-01 | Phase 1 | Pending |
+| CONT-02 | Phase 1 | Pending |
+| CONT-03 | Phase 1 | Pending |
+| CONT-04 | Phase 1 | Pending |
+| SRC-01 | Phase 2 | Pending |
+| SRC-02 | Phase 2 | Pending |
+| SRC-03 | Phase 2 | Pending |
+| SRC-04 | Phase 2 | Pending |
+| SCR-01 | Phase 2 | Pending |
+| SCR-02 | Phase 2 | Pending |
+| SCR-03 | Phase 2 | Pending |
+| SCR-04 | Phase 2 | Pending |
+| SCR-05 | Phase 3 | Pending |
+| SCR-06 | Phase 2 | Pending |
+| OPS-01 | Phase 3 | Pending |
+| OPS-02 | Phase 3 | Pending |
+| OPS-03 | Phase 4 | Pending |
+| MEAS-01 | Phase 3 | Pending |
+| MEAS-02 | Phase 3 | Pending |
+| MEAS-03 | Phase 3 | Pending |
+| MEAS-04 | Phase 4 | Pending |
+| LEGAL-01 | Phase 4 | Pending |
+| LEGAL-02 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 26 total
-- Mapped to phases: 0 (filled by roadmap)
+- Mapped to phases: 26
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-10-24*
-*Last updated: 2026-10-24 after initial definition*
+*Last updated: 2026-10-24 after roadmap creation*
