@@ -14,9 +14,9 @@
 ### Content foundation
 
 - [ ] **CONT-01**: Operator can browse a topic matrix (pillar × condition × domain × audience × angle) stored in SQLite, each topic tagged whitelist/blacklist
-- [ ] **CONT-02**: A style guide defines the fixed video template (60–75s, hook in first 1–2s spoken + on-screen, one topic per video, hedged non-diagnostic tone, calm visuals, burned-in accurate captions)
-- [ ] **CONT-03**: A German+English terminology table exists, and every script is automatically checked against it (bans functioning labels, "superpower" hype, "leidet an", "Asperger" outside quotes, ABA-adjacent framing; identity-first default)
-- [ ] **CONT-04**: The safety filter rejects blacklisted subjects (medication, diagnosis questions, ABA, "is my child autistic?") at topic, script and claim level
+- [x] **CONT-02**: A style guide defines the fixed video template (60–75s, hook in first 1–2s spoken + on-screen, one topic per video, hedged non-diagnostic tone, calm visuals, burned-in accurate captions)
+- [x] **CONT-03**: A German+English terminology table exists, and every script is automatically checked against it (bans functioning labels, "superpower" hype, "leidet an", "Asperger" outside quotes, ABA-adjacent framing; identity-first default)
+- [x] **CONT-04**: The safety filter rejects blacklisted subjects (medication, diagnosis questions, ABA, "is my child autistic?") at topic, script and claim level
 
 ### Sources & retrieval
 
@@ -83,9 +83,9 @@
 | MKT-02 | Phase 1 | Pending |
 | MKT-03 | Phase 1 | Pending |
 | CONT-01 | Phase 1 | Pending |
-| CONT-02 | Phase 1 | Pending |
-| CONT-03 | Phase 1 | Pending |
-| CONT-04 | Phase 1 | Pending |
+| CONT-02 | Phase 1 | Complete |
+| CONT-03 | Phase 1 | Complete |
+| CONT-04 | Phase 1 | Complete |
 | SRC-01 | Phase 2 | Pending |
 | SRC-02 | Phase 2 | Pending |
 | SRC-03 | Phase 2 | Pending |
