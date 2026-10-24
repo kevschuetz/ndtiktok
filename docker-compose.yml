@@ -21,3 +21,29 @@ services:
       - ./tests:/app/tests
     working_dir: /app
     entrypoint: ["uv", "run", "--no-sync", "ndc"]
+
+  # Heavy local analysis (plan 01-06, D-17): yt-dlp media download, faster-whisper, PyAV, Pillow.
+  # Capped harder than its share and niced, single thread; run on demand only:
+  #   docker compose run --rm ndc-heavy scan analyze
+  # Commands refuse 00:15-06:00 UTC (quiet hours) unless --force.
+  ndc-heavy:
+    build: .
+    image: nd-content:dev
+    mem_limit: 3g
+    memswap_limit: 3g
+    cpus: "1.0"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      OMP_NUM_THREADS: "1"
+      HF_HOME: /data/models/hf
+    volumes:
+      - /home/nd-content-volumes/data:/data
+      - ./config:/app/config:ro
+      - ./docs:/app/docs
+      - ./scan:/app/scan
+      - ./src:/app/src
+      - ./tests:/app/tests
+    working_dir: /app
+    entrypoint: ["nice", "-n", "19", "uv", "run", "--no-sync", "ndc"]

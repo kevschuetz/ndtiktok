@@ -26,6 +26,13 @@ ndc = "ndc.cli:app"
 scan = [
     "yt-dlp==2026.10.21",
 ]
+# Local video analysis (plan 01-06, D-17). Operator-approved in plan 01-01 ("packages approved").
+analyze = [
+    "faster-whisper==1.2.1",
+    "av==19.0.*",
+    "pillow==13.0.*",
+    "numpy==2.5.*",
+]
 
 [build-system]
 requires = ["uv_build>=0.11.8,<0.12.0"]

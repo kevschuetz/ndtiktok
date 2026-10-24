@@ -70,3 +70,24 @@ politeness:
 quiet_hours:                  # UTC; scan commands refuse to run inside unless --force (logged)
   start: "00:15"
   end: "06:00"
+
+# Local video analysis (plan 01-06, D-17, D-21). Runs only in the capped `ndc-heavy` service:
+#   docker compose run --rm ndc-heavy scan analyze
+# Videos are downloaded without login/cookies, analyzed and deleted right away; only transcripts,
+# the pitch median and one contact sheet per account are kept. Never re-uploaded.
+analysis:
+  videos_per_account: 3
+  max_video_seconds: 180
+  max_filesize_mb: 60
+  frames_per_video: 2
+  contact_sheet_width_px: 1024
+  whisper_model: small
+  whisper_compute_type: int8
+  whisper_cpu_threads: 1
+  media_dir: /data/media
+  judging_dir: /data/judging
+  model_dir: /data/models
+  pitch:
+    male_max_hz: 160
+    female_min_hz: 185
+  batches_per_language: 2
