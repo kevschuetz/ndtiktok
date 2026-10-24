@@ -35,8 +35,10 @@ built only for the formats that win here.
       S3/AWMF guidelines, PubMed)
 - [ ] Adversarial fact-check pass that outputs claim ↔ source-sentence pairs for operator review, plus the source
       list formatted for the caption or pinned comment
-- [ ] 20–30 manually recorded and published videos spread across the pillars/angles (~1/day at a 30–60 min/day
-      operator budget)
+- [ ] 24–28 manually recorded and published videos at 4–5/week (batched), rotating pillars on a pre-planned
+      schedule
+- [ ] Safety tooling in M1: automatic DOI/PMID check, terminology word-list check, Whisper final-recording diff vs
+      approved script, crisis/moderation playbook before the first post
 - [ ] Per-video metrics log (retention/watch-through, shares, saves, views, follows) tagged by pillar/angle/hook
 - [ ] Go/no-go readout: the top 1–2 pillar/angle formats by retention/saves/shares relative to the account's own
       median, which feeds milestone 2
@@ -100,7 +102,10 @@ Tone: neurodiversity-affirming, hedged ("some people…"), never diagnostic.
 | Positioning: "not a therapist, I translate research with sources" | No clinician; credibility comes from sourcing | — Pending |
 | Claims grounded only in retrieved sources + adversarial verification + operator review | Core value: credibility | — Pending |
 | Never auto-reply to comments | Mental-health crisis risk | — Pending |
-| Legal/tax checklist gates monetization, not the first post | Unblocks validation while keeping money-making compliant | — Pending |
+| Legal/tax checklist (incl. Impressum) gates monetization, not the first post | Operator accepted the risk while non-commercial; research flagged MedienG §25 may apply from the first regular post | ⚠️ Revisit |
+| Cadence 4–5/week batched, not daily | Real cost is 60–120 min/video; burnout risk | — Pending |
+| Keep the fixed 60–75s template; verify Creator Rewards in-app | Creator Rewards likely unavailable in AT; a fixed template keeps the experiment clean | — Pending |
+| Model IDs live in config | The lineup changes; never hard-code | — Pending |
 
 ## Evolution
 
