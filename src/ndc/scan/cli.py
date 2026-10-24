@@ -237,3 +237,64 @@ def export_cmd(
     if accounts_csv:
         n = sheet.export_accounts(db, accounts_csv, selected_only=not all_accounts)
         typer.echo(f"accounts: {n} rows -> {accounts_csv}")
+
+
+discover_app = typer.Typer(help="Automated candidate discovery (D-04, D-16).")
+app.add_typer(discover_app, name="discover")
+
+
+def _print_discover(rep) -> None:
+    typer.echo(
+        f"scan_run {rep.run_id} discover {rep.source} {rep.language}: {rep.requests} requests, "
+        f"{rep.seen} seen, {len(rep.inserted)} new, {len(rep.existing)} already listed"
+    )
+    for h in rep.inserted:
+        typer.echo(f"  + {h}")
+    for h in getattr(rep, "conflicts", []):
+        typer.echo(f"  ? {h}: already listed under the other language (flagged in notes)")
+    for e in rep.errors:
+        typer.echo(f"  ! {e}", err=True)
+
+
+@discover_app.command("youtube")
+def discover_youtube_cmd(
+    lang: str = typer.Option(..., "--lang", help="de | en"),
+    force: bool = typer.Option(False, "--force", help="Override quiet hours (logged)."),
+) -> None:
+    """ytsearch per config query; channels with >= 3 niche Shorts become candidates."""
+    from ndc.scan import discover
+
+    if lang not in ("de", "en"):
+        typer.echo("--lang must be de or en", err=True)
+        raise typer.Exit(2)
+    try:
+        rep = discover.discover_youtube(Database(db_path()), lang, force=force, cfg=config_dir())
+    except (prereg.RuleNotApproved, quiet_hours.QuietHours) as exc:
+        _gate_errors(exc)
+        return
+    _print_discover(rep)
+
+
+@discover_app.command("modash")
+def discover_modash_cmd(
+    lang: str = typer.Option(..., "--lang", help="de | en (language of the candidates)"),
+    path: list[str] = typer.Option(..., "--path", help="Public page path, e.g. tiktok/germany"),
+    force: bool = typer.Option(False, "--force", help="Override quiet hours (logged)."),
+) -> None:
+    """TikTok handles from Modash public find-influencers pages (plain HTML, no login)."""
+    from ndc.scan import discover
+
+    if lang not in ("de", "en"):
+        typer.echo("--lang must be de or en", err=True)
+        raise typer.Exit(2)
+    try:
+        rep = discover.discover_modash(
+            Database(db_path()), lang, path, force=force, cfg=config_dir()
+        )
+    except ValueError as exc:
+        typer.echo(f"refused: {exc}", err=True)
+        raise typer.Exit(2) from exc
+    except (prereg.RuleNotApproved, quiet_hours.QuietHours) as exc:
+        _gate_errors(exc)
+        return
+    _print_discover(rep)

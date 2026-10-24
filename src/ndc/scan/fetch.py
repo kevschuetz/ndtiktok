@@ -62,7 +62,7 @@ def tier_for(followers: int | None, cfg: str | Path | None = None) -> str | None
     return None
 
 
-# --- gate -----------------------------------------------------------------------------------------
+# --- gate ------------------------------------------------------------
 
 
 def gate(db: Database, stage: str, force: bool, cfg: str | Path | None = None) -> int:
@@ -93,7 +93,7 @@ def finish_run(db: Database, run_id: int) -> None:
         conn.close()
 
 
-# --- politeness -----------------------------------------------------------------------------------
+# --- politeness ------------------------------------------------------------
 
 
 def _retryable(exc: BaseException) -> bool:
@@ -149,7 +149,7 @@ def polite_from_config(scfg: dict, **kw) -> Polite:
     )
 
 
-# --- candidates -----------------------------------------------------------------------------------
+# --- candidates ------------------------------------------------------------
 
 
 @dataclass
@@ -265,7 +265,29 @@ def upsert_candidate(
         conn.close()
 
 
-# --- account writes -------------------------------------------------------------------------------
+def note_language_conflict(db: Database, handle: str, platform: str, language: str, source: str):
+    """A discovered handle already listed under the other language: flag it for the operator
+    (the query language is not proof of the account language). Returns True when flagged."""
+    conn = db.connect()
+    try:
+        row = conn.execute(
+            "SELECT id, language, notes FROM competitor_candidate"
+            " WHERE handle = ? AND platform = ?",
+            (handle, platform),
+        ).fetchone()
+        if row is None or row["language"] == language:
+            return False
+        flag = f"also found by {language} {source} queries: check language"
+        if flag in (row["notes"] or ""):
+            return True
+        notes = "; ".join(x for x in (row["notes"], flag) if x)
+        conn.execute("UPDATE competitor_candidate SET notes = ? WHERE id = ?", (notes, row["id"]))
+        return True
+    finally:
+        conn.close()
+
+
+# --- account writes ------------------------------------------------------------
 
 
 def _obs(conn, account_id, fieldname, value, provenance, method, run_id, confidence=None):
@@ -362,7 +384,7 @@ def _upsert_posts(conn, account_id: int, posts: list[dict], window_ids: set, pro
         )
 
 
-# --- fetch orchestration --------------------------------------------------------------------------
+# --- fetch orchestration ------------------------------------------------------------
 
 
 @dataclass
