@@ -5,8 +5,8 @@
 # config/crisis_lines.yaml (plan 09) is exempt from checking; it naturally contains "Suizid".
 # Regex matching is case-insensitive unless case_sensitive: true.
 version: 1
-approved_by: null
-approved_at: null
+approved_by: operator
+approved_at: 2026-10-24
 scope: subject
 levels: [topic, script, claim]
 

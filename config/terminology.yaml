@@ -18,8 +18,8 @@
 # D-14: spoken text uses neutral constructions ("Menschen mit ADHS", "Eltern"); gender colons and
 # other gender forms warn, except "Autist:innen" (the D-13 noun case). "Menschen mit ADHS" is fine.
 version: 1
-approved_by: null
-approved_at: null
+approved_by: operator
+approved_at: 2026-10-24
 
 terms:
   # ---------------------------------------------------------------- block: functioning labels
