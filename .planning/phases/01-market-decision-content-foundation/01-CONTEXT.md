@@ -46,6 +46,14 @@ Not in this phase: source retrieval, script generation, fact-checking (Phase 2);
 ### Style guide (CONT-02)
 - Already locked by project decisions: fixed 60–75s template, hook in the first 1–2s spoken + on screen, one topic per video, hedged non-diagnostic tone, calm visuals (no strobe or rapid cuts), accurate burned-in captions, sources in caption/pinned comment.
 
+### Amendments after phase research (operator, 2026-10-24)
+- **D-16:** Research found TikTok hashtag pages, comments and subtitles are not scrapable without login, and bot-check workarounds (e.g. curl_cffi impersonation, paid scraping services like Apify) are NOT allowed. Account discovery is automated instead via TikTok Creative Center (official; top creators/hashtags by country AT/DE/US) and/or a creator-search database free tier (Exolyt/Favikon/Modash), plus research-named seeds and YouTube search (`ytsearch`). Operator only confirms/edits the candidate list. Verify each discovery source live in the plan; if all fail, fall back to operator handle collection (~30–45 min).
+- **D-17:** The face/voice/format walkthrough and the spoken/on-screen citation check are automated: yt-dlp downloads ~3 recent videos per account (verify no-login download works first); faster-whisper transcribes them (catches spoken citations); Claude vision on sampled frames judges face vs faceless, format and on-screen citations; voice gender is a pitch-based estimate labelled as such. Every field keeps per-field provenance (auto vs operator) and a confidence. The operator spot-checks only uncertain or decision-relevant accounts (~10–15 min). Replaces the ~5-account spot-check in D-01 and the manual walkthrough. Needs an Anthropic API key (env var; model IDs in config). Heavy CPU work (Whisper) runs low-priority outside 00:15–06:00 UTC.
+- **D-18:** Reach ratio Q uses TikTok only; YouTube Shorts metrics are reported alongside, not blended.
+- **D-19:** Topic drafts are a Claude-written, reviewed seed file in the repo (`config/topic_seed.yaml`) plus an import command — no runtime API call for drafting.
+- **D-20:** The research-proposed decision-rule thresholds are accepted as the draft: mid tier = 10k–100k followers; Q = EN ÷ DE median of mid-tier accounts' median views (TikTok); N_DE = DE accounts scoring ≥2; fewer than 8 usable mid-tier accounts in either language → inconclusive → German; German if N_DE ≤ 4 and Q ≤ 10; English if Q > 15; English if N_DE ≥ 8 and the DE sourced+faceless+male slot is filled while the EN one is empty; else → German. The operator formally approves and commits the rule doc before any scan data is pulled; the scan records the rule hash and `decide` refuses a changed rule without a logged amendment.
+- Known tension (not reopened): AFK 2023 guidance says German identity-first is unsettled and suggests "Person im Autismus-Spektrum"; D-13 stands.
+
 ### Claude's Discretion
 - CLI shape, SQLite schema details, and file layout (keep it minimal: Python + uv + Typer + sqlite-utils per research STACK.md).
 - Scraping tooling choice and exact sampling procedure within D-01–D-05.
@@ -70,6 +78,7 @@ Not in this phase: source retrieval, script generation, fact-checking (Phase 2);
 - `.planning/research/PITFALLS.md` — ND community language pitfalls, terminology guidance, platform keyword risks
 - `.planning/research/STACK.md` — Python/uv/Typer/sqlite-utils/yt-dlp versions
 - `.planning/research/ARCHITECTURE.md` — data model (topics table, safety filter at three levels)
+- `.planning/phases/01-market-decision-content-foundation/01-RESEARCH.md` — phase research: live-tested scan feasibility, rubric, thresholds, matcher, crisis lines, skeleton
 
 </canonical_refs>
 
