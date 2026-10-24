@@ -11,9 +11,14 @@ from rich.table import Table
 
 from ndc.config import db_path
 from ndc.db import Database
-from ndc.topics import LIST_COLUMNS, add_topic, list_topics
+from ndc.topics import LIST_COLUMNS, TopicError, add_topic, import_seed, list_topics
 
-app = typer.Typer(help="Topic matrix backlog: add, list.", no_args_is_help=True)
+app = typer.Typer(help="Topic matrix: import, add, list, review.", no_args_is_help=True)
+
+
+def _fail(exc: Exception, code: int = 1) -> typer.Exit:
+    typer.echo(f"error: {exc}", err=True)
+    return typer.Exit(code=code)
 
 
 class OutFormat(StrEnum):
@@ -51,10 +56,25 @@ def add(
             language=language,
             origin=origin,
         )
+    except TopicError as exc:
+        raise _fail(exc) from exc
     except sqlite3.IntegrityError as exc:
         typer.echo(f"error: topic rejected by database: {exc}", err=True)
         raise typer.Exit(code=1) from exc
     typer.echo(f"added topic {new_id}")
+
+
+@app.command("import")
+def import_cmd(path: str = typer.Argument(..., help="Reviewed seed YAML")) -> None:
+    """Import a reviewed seed YAML (vocab-validated, safety-checked, all-or-nothing)."""
+    try:
+        res = import_seed(Database(db_path()), path)
+    except TopicError as exc:
+        raise _fail(exc) from exc
+    typer.echo(
+        f"inserted {res.inserted}, skipped {res.skipped} (already present); "
+        f"safety in file: {res.blocked} blocked, {res.flagged} flagged"
+    )
 
 
 @app.command("list")
@@ -68,19 +88,22 @@ def list_cmd(
     status: str | None = typer.Option(None),
     fmt: OutFormat = typer.Option(OutFormat.table, "--format", help="table | csv"),
 ) -> None:
-    """List topics (list_tag always shown)."""
-    rows = list_topics(
-        Database(db_path()),
-        {
-            "pillar": pillar,
-            "condition": condition,
-            "domain": domain,
-            "audience": audience,
-            "angle": angle,
-            "list_tag": tag,
-            "status": status,
-        },
-    )
+    """List topics; list_tag and safety_status are always shown."""
+    try:
+        rows = list_topics(
+            Database(db_path()),
+            {
+                "pillar": pillar,
+                "condition": condition,
+                "domain": domain,
+                "audience": audience,
+                "angle": angle,
+                "list_tag": tag,
+                "status": status,
+            },
+        )
+    except TopicError as exc:
+        raise _fail(exc, code=2) from exc
     if fmt is OutFormat.csv:
         writer = csv.writer(sys.stdout, lineterminator="\n")
         writer.writerow(LIST_COLUMNS)

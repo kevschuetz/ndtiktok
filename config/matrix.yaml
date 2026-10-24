@@ -1,0 +1,71 @@
+# nd-content topic matrix vocabulary (CONT-01, D-10, D-11). Keys are stable snake_case and are
+# what the DB stores; labels are display only and may change. Adding a key is safe; renaming or
+# removing a key orphans existing topic rows, so bump `version` and migrate if you ever do it.
+# Loaded and validated by src/ndc/topics.py (unknown keys rejected).
+version: 1
+
+pillar:  # D-11: four pillars, ~6-7 kept topics each after pruning
+  challenge_science_help: {de: "Herausforderung, Wissenschaft, Hilfe", en: "Challenge, science, help"}
+  strengths: {de: "Stärken", en: "Strengths"}
+  parents: {de: "Eltern", en: "Parents"}
+  men_dads_partners: {de: "Männer, Väter, Partner:innen", en: "Men, dads, partners"}
+
+condition:  # D-10: broader ND; guideline_layer = where the authority layer comes from
+  adhd: {de: "ADHS", en: "ADHD", guideline_layer: awmf_s3}
+  autism: {de: "Autismus", en: "Autism", guideline_layer: awmf_s3}
+  audhd: {de: "AuDHS (Autismus + ADHS)", en: "AuDHD (autism + ADHD)", guideline_layer: pubmed_reviews}
+  dyslexia: {de: "Legasthenie", en: "Dyslexia", guideline_layer: pubmed_reviews}
+  dyspraxia_dcd: {de: "Dyspraxie / UEMF", en: "Dyspraxia / DCD", guideline_layer: pubmed_reviews}
+  tourette: {de: "Tourette", en: "Tourette", guideline_layer: pubmed_reviews}
+  dyscalculia: {de: "Dyskalkulie", en: "Dyscalculia", guideline_layer: pubmed_reviews}
+  nd_general: {de: "Neurodivergenz allgemein", en: "Neurodivergence (general)", guideline_layer: pubmed_reviews}
+
+domain:  # sensitive: true = likely to trip the safety filter; drafting stays on the safe side
+  focus_attention: {de: "Fokus und Aufmerksamkeit", en: "Focus and attention"}
+  executive_function: {de: "Exekutive Funktionen", en: "Executive function"}
+  time_perception: {de: "Zeitwahrnehmung", en: "Time perception"}
+  emotion_regulation: {de: "Emotionsregulation", en: "Emotion regulation"}
+  sensory: {de: "Sinneswahrnehmung", en: "Sensory processing"}
+  sleep:
+    de: "Schlaf"
+    en: "Sleep"
+    sensitive: true
+    note: "Adjacent blocked subject: medication (melatonin). Stay on routines and research, never sleep aids."
+  routines_household: {de: "Routinen und Haushalt", en: "Routines and household"}
+  school_learning: {de: "Schule und Lernen", en: "School and learning"}
+  work: {de: "Arbeit", en: "Work"}
+  relationships: {de: "Beziehungen", en: "Relationships"}
+  communication: {de: "Kommunikation", en: "Communication"}
+  social: {de: "Soziales", en: "Social life"}
+  energy_burnout:
+    de: "Energie und Erschöpfung"
+    en: "Energy and burnout"
+    sensitive: true
+    note: "Adjacent blocked subject: self-harm / suicide. No crisis framing; crisis lines are a separate plan."
+  masking: {de: "Masking", en: "Masking"}
+  money: {de: "Geld", en: "Money"}
+  late_identification:
+    de: "Späte Erkenntnis"
+    en: "Late identification"
+    sensitive: true
+    note: "Adjacent blocked subject: diagnosis questions ('do I have ...'). Never a self-test or checklist."
+  family_life: {de: "Familienleben", en: "Family life"}
+  parenting_coregulation: {de: "Elternschaft und Co-Regulation", en: "Parenting and co-regulation"}
+
+audience:
+  nd_adults: {de: "Neurodivergente Erwachsene", en: "Neurodivergent adults"}
+  parents: {de: "Eltern", en: "Parents"}
+  men: {de: "Männer", en: "Men"}
+  dads: {de: "Väter", en: "Dads"}
+  partners: {de: "Partner:innen", en: "Partners"}
+  general_public: {de: "Allgemeines Publikum", en: "General public"}
+
+angle:
+  mechanism_why: {de: "Mechanismus: warum", en: "Mechanism: why"}
+  try_this_strategy: {de: "Wenn X, probier Y", en: "If X, try Y"}
+  myth_vs_research: {de: "Mythos vs. Forschung", en: "Myth vs research"}
+  human_not_only_adhd: {de: "Menschlich, nicht nur ADHS", en: "Human, not only ADHD"}
+  strength_with_caveat: {de: "Stärke mit Einschränkung", en: "Strength with caveat"}
+  what_research_doesnt_know: {de: "Was die Forschung nicht weiß", en: "What research doesn't know"}
+  study_explained: {de: "Studie erklärt", en: "Study explained"}
+  lived_story_consented: {de: "Erfahrung (mit Zustimmung)", en: "Lived story (consented)"}

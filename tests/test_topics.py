@@ -34,7 +34,13 @@ def test_matrix_vocab_covers_broader_nd():
     m = topics.load_matrix()
     assert set(m.pillar) == {"challenge_science_help", "strengths", "parents", "men_dads_partners"}
     assert set(m.condition) == {
-        "adhd", "autism", "audhd", "dyslexia", "dyspraxia_dcd", "tourette", "dyscalculia",
+        "adhd",
+        "autism",
+        "audhd",
+        "dyslexia",
+        "dyspraxia_dcd",
+        "tourette",
+        "dyscalculia",
         "nd_general",
     }
     assert m.condition["adhd"].guideline_layer == "awmf_s3"
@@ -42,7 +48,9 @@ def test_matrix_vocab_covers_broader_nd():
     assert m.condition["tourette"].guideline_layer == "pubmed_reviews"
     assert len(m.domain) == 18
     assert {k for k, v in m.domain.items() if v.sensitive} == {
-        "sleep", "energy_burnout", "late_identification",
+        "sleep",
+        "energy_burnout",
+        "late_identification",
     }
     assert all(v.de and v.en for v in m.audience.values())
 
@@ -117,14 +125,28 @@ def test_list_rejects_unknown_filter_value(db):
 def test_add_topic_validates_and_checks(db):
     with pytest.raises(TopicError):
         topics.add_topic(
-            db, pillar="parents", condition="adhs", domain="sleep", audience="parents",
-            angle="mechanism_why", working_title="X", list_tag="whitelist",
-            source_likely="yes", language="de",
+            db,
+            pillar="parents",
+            condition="adhs",
+            domain="sleep",
+            audience="parents",
+            angle="mechanism_why",
+            working_title="X",
+            list_tag="whitelist",
+            source_likely="yes",
+            language="de",
         )
     new_id = topics.add_topic(
-        db, pillar="parents", condition="adhd", domain="sleep", audience="parents",
-        angle="mechanism_why", working_title="Melatonin für Kinder", list_tag="whitelist",
-        source_likely="yes", language="de",
+        db,
+        pillar="parents",
+        condition="adhd",
+        domain="sleep",
+        audience="parents",
+        angle="mechanism_why",
+        working_title="Melatonin für Kinder",
+        list_tag="whitelist",
+        source_likely="yes",
+        language="de",
     )
     conn = db.connect()
     try:
@@ -137,8 +159,14 @@ def test_add_topic_validates_and_checks(db):
 
 def test_add_topic_without_language_checks_both(db):
     new_id = topics.add_topic(
-        db, pillar="parents", condition="adhd", domain="sleep", audience="parents",
-        angle="mechanism_why", working_title="Kids and melatonin", list_tag="whitelist",
+        db,
+        pillar="parents",
+        condition="adhd",
+        domain="sleep",
+        audience="parents",
+        angle="mechanism_why",
+        working_title="Kids and melatonin",
+        list_tag="whitelist",
         source_likely="yes",
     )
     conn = db.connect()
