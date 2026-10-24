@@ -1,0 +1,51 @@
+{
+  "batch": "de-1",
+  "rubric_version": 1,
+  "provenance": "llm_session",
+  "judgments": [
+    {
+      "account_key": "tiktok:alpha_adhs",
+      "posts": [
+        {"post_id": "a1", "source": "caption", "level": 2, "evidence": "laut S3-Leitlinie ADHS"},
+        {"post_id": "a2", "source": "caption", "level": 2, "evidence": "Barkley sagt"},
+        {"post_id": "a3", "source": "caption", "level": 2, "evidence": "Studie der Uni Bonn"},
+        {"post_id": "a4", "source": "caption", "level": 1, "evidence": "Studien zeigen"},
+        {"post_id": "a5", "source": "caption", "level": 0, "evidence": null},
+        {"post_id": "a5", "source": "pinned_comment", "level": 3, "evidence": "Faraone et al. 2021"}
+      ],
+      "videos": [
+        {"video_id": "a1", "speech": [{"level": 2, "evidence": "laut Leitlinie"}],
+         "onscreen": [], "face": "faceless", "format": "voiceover_broll"},
+        {"video_id": "a2", "speech": [], "onscreen": [{"text_seen": "Quelle: Faraone 2021", "level": 2}],
+         "face": "faceless", "format": "voiceover_broll"}
+      ],
+      "face": "faceless",
+      "format": "voiceover_broll",
+      "visible_speaker_gender": "none",
+      "pillars": ["challenge_science_help", "parents"],
+      "audiences": ["nd_adults", "parents"],
+      "monetization_signals": ["linktree"],
+      "hedging_or_diagnostic": "hedged",
+      "confidence": {"source_citing": "high", "face": "high", "format": "medium",
+                     "pillars": "medium", "monetization_signals": "high"},
+      "notes": "sample"
+    },
+    {
+      "account_key": "youtube:@betachannel",
+      "posts": [
+        {"post_id": "b1", "source": "caption", "level": 1, "evidence": "science says"}
+      ],
+      "videos": [],
+      "face": "face",
+      "format": "talking_head",
+      "visible_speaker_gender": "female",
+      "pillars": ["strengths"],
+      "audiences": ["nd_adults"],
+      "monetization_signals": ["none"],
+      "hedging_or_diagnostic": "neutral",
+      "confidence": {"source_citing": "medium", "face": "high", "format": "high",
+                     "pillars": "medium", "monetization_signals": "medium"},
+      "notes": ""
+    }
+  ]
+}
