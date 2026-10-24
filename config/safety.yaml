@@ -1,0 +1,201 @@
+# nd-content safety filter (CONT-04, D-12). Blacklisted SUBJECTS — every rule is tier block and
+# cannot be overridden. The same rules run at topic level (plan 05 import) and on script and
+# claim text (Phase 2), so a topic like "ADHS und Schlaf" that later mentions Melatonin in the
+# script is still caught. Quoted text is NOT exempt here (allow_in_quotes defaults to false).
+# config/crisis_lines.yaml (plan 09) is exempt from checking; it naturally contains "Suizid".
+# Regex matching is case-insensitive unless case_sensitive: true.
+version: 1
+approved_by: null
+approved_at: null
+scope: subject
+levels: [topic, script, claim]
+
+rules:
+  # ---------------------------------------------------------------- medication
+  - id: de.medication
+    lang: de
+    tier: block
+    category: medication
+    match:
+      - regex: '\w*medikament\w*'
+      - regex: '\bmedikation\w*'
+      - regex: '\bStimulan(z|s|t)\w*'
+      - regex: '\bAntidepressiv\w*'
+      - regex: '\bDosis\b|\bDosierung\w*|\bdosier\w*'
+      - regex: '\bTablette\w*|\bPille\w*'
+    message: "Medikamente sind kein Thema dieses Accounts (kein medizinischer Rat)."
+    suggest: null
+  - id: any.medication_names
+    lang: any
+    tier: block
+    category: medication
+    match:
+      - regex: '\b(Methylphenidat\w*|methylphenidate|Ritalin|Medikinet|Concerta|Elvanse|Vyvanse|Adderall|Lisdexamfetamin\w*|lisdexamfetamine|Atomoxetin\w*|atomoxetine|Strattera|Guanfacin\w*|guanfacine|Intuniv|Amphetamin\w*|amphetamines?|Dexamfetamin\w*|Melatonin|Risperidon\w*|risperidone|Aripiprazol\w*|aripiprazole)\b'
+      - regex: '\bSSRIs?\b'
+    message: "Medication / Wirkstoff — blacklisted subject."
+    suggest: null
+  - id: en.medication
+    lang: en
+    tier: block
+    category: medication
+    match:
+      - regex: '\bmedications?\b|\bmedicat(ed|ing)\b|\bmeds\b'
+      - regex: '\bstimulants?\b|\bantidepressants?\b'
+      - regex: '\bdos(e|es|age|ages|ing)\b'
+      - regex: '\bpills?\b|\btablets?\b'
+    message: "Medication is out of scope (no medical advice)."
+    suggest: null
+
+  # ---------------------------------------------------------------- diagnosis questions
+  - id: de.diagnosis_question
+    lang: de
+    tier: block
+    category: diagnosis_question
+    match:
+      - regex: '\b(habe?|hast)\s+(ich|du)\s+(\w+\s+){0,2}?(ADHS|ADS|Autismus)\b'
+      - regex: '\b(bin\s+ich|bist\s+du)\s+(\w+\s+){0,2}?(autistisch|neurodivergent|ein\s+Autist\w*)'
+      - regex: '\b(ist|wird)\s+mein\s+(Kind|Sohn|Tochter|Baby|Partner\w*|Mann|Frau)\s+(\w+\s+){0,2}?autistisch'
+      - regex: '\bhat\s+mein\s+(Kind|Sohn|Tochter|Baby|Partner\w*|Mann|Frau)\s+(\w+\s+){0,2}?(ADHS|ADS|Autismus)\b'
+      - regex: '\bworan\s+erkenne\s+ich\b'
+      - regex: '\bselbst-?test\w*'
+      - regex: '\bCheckliste\w*'
+      - regex: '\b\d+\s+(Anzeichen|Warnzeichen|Hinweise|Symptome)\b'
+      - regex: '\b(Anzeichen|Warnzeichen)\s+(für|von)\s+(ADHS|ADS|Autismus)\b'
+      - regex: '\btest(e)?\s+dich\b'
+    message: "Diagnose-Frage / Selbsttest — nie diagnostisch."
+    suggest: null
+  - id: en.diagnosis_question
+    lang: en
+    tier: block
+    category: diagnosis_question
+    match:
+      - regex: '\bdo\s+(i|you)\s+have\s+(adhd|add|autism)\b'
+      - regex: '\b(am\s+i|are\s+you)\s+(\w+\s+)?(autistic|neurodivergent|adhd)\b'
+      - regex: '\b(is|are)\s+my\s+(child|kid|son|daughter|toddler|baby|partner|husband|wife)\s+(\w+\s+){0,2}?autistic\b'
+      - regex: '\bdoes\s+my\s+(child|kid|son|daughter|toddler|partner|husband|wife)\s+have\s+(adhd|add|autism)\b'
+      - regex: '\bsigns?\s+(that\s+)?(you|your\s+\w+)\s+(have|has|might\s+have|may\s+have|is|are)\b'
+      - regex: '\b\d+\s+(signs?|symptoms?|red\s+flags?)\b'
+      - regex: '\bself-?test\w*|\bquiz\w*|\bchecklists?\b'
+    message: "Diagnosis question / self-test — never diagnostic."
+    suggest: null
+
+  # ---------------------------------------------------------------- ABA (subject level)
+  - id: any.aba_subject
+    lang: any
+    tier: block
+    category: aba
+    match:
+      - regex: '\bABA\b'
+        case_sensitive: true
+      - regex: '\bangewandte[nr]?\s+Verhaltensanalyse\b|\bapplied\s+behaviou?r(al)?\s+analysis\b'
+    message: "ABA — blacklisted subject."
+    suggest: null
+
+  # ---------------------------------------------------------------- self-harm / suicide
+  - id: de.self_harm
+    lang: de
+    tier: block
+    category: self_harm
+    match:
+      - regex: '\bSuizid\w*|\bSelbstmord\w*|\bSelbsttötung\w*|\bSelbstverletz\w*'
+      - regex: '\britz(en|t|e|te|ten)\b'
+    message: "Suizid / Selbstverletzung — nicht als Thema (Krisenlinien siehe crisis_lines.yaml)."
+    suggest: null
+  - id: en.self_harm
+    lang: en
+    tier: block
+    category: self_harm
+    match:
+      - regex: '\bsuicid\w*|\bself-?harm\w*|\bself-?injur\w*'
+      - regex: '\bkill(ing)?\s+(myself|yourself)\b|\bcutting\s+(myself|yourself)\b'
+    message: "Suicide / self-harm — not a topic."
+    suggest: null
+
+  # ---------------------------------------------------------------- eating disorders
+  - id: de.eating_disorder
+    lang: de
+    tier: block
+    category: eating_disorder
+    match:
+      - regex: '\bEssstörung\w*|\bMagersucht\w*|\bmagersüchtig\w*|\bAnorexi\w*|\bBulimi\w*|\bBinge-?Eating\w*'
+    message: "Essstörungen — blacklisted subject."
+    suggest: null
+  - id: en.eating_disorder
+    lang: en
+    tier: block
+    category: eating_disorder
+    match:
+      - regex: '\beating\s+disorders?\b|\banorexi\w*|\bbulimi\w*|\bbinge[-\s]eating\b'
+    message: "Eating disorders — blacklisted subject."
+    suggest: null
+  - id: any.arfid
+    lang: any
+    tier: block
+    category: eating_disorder
+    match: {regex: '\bARFID\b'}
+    message: "ARFID — blacklisted subject."
+    suggest: null
+
+  # ---------------------------------------------------------------- cure / treatment claims
+  - id: de.cure_claim
+    lang: de
+    tier: block
+    category: cure_claim
+    match:
+      - lemma: ["heilen", "geheilt", "heilbar", "unheilbar"]
+      - regex: '\bHeilung\w*|\bkurier\w*|\bwegtherapier\w*|\bwegzutherapier\w*'
+    message: "Heilungs-/Behandlungsversprechen — blacklisted."
+    suggest: null
+  - id: en.cure_claim
+    lang: en
+    tier: block
+    category: cure_claim
+    match:
+      - regex: '\bcur(e|es|ed|ing|able)\b'
+      - regex: '\bheal(s|ed|ing)?\s+(your\s+|my\s+)?(autism|adhd)\b'
+    message: "Cure / treatment claim — blacklisted."
+    suggest: null
+
+  # ---------------------------------------------------------------- supplements / diet-as-treatment
+  - id: de.supplements
+    lang: de
+    tier: block
+    category: supplements_diet
+    match:
+      - regex: '\bNahrungsergänzung\w*|\bSupplement\w*|\bOmega-?3\w*'
+      - regex: '\b(ADHS|Autismus)-?Diät\w*'
+      - regex: '\bzuckerfrei\w*(?:\W+\w+){0,4}?\W+(heil|hilft\s+gegen|gegen\s+(ADHS|Autismus))'
+    message: "Nahrungsergänzung / Diät als Behandlung — blacklisted."
+    suggest: null
+  - id: en.supplements
+    lang: en
+    tier: block
+    category: supplements_diet
+    match:
+      - regex: '\bsupplement(s|ation|ing)?\b|\bomega-?3\w*'
+      - regex: '\b(adhd|autism)\s+diet\b'
+      - regex: '\b(sugar|gluten|dairy)[-\s]free\b(?:\W+\w+){0,4}?\W+(cure|cures|fix|fixes|treat\w*)\b'
+    message: "Supplements / diet-as-treatment — blacklisted."
+    suggest: null
+
+  # ---------------------------------------------------------------- conspiracy framing
+  - id: de.conspiracy
+    lang: de
+    tier: block
+    category: conspiracy
+    match:
+      - regex: '\bÄrzte?\s+(verschweig|verheimlich|sag(en|t)\s+dir\s+nicht|wollen\s+nicht)\w*'
+      - regex: '\bwas\s+dir\s+(keiner|niemand)\s+sagt\b'
+      - regex: '\bImpf\w*|\bPharmalobby\w*|\bBig\s+Pharma\b'
+    message: "Verschwörungs-Rahmung / Impfen — blacklisted."
+    suggest: null
+  - id: en.conspiracy
+    lang: en
+    tier: block
+    category: conspiracy
+    match:
+      - regex: '\bdoctors?\s+(won''t|don''t|will\s+not|do\s+not)\s+tell\s+you\b'
+      - regex: '\bwhat\s+(no\s+one|nobody)\s+(tells|will\s+tell)\s+you\b'
+      - regex: '\bvaccin\w*|\bbig\s+pharma\b'
+    message: "Conspiracy framing / vaccines — blacklisted."
+    suggest: null

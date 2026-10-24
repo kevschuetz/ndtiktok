@@ -105,7 +105,9 @@ def test_span_points_at_matched_text():
     assert f.source_file == "terminology"
 
 
-@pytest.mark.parametrize("name,lang", [("sample_script_de.txt", "de"), ("sample_script_en.txt", "en")])
+@pytest.mark.parametrize(
+    "name,lang", [("sample_script_de.txt", "de"), ("sample_script_en.txt", "en")]
+)
 def test_sample_scripts_cover_every_category(name, lang):
     res = check((FIX / name).read_text(encoding="utf-8"), lang, "script")
     cats = {f.category for f in res.findings}

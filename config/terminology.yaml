@@ -1,0 +1,414 @@
+# nd-content terminology table (CONT-03, D-12..D-15). Versioned; changes go through review.
+#
+# Tiers (D-12):
+#   block = can never be overridden (functioning labels, ABA-adjacent framing, slurs).
+#   warn  = passes only with an override reason recorded against the exact text hash.
+#
+# Match types: lemma (any token whose surface or simplemma lemma is in the list),
+# lemma_seq (ordered lemma steps, each within `window` tokens of the previous one),
+# regex (on NFC + dash-normalized text; case-insensitive unless case_sensitive: true).
+# allow_in_quotes: true means text inside balanced quotes („…“ "…" “…” »…« «…» ‚…‘) is ignored,
+# so historical or cited terms can be quoted. An unbalanced quote counts as unquoted.
+#
+# Known tension (documented, not reopened): the AFK 2023 recommendations say identity-first
+# language is not settled in German and suggest "Person im Autismus-Spektrum" as a neutral form.
+# D-13 locks identity-first: default "autistische Menschen", "Autist:innen" only when a noun is
+# unavoidable; English "autistic people". "Person im Autismus-Spektrum" is deliberately allowed
+# (never flagged). Person-first forms ("Menschen mit Autismus") warn.
+# D-14: spoken text uses neutral constructions ("Menschen mit ADHS", "Eltern"); gender colons and
+# other gender forms warn, except "Autist:innen" (the D-13 noun case). "Menschen mit ADHS" is fine.
+version: 1
+approved_by: null
+approved_at: null
+
+terms:
+  # ---------------------------------------------------------------- block: functioning labels
+  - id: de.hochfunktional
+    lang: de
+    tier: block
+    category: functioning_label
+    match:
+      - regex: '\b(hoch|niedrig|gering)[-\s]?funktional\w*'
+      - regex: '\b(leicht|mild|schwer)(e|er|en|em|es)?\s+(ausgeprägte[nmrs]?\s+)?Autismus\b'
+    allow_in_quotes: false
+    message: "Funktionslabel (hoch-/niedrigfunktional, leichter/schwerer Autismus)."
+    suggest: "Konkreten Unterstützungsbedarf beschreiben: 'braucht viel Unterstützung bei …'"
+    rationale: "AFK 2023: Funktionslabels vermeiden; sie verdecken unterschiedliche Bedarfe."
+    source: &afk "https://www.autismus-forschungs-kooperation.de/WordPressStrato200521/wp-content/uploads/230719-Empfehlungen-Sprachgebrauch.pdf"
+  - id: any.functioning_en
+    lang: any
+    tier: block
+    category: functioning_label
+    match:
+      - regex: '\b(high|low)[-\s]?functioning\b'
+      - regex: '\b(mild|moderate|severe)\s+autism\b'
+    allow_in_quotes: false
+    message: "Functioning label (high/low-functioning, mild/severe autism)."
+    suggest: "Describe the actual support needs: 'needs a lot of support with …'"
+    rationale: "Functioning labels are rejected by the autistic community and AFK 2023."
+    source: *afk
+
+  # ---------------------------------------------------------------- block: ABA-adjacent framing
+  - id: any.aba
+    lang: any
+    tier: block
+    category: aba_framing
+    match: {regex: '\bABA\b', case_sensitive: true}
+    allow_in_quotes: false
+    message: "ABA (Applied Behavior Analysis) — not covered by this account."
+    suggest: null
+    rationale: "D-12: ABA-adjacent framing is a hard block; ABA is contested in the autistic community."
+    source: null
+  - id: de.aba_framing
+    lang: de
+    tier: block
+    category: aba_framing
+    match:
+      - regex: '\bangewandte[nr]?\s+Verhaltensanalyse\b'
+      - regex: '\bStimming\b(?:\W+\w+){0,3}?\W+(ab(zu)?gewöhn|unterbind|unterzubind|ab(zu)?trainier|weg(zu)?trainier|verbiet|unterdrück)\w*'
+      - regex: '\b(ab(zu)?gewöhn|ab(zu)?trainier|unterbind|unterdrück)\w*(?:\W+\w+){0,3}?\W+Stimming\b'
+      - regex: '\bBlickkontakt\w*(?:\W+\w+){0,3}?\W+(erzwing|ab(zu)?verlang|einforder|antrainier|beibring|trainier)\w*'
+      - regex: '\b(erzwing|zwing)\w*(?:\W+\w+){0,3}?\W+Blickkontakt'
+      - regex: '\b(Autismus|ADHS)\s+(zu\s+)?(heilen|bekämpfen|besiegen|loswerden|wegtherapieren)\b'
+      - regex: '\b(heil|bekämpf|besieg)\w*\s+(von\s+)?(Autismus|ADHS)\b'
+    allow_in_quotes: false
+    message: "ABA-nahe Rahmung (Stimming abgewöhnen, Blickkontakt erzwingen, Autismus heilen/bekämpfen)."
+    suggest: "Über Bedürfnisse und Umfeld sprechen: 'Stimming kann helfen, Reize zu regulieren.'"
+    rationale: "D-12 / PITFALLS: Verhalten 'wegtrainieren' widerspricht dem Neurodiversitäts-Ansatz."
+    source: *afk
+  - id: en.aba_framing
+    lang: en
+    tier: block
+    category: aba_framing
+    match:
+      - regex: '\bapplied\s+behaviou?r(al)?\s+analysis\b'
+      - regex: '\b(stop|stopping|extinguish\w*|suppress\w*|reduce|reducing|train\w*\s+out)\s+(their\s+|your\s+|his\s+|her\s+|the\s+)?stimming\b'
+      - regex: '\b(force|forces|forced|forcing)\s+(\w+\s+){0,2}?(to\s+)?(make\s+)?eye\s+contact\b'
+      - regex: '\b(make|makes|making)\s+(him|her|them|kids?|children|your\s+(child|kid|son|daughter))\s+(to\s+)?make\s+eye\s+contact\b'
+      - regex: '\b(cure|curing|fight|fighting|beat|beating)\s+(autism|adhd)\b'
+    allow_in_quotes: false
+    message: "ABA-adjacent framing (stop stimming, force eye contact, cure/fight autism)."
+    suggest: "Talk about needs and environment: 'stimming can help regulate input.'"
+    rationale: "D-12 / PITFALLS."
+    source: null
+
+  # ---------------------------------------------------------------- block: slurs
+  - id: de.slur
+    lang: de
+    tier: block
+    category: slur
+    match:
+      - regex: '\bzurückgeblieben\w*'
+      - regex: '\bgeistig\s+behindert\w*'
+    allow_in_quotes: false
+    message: "Abwertender Begriff."
+    suggest: "'Menschen mit Lernschwierigkeiten' oder konkret beschreiben"
+    rationale: "AFK 2023."
+    source: *afk
+  - id: en.slur
+    lang: en
+    tier: block
+    category: slur
+    match: {regex: '\bretard(ed|s)?\b'}
+    allow_in_quotes: false
+    message: "Slur."
+    suggest: "Describe specifically; 'people with intellectual disabilities'"
+    rationale: "AFK 2023 / community consensus."
+    source: null
+
+  # ---------------------------------------------------------------- warn: pathologizing
+  - id: de.leiden_an
+    lang: de
+    tier: warn
+    category: pathologizing
+    match:
+      - lemma_seq: [["leiden"], ["an", "unter"]]
+      - lemma_seq: [["darunter", "daran"], ["leiden"]]
+    allow_in_quotes: true
+    message: "Pathologisierende Zuschreibung ('leidet an/unter')."
+    suggest: "ist autistisch / hat ADHS / erlebt …"
+    rationale: "AFK 2023: emotionale Zuschreibungen wie 'unter Autismus leiden' vermeiden."
+    source: *afk
+  - id: en.suffer_from
+    lang: en
+    tier: warn
+    category: pathologizing
+    match:
+      - lemma_seq: [["suffer", "suffers", "suffered", "suffering"], ["from", "with"]]
+    allow_in_quotes: true
+    message: "Pathologizing phrasing ('suffers from')."
+    suggest: "is autistic / has ADHD / experiences …"
+    rationale: "Community guidance; mirrors AFK 2023."
+    source: null
+  - id: de.krankheit
+    lang: de
+    tier: warn
+    category: pathologizing
+    match:
+      - lemma: ["Krankheit", "Krankheiten", "erkranken", "erkrankt", "krank", "Störung", "Störungen", "Defizit", "Defizite", "Symptom", "Symptome"]
+    allow_in_quotes: true
+    message: "Krankheits-/Defizitsprache (Krankheit, Störung, Defizit, Symptom)."
+    suggest: "'Merkmale', 'Unterschiede', 'Schwierigkeiten bei …'"
+    rationale: "AFK 2023: neutrale Beschreibungen; Störung nur im Zitat von ICD/DSM."
+    source: *afk
+  - id: en.disease
+    lang: en
+    tier: warn
+    category: pathologizing
+    match:
+      - lemma: ["disease", "diseases", "disorder", "disorders", "deficit", "deficits", "symptom", "symptoms"]
+    allow_in_quotes: true
+    message: "Disease/deficit language."
+    suggest: "'traits', 'differences', 'difficulties with …'"
+    rationale: "AFK 2023 equivalent; 'disorder' fine when quoting DSM/ICD."
+    source: null
+  - id: de.ass_stoerung
+    lang: de
+    tier: warn
+    category: pathologizing
+    match:
+      - regex: '\bAutismus-?Spektrum-?Störung\w*'
+      - regex: '\bASS\b'
+        case_sensitive: true
+    allow_in_quotes: true
+    message: "'Autismus-Spektrum-Störung'/'ASS' außerhalb eines Zitats."
+    suggest: "'Autismus' oder 'Autismus-Spektrum' (Störung nur im ICD/DSM-Zitat)"
+    rationale: "AFK 2023: im Zitat von ICD/DSM ok."
+    source: *afk
+  - id: en.asd
+    lang: en
+    tier: warn
+    category: pathologizing
+    match:
+      - regex: '\bautism\s+spectrum\s+disorder\b'
+      - regex: '\bASD\b'
+        case_sensitive: true
+    allow_in_quotes: true
+    message: "'Autism spectrum disorder'/'ASD' outside a quote."
+    suggest: "'autism' or 'the autism spectrum' (disorder only when quoting DSM/ICD)"
+    rationale: "Mirrors AFK 2023."
+    source: null
+  - id: de.komorbid
+    lang: de
+    tier: warn
+    category: clinical_jargon
+    match: {regex: '\bkomorbid\w*|\bKomorbidität\w*'}
+    allow_in_quotes: true
+    message: "Klinischer Fachbegriff 'komorbid'."
+    suggest: "'zusammen auftretend', 'tritt oft gemeinsam mit … auf'"
+    rationale: "AFK 2023."
+    source: *afk
+  - id: en.comorbid
+    lang: en
+    tier: warn
+    category: clinical_jargon
+    match: {regex: '\bco-?morbid\w*'}
+    allow_in_quotes: true
+    message: "Clinical jargon 'comorbid'."
+    suggest: "'co-occurring', 'often shows up together with …'"
+    rationale: "AFK 2023 equivalent."
+    source: null
+  - id: de.normal_kontrast
+    lang: de
+    tier: warn
+    category: pathologizing
+    match:
+      - regex: '\b(gesund|normal)(e|en|er|es)?\s+(Menschen|Kinder|Personen|Leute|Erwachsene\w*|Gehirn\w*|Kontroll\w*|Vergleichs\w*)\b'
+    allow_in_quotes: true
+    message: "'gesund'/'normal' als Kontrastgruppe."
+    suggest: "'nicht-autistische Menschen', 'Menschen ohne ADHS'"
+    rationale: "AFK 2023. 'neurotypisch' wird bewusst nicht markiert."
+    source: *afk
+  - id: en.normal_contrast
+    lang: en
+    tier: warn
+    category: pathologizing
+    match:
+      - regex: '\b(healthy|normal)\s+(people|controls?|children|kids|adults|individuals|brains?)\b'
+    allow_in_quotes: true
+    message: "'healthy'/'normal' as a contrast group."
+    suggest: "'non-autistic people', 'people without ADHD'"
+    rationale: "AFK 2023 equivalent."
+    source: null
+  - id: de.eingeschraenkte_interessen
+    lang: de
+    tier: warn
+    category: pathologizing
+    match: {regex: '\b(eingeschränkt|begrenzt|restriktiv)\w*\s+Interessen\b'}
+    allow_in_quotes: true
+    message: "'eingeschränkte Interessen'."
+    suggest: "'intensive Interessen', 'Spezialinteressen'"
+    rationale: "AFK 2023."
+    source: *afk
+  - id: en.restricted_interests
+    lang: en
+    tier: warn
+    category: pathologizing
+    match: {regex: '\b(restricted|limited)\s+interests?\b'}
+    allow_in_quotes: true
+    message: "'restricted interests'."
+    suggest: "'intense interests', 'special interests'"
+    rationale: "AFK 2023 equivalent."
+    source: null
+
+  # ---------------------------------------------------------------- warn: hype
+  - id: de.superkraft
+    lang: de
+    tier: warn
+    category: hype
+    match:
+      - regex: '\bsuperkr(a|ä)ft\w*'
+      - regex: '\bGabe\b'
+    allow_in_quotes: true
+    message: "Hype-Rahmung ('Superkraft', 'Gabe')."
+    suggest: "'Manche berichten von Stärken bei … neben echten Herausforderungen.'"
+    rationale: "PITFALLS: Superkraft-Narrativ verharmlost Belastungen und wirkt unseriös."
+    source: null
+  - id: any.superpower
+    lang: any
+    tier: warn
+    category: hype
+    match: {regex: '\bsuper[-\s]?powers?\b'}
+    allow_in_quotes: true
+    message: "Hype framing ('superpower')."
+    suggest: "'some people report strengths in … alongside real challenges'"
+    rationale: "PITFALLS."
+    source: null
+
+  # ---------------------------------------------------------------- warn: outdated terms
+  - id: any.asperger
+    lang: any
+    tier: warn
+    category: outdated
+    match: {regex: '\bAsperger\w*|\bAspies?\b'}
+    allow_in_quotes: true
+    message: "Veraltete Bezeichnung 'Asperger'/'Aspie' außerhalb eines Zitats / outdated term outside quotes."
+    suggest: "'Autismus' / 'autism'; historische Begriffe in Anführungszeichen setzen"
+    rationale: "ICD-11/DSM-5 führen Asperger nicht mehr; Namensgeber NS-belastet."
+    source: *afk
+  - id: de.adhs_mythen
+    lang: de
+    tier: warn
+    category: misinformation
+    match:
+      - regex: 'AD\(H\)S'
+      - regex: '\bADS\b'
+        case_sensitive: true
+      - regex: '\bZappelphilipp\w*'
+      - regex: '\bModediagnose\w*'
+      - regex: '\bjede[rs]?\s+(ist|hat)\s+(doch\s+)?(ein\s+)?(bisschen|bissl|wenig)\s+(ADHS|autistisch)'
+    allow_in_quotes: true
+    message: "Veraltete/abwertende ADHS-Bezeichnung oder Mythos (AD(H)S, ADS, Zappelphilipp, Modediagnose)."
+    suggest: "'ADHS' (inkl. vorwiegend unaufmerksamer Ausprägung)"
+    rationale: "PITFALLS: Fehlinformationsmuster; ADS ist kein eigenes Störungsbild mehr."
+    source: null
+  - id: en.adhd_myths
+    lang: en
+    tier: warn
+    category: misinformation
+    match:
+      - regex: '\beveryone(''s|\s+is)\s+a\s+(little|bit)\s+(adhd|autistic)\b'
+      - regex: '\bADD\b'
+        case_sensitive: true
+    allow_in_quotes: true
+    message: "Myth or outdated label ('everyone's a little ADHD', 'ADD')."
+    suggest: "'ADHD' (inattentive presentation)"
+    rationale: "PITFALLS."
+    source: null
+
+  # ---------------------------------------------------------------- warn: identity-first (D-13)
+  - id: de.person_first
+    lang: de
+    tier: warn
+    category: person_first
+    match:
+      - regex: '\b(Mensch|Menschen|Person|Personen|Kind|Kinder|Kindern|Erwachsene\w*|Jugendliche\w*|Frauen|Männer\w*|Mann|Frau)\s+mit\s+Autismus\b'
+    allow_in_quotes: true
+    message: "Person-first-Formulierung für Autismus (D-13: identity-first)."
+    suggest: "'autistische Menschen' (bzw. 'autistische Kinder/Erwachsene'); neutral möglich: 'Person im Autismus-Spektrum'"
+    rationale: "D-13. 'Menschen mit ADHS' bleibt erlaubt (D-14)."
+    source: *afk
+  - id: en.person_first
+    lang: en
+    tier: warn
+    category: person_first
+    match:
+      - regex: '\b(person|persons|people|individuals?|children|child|kids?|adults?|men|women)\s+with\s+autism\b'
+    allow_in_quotes: true
+    message: "Person-first phrasing for autism (D-13: identity-first)."
+    suggest: "'autistic people' (or 'autistic children/adults')"
+    rationale: "D-13."
+    source: null
+  - id: de.autisten
+    lang: de
+    tier: warn
+    category: person_first
+    match:
+      - regex: '\bAutist(en|in|innen)?\b(?!:innen|\*innen|_innen)'
+    allow_in_quotes: true
+    message: "Generisches 'Autisten'/'Autistinnen' (D-13)."
+    suggest: "'autistische Menschen'; 'Autist:innen' nur, wenn ein Substantiv unvermeidbar ist"
+    rationale: "D-13/D-14: identity-first und geschlechtsneutral."
+    source: *afk
+
+  # ---------------------------------------------------------------- warn: gendering (D-14)
+  - id: de.gender_form
+    lang: de
+    tier: warn
+    category: gendering
+    match:
+      - regex: '\b(?!Autist:innen\b)\w+:in(nen)?\b'
+      - regex: '\b\w+[*_]in(nen)?\b'
+      - regex: '\b[A-ZÄÖÜ][a-zäöüß]+In(nen)?\b'
+        case_sensitive: true
+    allow_in_quotes: true
+    message: "Genderzeichen im gesprochenen Text (D-14)."
+    suggest: "Neutral formulieren: 'Menschen mit ADHS', 'Eltern', 'Fachleute', 'Lehrkräfte'"
+    rationale: "D-14: neutrale Konstruktionen; Ausnahme nur 'Autist:innen' (D-13)."
+    source: null
+
+  # ---------------------------------------------------------------- warn: treatment / diagnosis
+  - id: de.behandlung
+    lang: de
+    tier: warn
+    category: treatment_framing
+    match:
+      - lemma: ["Behandlung", "Behandlungen", "behandeln", "Therapie", "Therapien", "therapieren"]
+    allow_in_quotes: true
+    message: "Behandlungs-/Therapie-Rahmung außerhalb eines Leitlinienzitats."
+    suggest: "'Unterstützung', 'Strategien', 'Umfeld'; Leitlinie wörtlich zitieren"
+    rationale: "PITFALLS: kein medizinischer Rat; nur Leitlinien-Zitate."
+    source: null
+  - id: en.treatment
+    lang: en
+    tier: warn
+    category: treatment_framing
+    match:
+      - lemma: ["treatment", "treatments", "therapy", "therapies"]
+    allow_in_quotes: true
+    message: "Treatment/therapy framing outside a guideline quote."
+    suggest: "'support', 'strategies', 'environment'; quote guidelines verbatim"
+    rationale: "PITFALLS."
+    source: null
+  - id: de.diagnose
+    lang: de
+    tier: warn
+    category: diagnosis_adjacent
+    match:
+      - lemma: ["Diagnose", "Diagnosen", "diagnostizieren", "diagnostiziert"]
+    allow_in_quotes: true
+    message: "Diagnose-nahe Formulierung — prüfen, dass nichts diagnostisch klingt."
+    suggest: "Erfahrung beschreiben, nicht diagnostizieren; ok z. B. 'nach der Diagnose'"
+    rationale: "Zu breit für block ('nach der Diagnose' ist legitim)."
+    source: null
+  - id: en.diagnosis
+    lang: en
+    tier: warn
+    category: diagnosis_adjacent
+    match:
+      - lemma: ["diagnosis", "diagnoses", "diagnose", "diagnosed"]
+    allow_in_quotes: true
+    message: "Diagnosis-adjacent wording — make sure nothing sounds diagnostic."
+    suggest: "Describe experience, never diagnose; 'after the diagnosis' is fine"
+    rationale: "Too broad to block."
+    source: null

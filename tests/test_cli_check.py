@@ -6,7 +6,9 @@ FIX = Path(__file__).resolve().parent / "fixtures"
 
 
 def test_sample_de_blocks_and_lists_findings(runner):
-    res = runner.invoke(app, ["check", str(FIX / "sample_script_de.txt"), "--lang", "de", "--level", "script"])
+    res = runner.invoke(
+        app, ["check", str(FIX / "sample_script_de.txt"), "--lang", "de", "--level", "script"]
+    )
     assert res.exit_code == 1, res.output
     for rid in ("de.leiden_an", "de.hochfunktional", "any.asperger"):
         assert rid in res.output
@@ -15,13 +17,24 @@ def test_sample_de_blocks_and_lists_findings(runner):
 
 def test_clean_text_exits_zero(runner):
     res = runner.invoke(
-        app, ["check", "--text", "Manche Menschen mit ADHS erleben Zeit anders.", "--lang", "de", "--level", "script"]
+        app,
+        [
+            "check",
+            "--text",
+            "Manche Menschen mit ADHS erleben Zeit anders.",
+            "--lang",
+            "de",
+            "--level",
+            "script",
+        ],
     )
     assert res.exit_code == 0, res.output
 
 
 def test_safety_topic_exits_one(runner):
-    res = runner.invoke(app, ["check", "--text", "Ist mein Kind autistisch?", "--lang", "de", "--level", "topic"])
+    res = runner.invoke(
+        app, ["check", "--text", "Ist mein Kind autistisch?", "--lang", "de", "--level", "topic"]
+    )
     assert res.exit_code == 1, res.output
 
 
