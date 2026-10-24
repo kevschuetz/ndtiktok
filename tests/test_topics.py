@@ -195,3 +195,87 @@ def test_unique_constraint_still_holds(db):
             )
     finally:
         conn.close()
+
+
+# ---------------------------------------------------------------- task 2: review / select / stats
+# fixture ids: 1 Zeit, 2 Melatonin (blocked), 3 Interessen, 4 Legasthenie, 5 Morgenroutine,
+# 6 Checkliste (blacklist, blocked), 7 Partner (flagged), 8 Männer (blacklist, ok)
+
+
+def _status(db, topic_id):
+    conn = db.connect()
+    try:
+        return conn.execute("SELECT * FROM topic WHERE id = ?", (topic_id,)).fetchone()
+    finally:
+        conn.close()
+
+
+def test_keep_moves_proposed_to_backlog(db):
+    topics.import_seed(db, FIXTURE)
+    assert topics.keep(db, [3, 5]) == 2
+    for i in (3, 5):
+        row = _status(db, i)
+        assert row["status"] == "backlog" and row["decided_at"]
+    with pytest.raises(TopicError):
+        topics.keep(db, [3])
+    # all-or-nothing: an invalid id leaves the valid one untouched
+    with pytest.raises(TopicError):
+        topics.keep(db, [1, 99])
+    assert _status(db, 1)["status"] == "proposed"
+
+
+def test_kill_requires_reason(db):
+    topics.import_seed(db, FIXTURE)
+    with pytest.raises(TopicError):
+        topics.kill(db, 4, "kurz")
+    assert _status(db, 4)["status"] == "proposed"
+    topics.kill(db, 4, "zu nah an Diagnosefrage")
+    row = _status(db, 4)
+    assert row["status"] == "rejected"
+    assert row["decided_reason"] == "zu nah an Diagnosefrage"
+    assert row["decided_at"]
+    with pytest.raises(TopicError):
+        topics.kill(db, 4, "nochmal killen")
+
+
+def test_select_refuses_blacklist_and_blocked(db):
+    topics.import_seed(db, FIXTURE)
+    topics.keep(db, [2, 3, 8])
+    with pytest.raises(TopicError) as exc:
+        topics.select(db, 2)
+    assert "blocked" in str(exc.value)
+    with pytest.raises(TopicError) as exc:
+        topics.select(db, 8)
+    assert "blacklist" in str(exc.value)
+    assert _status(db, 2)["status"] == "backlog"
+    assert _status(db, 8)["status"] == "backlog"
+    with pytest.raises(TopicError):
+        topics.select(db, 1)  # proposed, not backlog
+    topics.select(db, 3)
+    assert _status(db, 3)["status"] == "selected"
+
+
+def test_select_guard_holds_against_a_tampered_row(db):
+    """Even if the status check passes, the UPDATE itself re-checks tag and safety."""
+    topics.import_seed(db, FIXTURE)
+    topics.keep(db, [6])
+    with pytest.raises(TopicError):
+        topics.select(db, 6)
+    assert _status(db, 6)["status"] == "backlog"
+
+
+def test_stats_per_pillar(db):
+    topics.import_seed(db, FIXTURE)
+    topics.keep(db, [1, 3, 7, 8])
+    topics.kill(db, 4, "kein guter Fit")
+    st = topics.stats(db)
+    assert st["target"] == 7
+    p = st["pillars"]
+    assert set(p) == {"challenge_science_help", "strengths", "parents", "men_dads_partners"}
+    assert p["challenge_science_help"]["counts"] == {"backlog": 1, "proposed": 1}
+    assert p["strengths"]["counts"] == {"backlog": 1, "rejected": 1}
+    assert p["challenge_science_help"]["kept_safe_whitelist"] == 1
+    assert p["strengths"]["kept_safe_whitelist"] == 1
+    assert p["parents"]["kept_safe_whitelist"] == 0
+    assert p["men_dads_partners"]["kept_safe_whitelist"] == 1  # 7 flagged counts, 8 blacklist not
+    assert all(v["below_target"] for v in p.values())

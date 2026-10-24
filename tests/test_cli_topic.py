@@ -136,3 +136,59 @@ def test_add_rejects_unknown_vocab(runner):
     res = runner.invoke(app, [*args, "--tag", "whitelist"])
     assert res.exit_code != 0
     assert "adhs" in res.output
+
+
+def _csv_status(runner, topic_id):
+    res = runner.invoke(app, ["topic", "list", "--format", "csv"])
+    for line in res.output.splitlines()[1:]:
+        if line.split(",")[0] == str(topic_id):
+            return line.rsplit(",", 1)[1]
+    return None
+
+
+def test_keep_kill_select_cli(runner):
+    runner.invoke(app, ["topic", "import", FIXTURE])
+    res = runner.invoke(app, ["topic", "keep", "3", "5"])
+    assert res.exit_code == 0, res.output
+    assert _csv_status(runner, 3) == "backlog"
+    assert runner.invoke(app, ["topic", "keep", "3"]).exit_code != 0
+    res = runner.invoke(app, ["topic", "kill", "4", "--reason", "zu nah an Diagnosefrage"])
+    assert res.exit_code == 0, res.output
+    assert _csv_status(runner, 4) == "rejected"
+    assert runner.invoke(app, ["topic", "kill", "1", "--reason", "kurz"]).exit_code != 0
+    assert _csv_status(runner, 1) == "proposed"
+    res = runner.invoke(app, ["topic", "select", "3"])
+    assert res.exit_code == 0, res.output
+    assert _csv_status(runner, 3) == "selected"
+    runner.invoke(app, ["topic", "keep", "2"])
+    res = runner.invoke(app, ["topic", "select", "2"])
+    assert res.exit_code != 0
+    assert "blocked" in res.output
+    assert _csv_status(runner, 2) == "backlog"
+
+
+def test_review_interactive(runner):
+    runner.invoke(app, ["topic", "import", FIXTURE])
+    res = runner.invoke(app, ["topic", "review"], input="k\nx\nzu nah an Diagnosefrage\ns\nq\n")
+    assert res.exit_code == 0, res.output
+    assert "time_perception" in res.output  # all five dimensions are shown
+    assert "any.medication_names" in res.output  # safety hits are shown
+    assert _csv_status(runner, 1) == "backlog"
+    assert _csv_status(runner, 2) == "rejected"
+    assert _csv_status(runner, 3) == "proposed"
+    assert _csv_status(runner, 4) == "proposed"
+
+
+def test_stats_cli(runner):
+    runner.invoke(app, ["topic", "import", FIXTURE])
+    runner.invoke(app, ["topic", "keep", "1"])
+    res = runner.invoke(app, ["topic", "stats"])
+    assert res.exit_code == 0, res.output
+    for pillar in ("challenge_science_help", "strengths", "parents", "men_dads_partners"):
+        assert pillar in res.output
+    assert "below 7" in res.output
+
+
+def test_stats_cli_empty_db(runner):
+    res = runner.invoke(app, ["topic", "stats"])
+    assert res.exit_code == 0, res.output
