@@ -152,22 +152,25 @@ def analyze_account(
                 vr.error = got
                 res.videos.append(vr)
                 continue
-            path = Path(got)
+            files = got if isinstance(got, media.MediaFiles) else media.MediaFiles(got, got)
             try:
-                t = transcriber.transcribe(path)
+                samples = pitch.decode_audio(
+                    files.audio, pitch.SR, float(acfg.get("max_video_seconds", 180))
+                )
+                t = transcriber.transcribe(samples)
                 vr.transcript, vr.language = t.text, t.language
                 vr.duration_s = t.duration_s or vr.duration_s
-                vr.estimate = pitch.estimate_from_file(
-                    path, male_max, female_min, float(acfg.get("max_video_seconds", 180))
-                )
+                vr.estimate = pitch.estimate_from_samples(samples, pitch.SR, male_max, female_min)
                 vr.pitch_hz = vr.estimate.median_hz
-                for img in frames.sample_frames(path, n_frames):
-                    sheet_frames.append((p.post_id, img))
+                if files.frames is not None:
+                    for img in frames.sample_frames(files.frames, n_frames):
+                        sheet_frames.append((p.post_id, img))
                 vr.status = "ok"
             except Exception as exc:  # a corrupt file must not stop the account
                 vr.status, vr.error = "unavailable", f"analysis failed: {exc}"[:300]
             finally:
-                path.unlink(missing_ok=True)  # delete each video as soon as it is analyzed
+                for f in files.paths():  # delete each video as soon as it is analyzed
+                    Path(f).unlink(missing_ok=True)
             res.videos.append(vr)
     ok = [v for v in res.videos if v.status == "ok"]
     res.status = "analyzed" if ok else "unavailable"

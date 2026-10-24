@@ -53,7 +53,15 @@ class Transcriber:
             )
         return self._model
 
-    def transcribe(self, path: str | Path) -> Transcript:
-        segments, info = self._load().transcribe(str(path), language=None, vad_filter=True)
+    def transcribe(self, audio) -> Transcript:
+        """audio: 16 kHz mono float32 numpy array (preferred) or a file path.
+
+        Pass the array from pitch.decode_audio: faster-whisper 1.2.1's own file decoder calls
+        av.open(metadata_errors=...), which PyAV >= 15 removed."""
+        if isinstance(audio, (str, Path)):
+            from ndc.scan.pitch import decode_audio
+
+            audio = decode_audio(audio)
+        segments, info = self._load().transcribe(audio, language=None, vad_filter=True)
         text = " ".join(s.text.strip() for s in segments).strip()
         return Transcript(text=text, language=info.language, duration_s=info.duration)

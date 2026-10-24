@@ -40,9 +40,10 @@ class FakeTranscriber:
     def __init__(self):
         self.calls = []
 
-    def transcribe(self, path):
-        self.calls.append(Path(path).name)
-        return Transcript(text=f"laut Leitlinie {Path(path).stem}", language="de", duration_s=2.0)
+    def transcribe(self, audio):
+        assert hasattr(audio, "dtype")  # decoded once, array handed to whisper
+        self.calls.append(len(audio))
+        return Transcript(text=f"laut Leitlinie {len(self.calls)}", language="de", duration_s=2.0)
 
 
 def _polite():
@@ -182,3 +183,50 @@ def test_analyze_cli_needs_rule_lock(db, tmp_path, runner, monkeypatch):
     monkeypatch.setenv("NDC_CONFIG_DIR", str(c))
     res = runner.invoke(app, ["scan", "analyze"])
     assert res.exit_code == 3
+
+
+def test_split_fallback_when_no_progressive(monkeypatch, tmp_path):
+    calls = []
+
+    def fake_one(url, out_dir, mb, fmt, tag):
+        calls.append(fmt)
+        if fmt == media.FORMAT:
+            raise media.DownloadUnavailable("ERROR: Requested format is not available.")
+        p = out_dir / f"v{tag}.bin"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(b"x")
+        return p
+
+    monkeypatch.setattr(media, "_download_one", fake_one)
+    files = media.download_video("u", tmp_path)
+    assert calls == [media.FORMAT, media.AUDIO_FORMAT, media.FRAMES_FORMAT]
+    assert files.audio.name == "v.audio.bin" and files.frames.name == "v.frames.bin"
+
+
+def test_login_wall_not_retried_with_fallback(monkeypatch, tmp_path):
+    calls = []
+
+    def fake_one(url, out_dir, mb, fmt, tag):
+        calls.append(fmt)
+        raise media.DownloadUnavailable("ERROR: login required")
+
+    monkeypatch.setattr(media, "_download_one", fake_one)
+    with pytest.raises(media.DownloadUnavailable):
+        media.download_video("u", tmp_path)
+    assert calls == [media.FORMAT]
+
+
+def test_analyze_with_separate_audio_and_frames(db, cfg, tmp_path):
+    aid = _seed(db, n=1)
+
+    def downloader(url, out_dir, max_mb):
+        a = make_video(out_dir / "x.audio.mp4", hz=220)
+        v = make_video(out_dir / "x.frames.mp4", hz=220)
+        return media.MediaFiles(a, v)
+
+    rep = analyze.run_analyze(
+        db, cfg=cfg, transcriber=FakeTranscriber(), downloader=downloader, polite=_polite()
+    )
+    assert rep.results[0].status == "analyzed" and rep.results[0].contact_sheet
+    assert obs_rows(db, aid, "voice_gender")[-1]["value"] == "female"
+    assert not any((tmp_path / "media").rglob("*.mp4"))
