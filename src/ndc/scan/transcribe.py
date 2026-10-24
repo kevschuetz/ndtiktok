@@ -1,0 +1,59 @@
+"""faster-whisper transcription for spoken citations (D-17). CPU, int8, one thread.
+
+The model is loaded lazily on first use, so importing this module needs neither the package
+weights nor the analyze extra. Weights download once into model_dir (/data/models) from the
+official Systran repo on Hugging Face.
+"""
+
+from dataclasses import dataclass
+from pathlib import Path
+
+
+@dataclass
+class Transcript:
+    text: str
+    language: str | None
+    duration_s: float | None
+
+
+class Transcriber:
+    def __init__(
+        self,
+        model: str = "small",
+        compute_type: str = "int8",
+        cpu_threads: int = 1,
+        model_dir: str | Path = "/data/models",
+    ):
+        self.model_name = model
+        self.compute_type = compute_type
+        self.cpu_threads = int(cpu_threads)
+        self.model_dir = str(model_dir)
+        self._model = None
+
+    @classmethod
+    def from_config(cls, analysis: dict) -> "Transcriber":
+        return cls(
+            model=analysis.get("whisper_model", "small"),
+            compute_type=analysis.get("whisper_compute_type", "int8"),
+            cpu_threads=analysis.get("whisper_cpu_threads", 1),
+            model_dir=analysis.get("model_dir", "/data/models"),
+        )
+
+    def _load(self):
+        if self._model is None:
+            from faster_whisper import WhisperModel  # analyze extra; imported lazily
+
+            self._model = WhisperModel(
+                self.model_name,
+                device="cpu",
+                compute_type=self.compute_type,
+                cpu_threads=self.cpu_threads,
+                num_workers=1,
+                download_root=self.model_dir,
+            )
+        return self._model
+
+    def transcribe(self, path: str | Path) -> Transcript:
+        segments, info = self._load().transcribe(str(path), language=None, vad_filter=True)
+        text = " ".join(s.text.strip() for s in segments).strip()
+        return Transcript(text=text, language=info.language, duration_s=info.duration)
