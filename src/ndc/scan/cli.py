@@ -1,4 +1,7 @@
-"""`ndc scan` sub-app: `rule show`, `decide` (plan 01-03); fetch etc. follow in plan 01-04."""
+"""`ndc scan` sub-app: `rule show`, `decide` (plan 01-03); collection commands (plan 01-04).
+
+Exit codes for network commands: 3 rule lock not approved (D-20), 4 quiet hours (D-16).
+"""
 
 import csv
 from pathlib import Path
@@ -8,7 +11,8 @@ from pydantic import ValidationError
 
 from ndc.config import config_dir, db_path
 from ndc.db import Database
-from ndc.scan import prereg
+from ndc.scan import fetch as scan_fetch
+from ndc.scan import prereg, quiet_hours
 from ndc.scan.decide import AccountRow, decide, fmt_metric, load_rule, write_decision_log
 
 app = typer.Typer(help="Competitor scan and language decision (plans 01-03+).")
@@ -107,3 +111,91 @@ def decide_cmd(
     typer.echo(f"rule sha256: {res.rule_sha256}")
     write_decision_log(db, res, log_path)
     typer.echo(f"logged to {log_path}")
+
+
+# --- collection (plan 01-04) -----------------------------------------------------------------
+
+
+@app.command("import-candidates")
+def import_candidates_cmd(path: Path = typer.Argument(..., exists=True, dir_okay=False)) -> None:
+    """Load a candidate CSV (handle,platform,language,discovery_source,query,seed_named,
+    operator_decision,notes); invalid handles are rejected."""
+    rep = scan_fetch.import_candidates(Database(db_path()), path)
+    typer.echo(f"inserted {rep.inserted}, updated {rep.updated}, rejected {len(rep.rejected)}")
+    for r in rep.rejected:
+        typer.echo(f"  rejected {r}", err=True)
+
+
+def _gate_errors(exc: Exception) -> None:
+    if isinstance(exc, prereg.RuleNotApproved):
+        typer.echo(f"refused: decision rule lock {exc} (approve the rule first)", err=True)
+        raise typer.Exit(3) from exc
+    if isinstance(exc, quiet_hours.QuietHours):
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(4) from exc
+    raise exc
+
+
+@app.command("fetch")
+def fetch_cmd(
+    stage: str = typer.Option(..., "--stage", help="profile | posts"),
+    only: str | None = typer.Option(None, "--only", help="Fetch just this handle."),
+    lang: str | None = typer.Option(None, "--lang", help="de | en"),
+    force: bool = typer.Option(False, "--force", help="Override quiet hours (logged)."),
+    refresh: bool = typer.Option(False, "--refresh", help="Ignore fresh_hours (re-fetch)."),
+) -> None:
+    """Fetch public profile (followers/tier) or post stats, politely and resumably."""
+    if stage not in ("profile", "posts"):
+        typer.echo("--stage must be profile or posts", err=True)
+        raise typer.Exit(2)
+    if lang not in (None, "de", "en"):
+        typer.echo("--lang must be de or en", err=True)
+        raise typer.Exit(2)
+    try:
+        rep = scan_fetch.run_fetch(
+            Database(db_path()),
+            stage,
+            lang=lang,
+            only=only,
+            force=force,
+            refresh=refresh,
+            cfg=config_dir(),
+        )
+    except (prereg.RuleNotApproved, quiet_hours.QuietHours) as exc:
+        _gate_errors(exc)
+        return
+    for line in rep.lines:
+        typer.echo(line)
+    typer.echo(
+        f"scan_run {rep.run_id} ({rep.stage}): ok {len(rep.ok)}, skipped fresh "
+        f"{len(rep.skipped)}, failed {len(rep.failed)}, stopped {len(rep.stopped)}"
+    )
+
+
+@app.command("add-manual")
+def add_manual_cmd(
+    handle: str = typer.Option(..., "--handle"),
+    platform: str = typer.Option(..., "--platform", help="tiktok | youtube"),
+    followers: int | None = typer.Option(None, "--followers"),
+    views: str = typer.Option("", "--views", help="Comma list, newest first, posts >= 72 h old."),
+    lang: str | None = typer.Option(None, "--lang", help="Required for a handle not yet listed."),
+) -> None:
+    """Operator entry fallback: followers + up to 15 view counts typed from the app."""
+    try:
+        nums = [int(v.strip().replace("_", "")) for v in views.split(",") if v.strip()]
+        res = scan_fetch.add_manual(
+            Database(db_path()),
+            handle,
+            platform,
+            followers,
+            nums,
+            language=lang,
+            cfg=config_dir(),
+        )
+    except ValueError as exc:
+        typer.echo(f"refused: {exc}", err=True)
+        raise typer.Exit(2) from exc
+    typer.echo(
+        f"stored {platform}:{handle} (operator_entered): tier {res['tier']}, "
+        f"{res['n']} views, median {res['reach_median']}"
+    )

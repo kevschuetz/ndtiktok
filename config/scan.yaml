@@ -1,0 +1,72 @@
+# Competitor scan configuration (MKT-01, plan 01-04). Consumed by ndc.scan.{fetch,discover,select}.
+# Platforms: tiktok and youtube (Shorts) only (D-03).
+
+# D-04 research-named seeds: always in the candidate list (seed_named=1) and always selected when
+# they exist on the platform (followers >= 1000); otherwise recorded as "not on platform".
+# Handles marked "unverified" are best guesses left for resolution: `ndc scan fetch --stage profile`
+# confirms them; fix or blank them in scan/candidates.csv if they turn out wrong.
+seeds:
+  de:
+    - name: kirmesimkopf
+      tiktok: kirmesimkopf
+      youtube: null
+    - name: nessadhs
+      tiktok: nessadhs
+      youtube: null
+    - name: hey_mamaleben
+      tiktok: hey_mamaleben
+      youtube: null
+    - name: verena_eisbrenner
+      tiktok: verena_eisbrenner
+      youtube: null
+    - name: guardianofmind
+      tiktok: guardianofmind
+      youtube: null
+  en:
+    - name: How to ADHD
+      tiktok: howtoadhd          # unverified
+      youtube: "@HowtoADHD"
+    - name: Dani Donovan
+      tiktok: danidonovan        # unverified
+      youtube: null
+    - name: ADHD Alien
+      tiktok: adhd_alien         # unverified
+      youtube: null
+    - name: ADHD Dude
+      tiktok: adhddude           # unverified
+      youtube: "@ADHDDude"       # unverified
+
+# Discovery queries per language (D-04 hashtags/search terms + D-10 broader neurodivergence).
+# `ndc scan discover youtube` runs ytsearch30:"<query> #shorts" for each; the same list is the
+# click path for operator-browser TikTok discovery (docs/scan-discovery-sources.md).
+queries:
+  de: [ADHS, Autismus, ADHS Eltern, ADHS Männer, ADHS Papa, Neurodivergenz, Legasthenie, Dyspraxie,
+       Tourette, AuDHD]
+  en: [ADHD, autism, ADHD parenting, ADHD men, ADHD dad, neurodivergent, dyslexia, dyspraxia,
+       Tourette, AuDHD]
+
+discovery:
+  ytsearch_results: 30        # ytsearchN per query
+  min_niche_shorts: 3         # keep a channel only with >= this many results across the queries
+
+# Per-language selection quotas (D-02). Tier bounds come from config/decision_rule.yaml.
+quotas:
+  target: 40
+  platform_share: {tiktok: 28, youtube: 12}
+  mid_min: 12
+  micro: 10
+  macro: 10
+  mega_max: 5
+
+politeness:
+  sleep_min: 3                # seconds between every request (uniform jitter)
+  sleep_max: 6
+  max_consecutive_failures: 3 # then stop that platform for the run (operator entry fallback)
+  backoff_attempts: 3         # tenacity attempts on 429/403/5xx
+  fresh_hours: 72             # skip accounts captured more recently (resumable)
+  playlistend: 30             # listing entries requested per account
+  youtube_video_calls: 18     # per-video metadata calls per YouTube channel (dates, likes)
+
+quiet_hours:                  # UTC; scan commands refuse to run inside unless --force (logged)
+  start: "00:15"
+  end: "06:00"
