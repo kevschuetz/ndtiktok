@@ -1,6 +1,7 @@
 """`ndc topic` sub-app."""
 
 import csv
+import json
 import sqlite3
 import sys
 from enum import StrEnum
@@ -9,6 +10,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from ndc import topics
 from ndc.config import db_path
 from ndc.db import Database
 from ndc.topics import LIST_COLUMNS, TopicError, add_topic, import_seed, list_topics
@@ -115,4 +117,106 @@ def list_cmd(
         table.add_column(c, overflow="fold")
     for r in rows:
         table.add_row(*[str(r[c]) for c in LIST_COLUMNS])
+    Console(width=None if sys.stdout.isatty() else 200).print(table)
+
+
+def _hits_text(hits_json: str | None) -> str:
+    if not hits_json:
+        return "-"
+    hits = json.loads(hits_json)
+    return "; ".join(f"{h['rule_id']} ({h['matched_text']!r})" for h in hits) or "-"
+
+
+@app.command("review")
+def review() -> None:
+    """Walk proposed topics: k keep, x kill (asks for a reason), s skip, q quit."""
+    db = Database(db_path())
+    rows = topics.proposed_topics(db)
+    if not rows:
+        typer.echo("no proposed topics")
+        return
+    kept = killed = 0
+    for n, r in enumerate(rows, 1):
+        typer.echo(f"\n[{n}/{len(rows)}] #{r['id']}  {r['working_title']}")
+        if r["summary"]:
+            typer.echo(f"  {r['summary']}")
+        typer.echo(
+            f"  pillar={r['pillar']} condition={r['condition']} domain={r['domain']} "
+            f"audience={r['audience']} angle={r['angle']}"
+        )
+        typer.echo(
+            f"  tag={r['list_tag']} safety={r['safety_status']} "
+            f"source_likely={r['source_likely']} hits={_hits_text(r['safety_hits_json'])}"
+        )
+        while True:
+            choice = typer.prompt("  [k]eep / [x] kill / [s]kip / [q]uit").strip().lower()
+            if choice in ("k", "x", "s", "q"):
+                break
+            typer.echo("  please answer k, x, s or q")
+        if choice == "q":
+            break
+        if choice == "k":
+            topics.keep(db, [r["id"]])
+            kept += 1
+        elif choice == "x":
+            while True:
+                reason = typer.prompt("  kill reason (>= 5 chars)").strip()
+                if len(reason) >= topics.MIN_REASON:
+                    break
+                typer.echo("  reason too short")
+            topics.kill(db, r["id"], reason)
+            killed += 1
+    typer.echo(f"\nkept {kept}, killed {killed}")
+
+
+@app.command("keep")
+def keep_cmd(ids: list[int] = typer.Argument(..., help="Topic ids (proposed)")) -> None:
+    """Move proposed topics to the backlog (all-or-nothing)."""
+    try:
+        n = topics.keep(Database(db_path()), ids)
+    except TopicError as exc:
+        raise _fail(exc) from exc
+    typer.echo(f"kept {n}: {' '.join(map(str, ids))}")
+
+
+@app.command("kill")
+def kill_cmd(
+    topic_id: int = typer.Argument(..., help="Topic id (proposed)"),
+    reason: str = typer.Option(..., "--reason", help="Why (>= 5 chars, stored)"),
+) -> None:
+    """Reject a proposed topic with a reason."""
+    try:
+        topics.kill(Database(db_path()), topic_id, reason)
+    except TopicError as exc:
+        raise _fail(exc) from exc
+    typer.echo(f"killed {topic_id}")
+
+
+@app.command("select")
+def select_cmd(topic_id: int = typer.Argument(..., help="Topic id (backlog)")) -> None:
+    """Move a backlog topic to selected; refuses blacklist-tagged or safety-blocked topics."""
+    try:
+        topics.select(Database(db_path()), topic_id)
+    except TopicError as exc:
+        raise _fail(exc) from exc
+    typer.echo(f"selected {topic_id}")
+
+
+@app.command("stats")
+def stats_cmd() -> None:
+    """Counts per pillar x status, and kept whitelist topics per pillar vs the target."""
+    st = topics.stats(Database(db_path()))
+    table = Table(title=f"topics per pillar (target: {st['target']} kept per pillar)")
+    table.add_column("pillar")
+    for status in topics.STATUSES:
+        table.add_column(status, justify="right")
+    table.add_column("kept (whitelist, ok/flagged)", justify="right")
+    table.add_column("")
+    for pillar, v in st["pillars"].items():
+        table.add_row(
+            pillar,
+            *[str(v["counts"].get(status, 0)) for status in topics.STATUSES],
+            str(v["kept_safe_whitelist"]),
+            f"below {st['target']}" if v["below_target"] else "ok",
+        )
     Console(width=None if sys.stdout.isatty() else 200).print(table)

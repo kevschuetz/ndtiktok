@@ -8,6 +8,7 @@ findings. No runtime LLM call happens here (D-19): seeds are reviewed YAML files
 import json
 import sqlite3
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
@@ -278,3 +279,146 @@ def list_topics(db: Database, filters: dict[str, Any] | None = None) -> list[sql
         return conn.execute(sql, list(filters.values())).fetchall()
     finally:
         conn.close()
+
+
+# ---------------------------------------------------------------- review / selection / stats
+
+KEPT_STATUSES = ("backlog", "selected", "in_production", "published")
+KEPT_TARGET = 7  # D-11: ~6-7 kept topics per pillar after pruning
+MIN_REASON = 5
+
+
+def _now() -> str:
+    return datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def get_topic(db: Database, topic_id: int) -> sqlite3.Row | None:
+    conn = db.connect()
+    try:
+        return conn.execute("SELECT * FROM topic WHERE id = ?", (topic_id,)).fetchone()
+    finally:
+        conn.close()
+
+
+def proposed_topics(db: Database) -> list[sqlite3.Row]:
+    conn = db.connect()
+    try:
+        return conn.execute("SELECT * FROM topic WHERE status = 'proposed' ORDER BY id").fetchall()
+    finally:
+        conn.close()
+
+
+def keep(db: Database, ids: list[int]) -> int:
+    """proposed -> backlog for every id, all-or-nothing."""
+    if not ids:
+        raise TopicError("no topic ids given")
+    now = _now()
+    conn = db.connect()
+    try:
+        conn.execute("BEGIN IMMEDIATE")
+        try:
+            for topic_id in ids:
+                cur = conn.execute(
+                    "UPDATE topic SET status = 'backlog', decided_at = ?, decided_reason = NULL "
+                    "WHERE id = ? AND status = 'proposed'",
+                    (now, topic_id),
+                )
+                if cur.rowcount != 1:
+                    raise TopicError(_not_in_state(conn, topic_id, "proposed"))
+            conn.execute("COMMIT")
+        except Exception:
+            conn.execute("ROLLBACK")
+            raise
+    finally:
+        conn.close()
+    return len(ids)
+
+
+def kill(db: Database, topic_id: int, reason: str) -> None:
+    """proposed -> rejected with a reason (>= 5 chars, stored with decided_at)."""
+    reason = (reason or "").strip()
+    if len(reason) < MIN_REASON:
+        raise TopicError(f"kill reason must be at least {MIN_REASON} characters")
+    conn = db.connect()
+    try:
+        cur = conn.execute(
+            "UPDATE topic SET status = 'rejected', decided_reason = ?, decided_at = ? "
+            "WHERE id = ? AND status = 'proposed'",
+            (reason, _now(), topic_id),
+        )
+        if cur.rowcount != 1:
+            raise TopicError(_not_in_state(conn, topic_id, "proposed"))
+    finally:
+        conn.close()
+
+
+def select(db: Database, topic_id: int) -> None:
+    """backlog -> selected. The CONT-04 topic-level enforcement point Phase 2 relies on:
+    a blacklist-tagged or safety-blocked topic can never be selected. The guard is in the
+    UPDATE's WHERE clause, so it holds even if the pre-read below is skipped or stale."""
+    conn = db.connect()
+    try:
+        cur = conn.execute(
+            "UPDATE topic SET status = 'selected', decided_at = ? WHERE id = ? "
+            "AND status = 'backlog' AND list_tag = 'whitelist' AND safety_status != 'blocked'",
+            (_now(), topic_id),
+        )
+        if cur.rowcount == 1:
+            return
+        row = conn.execute(
+            "SELECT status, list_tag, safety_status, safety_hits_json FROM topic WHERE id = ?",
+            (topic_id,),
+        ).fetchone()
+    finally:
+        conn.close()
+    if row is None:
+        raise TopicError(f"topic {topic_id} does not exist")
+    reasons = []
+    if row["list_tag"] == "blacklist":
+        reasons.append("tagged blacklist")
+    if row["safety_status"] == "blocked":
+        reasons.append(f"safety_status blocked ({_hit_ids(row['safety_hits_json'])})")
+    if row["status"] != "backlog":
+        reasons.append(f"status is {row['status']}, not backlog")
+    raise TopicError(f"topic {topic_id} cannot be selected: {'; '.join(reasons)}")
+
+
+def _hit_ids(hits_json: str | None) -> str:
+    hits = json.loads(hits_json) if hits_json else []
+    return ", ".join(sorted({h["rule_id"] for h in hits})) or "no hits recorded"
+
+
+def _not_in_state(conn: sqlite3.Connection, topic_id: int, wanted: str) -> str:
+    row = conn.execute("SELECT status FROM topic WHERE id = ?", (topic_id,)).fetchone()
+    if row is None:
+        return f"topic {topic_id} does not exist"
+    return f"topic {topic_id} is {row['status']}, not {wanted}"
+
+
+def stats(db: Database) -> dict[str, Any]:
+    """Counts per pillar x status, plus kept whitelist topics with ok/flagged safety."""
+    pillars = {
+        p: {"counts": {}, "kept_safe_whitelist": 0, "below_target": True}
+        for p in load_matrix().keys("pillar")
+    }
+    conn = db.connect()
+    try:
+        counts = conn.execute(
+            "SELECT pillar, status, COUNT(*) AS n FROM topic GROUP BY pillar, status"
+        ).fetchall()
+        kept = conn.execute(
+            f"SELECT pillar, COUNT(*) AS n FROM topic WHERE list_tag = 'whitelist' "
+            f"AND safety_status IN ('ok', 'flagged') "
+            f"AND status IN ({', '.join('?' * len(KEPT_STATUSES))}) GROUP BY pillar",
+            KEPT_STATUSES,
+        ).fetchall()
+    finally:
+        conn.close()
+    for r in counts:
+        pillars.setdefault(r["pillar"], {"counts": {}, "kept_safe_whitelist": 0})
+        pillars[r["pillar"]]["counts"][r["status"]] = r["n"]
+    for r in kept:
+        pillars[r["pillar"]]["kept_safe_whitelist"] = r["n"]
+    for v in pillars.values():
+        v["below_target"] = v["kept_safe_whitelist"] < KEPT_TARGET
+    return {"target": KEPT_TARGET, "pillars": pillars}
