@@ -39,7 +39,7 @@ steps:
   4. Running the checker on a sample script flags the terminology violations from the DE+EN table (functioning labels, "superpower", "leidet an", "Asperger" outside quotes, ABA-adjacent framing)
   5. The safety filter rejects a blacklisted subject (medication, diagnosis question, ABA, "is my child autistic?") at topic level and again when it appears in script or claim text; the style guide documents the fixed 60–75s template
 
-**Plans:** 5/15 plans executed
+**Plans:** 6/15 plans executed
 
 Plans:
 **Wave 1**
@@ -58,7 +58,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
-- [ ] 01-06-PLAN.md — Local video analysis (Whisper, pitch, contact sheets) + in-session judgment import with evidence guard + operator verify (W4)
+- [x] 01-06-PLAN.md — Local video analysis (Whisper, pitch, contact sheets) + in-session judgment import with evidence guard + operator verify (W4)
 - [ ] 01-07-PLAN.md — Scan run 1: discovery + followers + ~80-account sample; operator confirms list (W4)
 
 **Wave 5** *(blocked on Wave 4 completion)*
@@ -137,7 +137,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Market Decision & Content Foundation | 5/15 | In Progress|  |
+| 1. Market Decision & Content Foundation | 6/15 | In Progress|  |
 | 2. Grounded Script Pipeline | 0/? | Not started | - |
 | 3. Launch Readiness & First Publish | 0/? | Not started | - |
 | 4. Validation Run & Go/No-Go | 0/? | Not started | - |
