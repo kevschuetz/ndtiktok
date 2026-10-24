@@ -95,5 +95,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-10-24T21:55:34.518Z
-Stopped at: Completed 01-05-PLAN.md (CONT-01 stays pending until plan 15 imports the real seed)
+Stopped at: Completed 01-06-PLAN.md (MKT-01 stays pending until real batches are judged and imported)
 Resume file: None
