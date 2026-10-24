@@ -1,0 +1,53 @@
+[project]
+name = "ndc"
+version = "0.1.0"
+description = "Neurodiversity short-form content pipeline (operator CLI)"
+readme = "README.md"
+authors = [
+    { name = "Kevin", email = "claude@caltech.ink" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "httpx==0.28.*",
+    "pydantic==2.14.*",
+    "python-dotenv==1.2.*",
+    "pyyaml==6.0.*",
+    "rich==15.*",
+    "simplemma==2.0.*",
+    "sqlite-utils==4.2.*",
+    "tenacity==9.2.*",
+    "typer==0.27.*",
+]
+
+[project.scripts]
+ndc = "ndc.cli:app"
+
+[project.optional-dependencies]
+scan = [
+    "yt-dlp==2026.10.21",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.8,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.*",
+    "pytest-recording==0.14.*",
+    "ruff==0.17.*",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["typer.Option", "typer.Argument"]

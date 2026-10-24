@@ -4,14 +4,22 @@ import sqlite3
 from ndc.cli import app
 
 ADD_ARGS = [
-    "topic", "add",
-    "--pillar", "parents",
-    "--condition", "adhd",
-    "--domain", "routines_household",
-    "--audience", "parents",
-    "--angle", "try_this_strategy",
-    "--title", "Morgenroutine",
-    "--source-likely", "yes",
+    "topic",
+    "add",
+    "--pillar",
+    "parents",
+    "--condition",
+    "adhd",
+    "--domain",
+    "routines_household",
+    "--audience",
+    "parents",
+    "--angle",
+    "try_this_strategy",
+    "--title",
+    "Morgenroutine",
+    "--source-likely",
+    "yes",
 ]
 
 
@@ -30,9 +38,7 @@ def test_list_csv_header(runner):
     res = runner.invoke(app, ["topic", "list", "--format", "csv"])
     assert res.exit_code == 0, res.output
     header = res.output.splitlines()[0]
-    assert header == (
-        "id,pillar,condition,domain,audience,angle,working_title,list_tag,status"
-    )
+    assert header == ("id,pillar,condition,domain,audience,angle,working_title,list_tag,status")
     assert "Morgenroutine" in res.output
 
 
