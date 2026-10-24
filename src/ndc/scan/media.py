@@ -102,7 +102,7 @@ def downloaded_media(media_dir: str | Path, account_id: int | str) -> Iterator[P
 def probe_download(
     platform: str, handle: str, video_id: str, media_dir: str | Path, max_filesize_mb: float = 60
 ) -> tuple[str, str]:
-    """Verify-first helper (D-17): try one no-login download, delete it, return (verdict, detail)."""
+    """Verify-first helper (D-17): one no-login download, deleted; returns (verdict, detail)."""
     url = video_url(platform, handle, video_id)
     with downloaded_media(media_dir, f"probe-{platform}") as tmp:
         try:

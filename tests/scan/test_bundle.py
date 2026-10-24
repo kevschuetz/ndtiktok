@@ -43,7 +43,9 @@ def test_batches_and_manifests(db, tmp_path):
     files = en["files"]["youtube:@en00"]
     caps = json.loads(Path(files["captions"]).read_text())
     assert caps["bio"] == "bio text"
-    assert caps["posts"] == [{"post_id": "e0", "description": "cap 0", "pinned_comment": "pinned refs 0"}]
+    assert caps["posts"] == [
+        {"post_id": "e0", "description": "cap 0", "pinned_comment": "pinned refs 0"}
+    ]
     assert set(caps) == {"account_key", "language", "bio", "posts"}  # data only, no prompt text
     assert json.loads(Path(files["transcripts"]).read_text()) == {"e0": "transcript 0"}
     de_caps = json.loads(Path(m["files"]["tiktok:de_00"]["captions"]).read_text())

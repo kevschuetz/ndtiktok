@@ -378,3 +378,64 @@ def verify_cmd(
         f"stored {len(sets)} operator_verified value(s) for {platform}:{handle}; "
         f"needs_operator_check {'true' if flag else 'false'}"
     )
+
+
+# --- local video analysis + judging bundles (plan 01-06, D-17, D-21) --------------------------
+
+
+@app.command("analyze")
+def analyze_cmd(
+    only: str | None = typer.Option(None, "--only", help="Analyze just this handle."),
+    lang: str | None = typer.Option(None, "--lang", help="de | en"),
+    probe: bool = typer.Option(False, "--probe", help="One no-login test download per platform."),
+    force: bool = typer.Option(False, "--force", help="Override quiet hours (logged)."),
+    reanalyze: bool = typer.Option(False, "--reanalyze", help="Redo already analyzed accounts."),
+) -> None:
+    """Download ~3 recent videos per selected account (no login), transcribe, estimate voice
+    from pitch, build a contact sheet, delete the videos.
+
+    Heavy: run it via `docker compose run --rm ndc-heavy scan analyze` (3g cap, nice 19)."""
+    from ndc.scan import analyze
+
+    if lang not in (None, "de", "en"):
+        typer.echo("--lang must be de or en", err=True)
+        raise typer.Exit(2)
+    db = Database(db_path())
+    try:
+        if probe:
+            for line in analyze.probe(db, config_dir(), force=force):
+                typer.echo(line)
+            return
+        rep = analyze.run_analyze(
+            db, only=only, lang=lang, force=force, reanalyze=reanalyze, cfg=config_dir()
+        )
+    except (prereg.RuleNotApproved, quiet_hours.QuietHours) as exc:
+        _gate_errors(exc)
+        return
+    for line in rep.lines:
+        typer.echo(line)
+    typer.echo(
+        f"scan_run {rep.run_id} analyze: {len(rep.results)} account(s) processed, "
+        f"{len(rep.skipped)} already analyzed (use --reanalyze)"
+    )
+
+
+@app.command("prepare-judging")
+def prepare_judging_cmd(
+    batch: str | None = typer.Option(None, "--batch", help="Print this batch's manifest path."),
+    judging_dir: Path | None = typer.Option(None, "--judging-dir", help="Default from config."),
+) -> None:
+    """Write per-account judging bundles in batches de-1, de-2, en-1, en-2 + manifests."""
+    from ndc.scan import analyze, bundle
+
+    acfg = analyze.analysis_config(config_dir())
+    out = judging_dir or Path(acfg.get("judging_dir", "/data/judging"))
+    rep = bundle.prepare_judging(Database(db_path()), out, int(acfg.get("batches_per_language", 2)))
+    if batch:
+        if batch not in rep.manifests:
+            typer.echo(f"unknown batch {batch!r}; have {', '.join(rep.manifests)}", err=True)
+            raise typer.Exit(2)
+        typer.echo(rep.manifests[batch])
+        return
+    for name, path in rep.manifests.items():
+        typer.echo(f"{name}: {rep.counts[name]} accounts -> {path}")

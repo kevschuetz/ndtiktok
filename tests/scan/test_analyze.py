@@ -111,7 +111,9 @@ def test_videos_deleted_on_error(db, cfg, tmp_path):
     def downloader(url, out_dir, max_mb):
         return make_video(out_dir / "x.mp4")
 
-    rep = analyze.run_analyze(db, cfg=cfg, transcriber=Boom(), downloader=downloader, polite=_polite())
+    rep = analyze.run_analyze(
+        db, cfg=cfg, transcriber=Boom(), downloader=downloader, polite=_polite()
+    )
     assert rep.results[0].status == "unavailable"
     assert not any((tmp_path / "media").rglob("*.mp4"))
 
@@ -131,9 +133,12 @@ def test_all_downloads_fail_unavailable_no_retry(db, cfg):
     assert len(calls) == 3  # one attempt per video, no retries
     conn = db.connect()
     try:
-        st = [r[0] for r in conn.execute(
-            "SELECT download_status FROM competitor_video WHERE account_id = ?", (aid,)
-        )]
+        st = [
+            r[0]
+            for r in conn.execute(
+                "SELECT download_status FROM competitor_video WHERE account_id = ?", (aid,)
+            )
+        ]
     finally:
         conn.close()
     assert st == ["unavailable"] * 3
@@ -154,8 +159,12 @@ def test_resumable_skip(db, cfg):
     def downloader(url, out_dir, max_mb):
         return make_video(out_dir / "x.mp4")
 
-    analyze.run_analyze(db, cfg=cfg, transcriber=FakeTranscriber(), downloader=downloader, polite=_polite())
-    rep = analyze.run_analyze(db, cfg=cfg, transcriber=FakeTranscriber(), downloader=downloader, polite=_polite())
+    analyze.run_analyze(
+        db, cfg=cfg, transcriber=FakeTranscriber(), downloader=downloader, polite=_polite()
+    )
+    rep = analyze.run_analyze(
+        db, cfg=cfg, transcriber=FakeTranscriber(), downloader=downloader, polite=_polite()
+    )
     assert rep.results == [] and rep.skipped == ["tiktok:alpha_adhs"]
 
 

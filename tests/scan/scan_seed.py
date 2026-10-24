@@ -89,7 +89,9 @@ def make_video(path, hz=120, seconds=2.0, w=64, h=96, fps=10, sr=16000):
             np.float32
         )
         for k in range(0, len(y), 1024):
-            f = av.AudioFrame.from_ndarray(y[k : k + 1024].reshape(1, -1), format="fltp", layout="mono")
+            f = av.AudioFrame.from_ndarray(
+                y[k : k + 1024].reshape(1, -1), format="fltp", layout="mono"
+            )
             f.sample_rate, f.pts, f.time_base = sr, k, fractions.Fraction(1, sr)
             for p in aus.encode(f):
                 c.mux(p)
