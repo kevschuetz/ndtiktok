@@ -1,0 +1,81 @@
+# Pre-registered language decision rule (MKT-02, D-06/D-07/D-08/D-18/D-20).
+# Machine-readable twin of docs/language-decision-rule.md. Consumed by ndc.scan.decide.
+# Any byte change after approval changes the sha256 in config/decision_rule.lock;
+# after the first scan_run, `ndc scan decide` refuses a changed rule unless --amend "reason".
+version: 1
+approved_by: null
+approved_at: null
+
+# Size tiers by followers (TikTok) or subscribers (YouTube). Bounds are inclusive.
+# Accounts under 1000 followers are excluded from the sample entirely.
+sample_min_followers: 1000
+tiers:
+  micro: {min: 1000, max: 9999}
+  mid: {min: 10000, max: 99999}
+  macro: {min: 100000, max: 999999}
+  mega: {min: 1000000, max: null}
+
+# Account reach M_a = median view_count of the account's newest 15 posts that are >= 72 h old.
+last_n_posts: 15
+post_min_age_hours: 72
+# Fewer than 8 qualifying posts -> excluded from reach metrics, still counted for sourcing.
+min_posts_for_reach: 8
+
+# R_lang = median of M_a over usable mid-tier accounts of that language on this platform only.
+# YouTube Shorts reach is computed and reported, never used in Q (D-18).
+reach_platform: tiktok
+reach_tier: mid
+# Q = R_EN / R_DE
+validity_min_mid_accounts: 8
+
+# N_lang = sampled accounts (any platform, any tier >= micro) with final source_citing_score >= 2.
+# S_lang = those of them that are also face == faceless AND voice_gender == male.
+# One creator counts once per language: rows are merged by lower-cased handle. It counts toward
+# N if any of its rows scores >= 2, toward S if any row is score >= 2 AND faceless AND male.
+source_score_threshold: 2
+slot_face: faceless
+slot_voice_gender: male
+
+# Account score definition (0-3 rubric, see the doc). Computed by later plans, bound here.
+account_score:
+  rubric:
+    0: no reference to evidence
+    1: vague appeal to evidence, nothing findable ("Studien zeigen", "science says")
+    2: named, findable source (author/institution/guideline/journal), no full reference
+    3: full or linkable citation (author + year + journal/DOI/PMID/link) or a reference list
+  text_level: highest level reached in >= 3 of the newest 15 posts' captions/pinned comments
+  text_min_posts: 3
+  text_window_posts: 15
+  video_level: highest level reached in >= 2 of the analyzed videos (~3 per account, D-17)
+  video_min_videos: 2
+  final: operator value when present, else max(text_level, video_level)
+  unknown_face_or_voice_counts_for_slot: false
+
+# Ordered outcome table. Evaluated top to bottom; first match wins. Exactly one language,
+# never both (D-08). Anything matching no explicit row falls to R4 -> de (D-07).
+rules:
+  - id: V
+    when: "n_mid_de < 8 or n_mid_en < 8"
+    verdict: de
+    inconclusive: true
+    why: "too few usable mid-tier TikTok accounts in a language -> inconclusive -> German (D-07)"
+  - id: R1
+    when: "N_DE <= 4 and Q <= 10"
+    verdict: de
+    inconclusive: false
+    why: "sourcing gap + reachable DACH audience within ~10x (D-06)"
+  - id: R2
+    when: "Q > 15"
+    verdict: en
+    inconclusive: false
+    why: "hard DACH reach ceiling"
+  - id: R3
+    when: "N_DE >= 8 and S_DE >= 1 and S_EN == 0"
+    verdict: en
+    inconclusive: false
+    why: "German sourced+faceless+male slot already filled, English one empty"
+  - id: R4
+    when: "else"
+    verdict: de
+    inconclusive: true
+    why: "gray band (e.g. 10 < Q <= 15 or 5 <= N_DE <= 7) -> German (D-07)"

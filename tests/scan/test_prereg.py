@@ -139,8 +139,14 @@ def test_cli_decide_ok_writes_log_and_row(cfg, db, runner, tmp_path):
 def test_cli_decide_exits_2_on_changed_rule(cfg, db, runner, tmp_path):
     prereg.record_scan_run(db, "fetch")
     edit_rule(cfg)
-    args = ["scan", "decide", "--accounts-csv", str(_csv(tmp_path)), "--log-path",
-            str(tmp_path / "d.md")]
+    args = [
+        "scan",
+        "decide",
+        "--accounts-csv",
+        str(_csv(tmp_path)),
+        "--log-path",
+        str(tmp_path / "d.md"),
+    ]
     res = runner.invoke(app, args)
     assert res.exit_code == 2, res.output
     assert current_language(db) is None
