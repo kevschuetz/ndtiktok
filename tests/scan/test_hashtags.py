@@ -1,9 +1,9 @@
 """Hashtag harvest from competitor_post descriptions (MKT-03, plan 01-14)."""
 
 import yaml
+from scan_seed import seed_account
 
 from ndc.scan import hashtags
-from tests.scan.scan_seed import seed_account
 
 
 def _set_views(db, handle, views):

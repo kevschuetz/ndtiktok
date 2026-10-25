@@ -506,3 +506,30 @@ def prepare_judging_cmd(
         return
     for name, path in rep.manifests.items():
         typer.echo(f"{name}: {rep.counts[name]} accounts -> {path}")
+
+
+@app.command("hashtags")
+def hashtags_cmd(
+    lang: str | None = typer.Option(None, "--lang", help="de|en; default: current decision."),
+    out: Path = typer.Option(Path("scan/hashtag_harvest.yaml"), "--out"),
+    all_accounts: bool = typer.Option(False, "--all", help="All accounts, not just selected."),
+    top: int = typer.Option(30, "--top", help="Rows to print."),
+) -> None:
+    """Harvest hashtags from the chosen language's post descriptions (MKT-03)."""
+    from ndc.scan import hashtags
+    from ndc.scan.decide import current_language
+
+    db = Database(db_path())
+    lang = lang or current_language(db)
+    if lang not in ("de", "en"):
+        typer.echo("no language decision yet; give --lang de|en", err=True)
+        raise typer.Exit(2)
+    stats = hashtags.harvest(db, lang, selected_only=not all_accounts)
+    n = hashtags.write_harvest(stats, out, lang, selected_only=not all_accounts)
+    typer.echo(f"{n} tags ({lang}) -> {out}")
+    for s in stats[:top]:
+        flag = f"  EXCLUDED ({s.exclusion_reason})" if s.excluded else ""
+        mid = f"{s.mid_median_views:.0f}" if s.mid_median_views is not None else "n/a"
+        typer.echo(
+            f"  {s.display:32} accounts {s.n_accounts:3} posts {s.n_posts:4} mid {mid}{flag}"
+        )

@@ -1,0 +1,118 @@
+# nd-content hashtag + keyword set (MKT-03, plan 01-14). German only: the pre-registered rule chose
+# German (row R1, docs/language-decision.md, D-08). Held CONSTANT for the whole validation run:
+# change it only by bumping `version` and logging why.
+#
+# Every tag comes from the scan harvest (`ndc scan hashtags` -> scan/hashtag_harvest.yaml), not
+# invented. stats: n_accounts = distinct sampled DE accounts using the tag, n_posts = posts
+# carrying it, mid_median_views = median views of mid-tier (10k-99.9k followers) posts carrying it
+# (null = no mid-tier post used it). Sample: 24 selected DE accounts, 683 posts.
+# Every chosen tag passes `check(tag, "de", level="topic")` with status ok (tests/test_config_files.py).
+# TikTok tags are case-insensitive; the CamelCase here is for readability only.
+# Loaded by src/ndc/launch_sets.py.
+version: 1
+language: de
+harvest_file: scan/hashtag_harvest.yaml
+harvested_at: "2026-10-25"
+
+# Per video: 1 broad + 1-2 niche + 1 pillar tag = 3-5 tags total.
+scheme: {broad: 1, niche: [1, 2], pillar: 1, total: [3, 5]}
+
+broad:  # pick by the video's condition
+  - "#ADHS"
+  - "#Autismus"
+
+niche:
+  - "#Neurodivergent"
+  - "#ADHSbeiErwachsenen"
+  - "#AuDHS"
+  - "#Neurodivergenz"
+  - "#ADHSErwachsene"
+
+pillars:
+  challenge_science_help:
+    - "#Wissenschaft"
+    - "#Aufklärung"
+    - "#ADHSAufklärung"
+    - "#Forschung"
+  strengths:  # GAP, see gaps
+    - "#Neurodiversität"
+    - "#Hyperfokus"
+  parents:
+    - "#ADHSKinder"
+    - "#Kinder"
+  men_dads_partners:  # GAP for men/dads, see gaps; partners angle only
+    - "#Beziehung"
+    - "#Beziehungen"
+
+# Spoken keyword in the first sentence + on-screen text (searchable).
+keywords:
+  challenge_science_help: ["ADHS", "Autismus", "Studie", "Forschung zeigt", "Was die Wissenschaft sagt"]
+  strengths: ["Stärken bei ADHS", "Hyperfokus", "Neurodiversität", "Was autistische Menschen gut können"]
+  parents: ["ADHS bei Kindern", "Eltern von Kindern mit ADHS", "autistisches Kind", "Elternalltag"]
+  men_dads_partners: ["ADHS bei Männern", "Väter mit ADHS", "Partnerschaft und ADHS", "Beziehung"]
+
+stats:
+  "#adhs": {n_accounts: 22, n_posts: 359, mid_median_views: 5374.5}
+  "#autismus": {n_accounts: 13, n_posts: 79, mid_median_views: 2550}
+  "#neurodivergent": {n_accounts: 11, n_posts: 75, mid_median_views: 4382}
+  "#adhsbeierwachsenen": {n_accounts: 6, n_posts: 25, mid_median_views: 13070.5}
+  "#audhs": {n_accounts: 7, n_posts: 37, mid_median_views: 856}
+  "#neurodivergenz": {n_accounts: 6, n_posts: 35, mid_median_views: 1266}
+  "#adhserwachsene": {n_accounts: 4, n_posts: 73, mid_median_views: 8360}
+  "#wissenschaft": {n_accounts: 3, n_posts: 9, mid_median_views: 499}
+  "#aufklärung": {n_accounts: 4, n_posts: 21, mid_median_views: 499}
+  "#adhsaufklärung": {n_accounts: 3, n_posts: 4, mid_median_views: null}
+  "#forschung": {n_accounts: 2, n_posts: 6, mid_median_views: null}
+  "#neurodiversität": {n_accounts: 4, n_posts: 20, mid_median_views: null}
+  "#hyperfokus": {n_accounts: 2, n_posts: 6, mid_median_views: null}
+  "#adhskinder": {n_accounts: 3, n_posts: 6, mid_median_views: 5008}
+  "#kinder": {n_accounts: 2, n_posts: 6, mid_median_views: 485}
+  "#beziehung": {n_accounts: 4, n_posts: 15, mid_median_views: 11724}
+  "#beziehungen": {n_accounts: 2, n_posts: 2, mid_median_views: 2606}
+
+# Harvested with >= 2 accounts, passes the checker, but deliberately not chosen.
+not_chosen:
+  - {tag: "#adhsdeutschland", reason: "9 accounts, but country-specific; the account targets DACH (operator is Austrian). Operator may swap in."}
+  - {tag: "#adhd", reason: "English tag; German-only run (D-08)"}
+  - {tag: "#mentalhealth", reason: "English, generic mental-health tag"}
+  - {tag: "#fyp", reason: "generic reach tag, no topical signal"}
+  - {tag: "#psychologie", reason: "generic; no mid-tier usage"}
+  - {tag: "#adhsbeifrauen", reason: "women-targeted; our pillar 4 is men/dads/partners"}
+  - {tag: "#adhsfrauen", reason: "women-targeted; our pillar 4 is men/dads/partners"}
+  - {tag: "#audhd", reason: "English spelling; #AuDHS is the German form"}
+  - {tag: "#depression", reason: "different condition; crisis-adjacent, out of scope as a tag"}
+  - {tag: "#adhssymptome", reason: "symptom-checking framing is diagnosis-adjacent (never diagnostic)"}
+
+# Excluded on safety / community grounds. Never use these.
+excluded:
+  - {tag: "#ActuallyAutistic", reason: "community_self_id: self-identification tag owned by autistic people; the operator is not stated to be autistic (0 DE uses in the harvest; excluded by policy)"}
+  - {tag: "#medikamente", reason: "blocked: de.medication (3 accounts)"}
+  - {tag: "#medikament", reason: "blocked: de.medication"}
+  - {tag: "#ritalin", reason: "blocked: any.medication_names"}
+  - {tag: "#elvanse", reason: "blocked: any.medication_names"}
+  - {tag: "#medikinet", reason: "blocked: any.medication_names"}
+  - {tag: "#methylphenidat", reason: "blocked: any.medication_names"}
+  - {tag: "#impfung", reason: "blocked: de.conspiracy (2 accounts)"}
+  - {tag: "#hochfunktional", reason: "blocked: de.hochfunktional"}
+  - {tag: "#diagnose", reason: "warn de.diagnose (2 accounts); hashtags have no override flow"}
+  - {tag: "#modediagnose", reason: "warn de.adhs_mythen"}
+  - {tag: "#therapie", reason: "warn de.behandlung (2 accounts)"}
+  - {tag: "#ads", reason: "warn de.adhs_mythen (2 accounts)"}
+  - {tag: "#autist", reason: "warn de.autisten (2 accounts)"}
+  - {tag: "#asperger", reason: "warn any.asperger"}
+  - {tag: "#komorbiditäten", reason: "warn de.komorbid"}
+  - {tag: "#selbsttest", reason: "blocked: de.diagnosis_question (not in the harvest; excluded by rule)"}
+
+# Pillars with no harvested tag that fits the pillar at >= 2 accounts. The listed tags are the
+# best harvested stand-ins; the operator picks or swaps in-app (a non-harvested tag the operator
+# confirms in-app gets a stats note instead of harvest numbers).
+gaps:
+  - pillar: strengths
+    note: "No explicit strengths tag (#ADHSStärken, #Superkraft, ...) in the DE harvest. Stand-ins: #Neurodiversität (4 accounts), #Hyperfokus (2)."
+    candidates: ["#Neurodiversität", "#Hyperfokus", "#hochbegabung (1 account)"]
+  - pillar: men_dads_partners
+    note: "No men/dads tag (#ADHSPapa, #ADHSMänner, #Väter ...) in the DE harvest at all - matches S_DE = 0. Partners angle only: #Beziehung (4 accounts, mid 11,724). Check #ADHSPapa / #ADHSMänner in the app."
+    candidates: ["#Beziehung", "#Beziehungen", "#adhsinbeziehungen (1 account)", "#adhsundbeziehungen (1 account)"]
+
+verified_in_app: null   # set to the date the operator confirmed every tag in the TikTok app
+approved_at: null

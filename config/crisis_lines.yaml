@@ -1,0 +1,108 @@
+# nd-content crisis-line set (MKT-03, plan 01-14). German / DACH only (language decision R1, D-08).
+# Every entry was re-checked against the official source on verified_at (plain GET of the page,
+# text read for number + hours). Re-verify before Phase 3 OPS-01 and whenever a number is used in
+# a new template. confirmed: false = could not be confirmed from the official source.
+# EXEMPT from `ndc check` (it legitimately names crisis/suicide services).
+# Loaded by src/ndc/launch_sets.py.
+version: 1
+language: de
+approved_at: null
+
+# Pinned-comment short form (emotions / burnout / crisis-adjacent topics).
+short_form: "Wenn es dir gerade nicht gut geht: AT 142 · DE 0800 111 0 111 · CH 143 (rund um die Uhr, kostenlos). Im Notfall 144 / 112."
+
+entries:
+  # ------------------------------------------------------------------ Austria
+  - country: AT
+    service: Telefonseelsorge Österreich
+    number: "142"
+    audience: Alle Menschen in Krisen; kostenlos, vertraulich
+    hours: "0-24 Uhr, täglich (Sofortchat täglich 16-23 Uhr, Mail-Antwort in 48 h)"
+    source_url: https://www.telefonseelsorge.at/
+    verified_at: 2026-10-25
+  - country: AT
+    service: Rat auf Draht
+    number: "147"
+    audience: Kinder, Jugendliche (Elternseite für Bezugspersonen); anonym, kostenlos
+    hours: "rund um die Uhr (Chat Mo/Di/Fr 18-19, Mi/Do 18-20 Uhr)"
+    source_url: https://www.rataufdraht.at/
+    verified_at: 2026-10-25
+  - country: AT
+    service: Ö3 Kummernummer (Rotes Kreuz)
+    number: "116 123"
+    audience: Alle Menschen in persönlichen Notlagen; anonym, kostenlos aus allen Netzen
+    hours: "täglich 16-24 Uhr (NICHT rund um die Uhr)"
+    source_url: https://oe3.orf.at/kummernummer/stories/2712988/
+    verified_at: 2026-10-25
+  - country: AT
+    service: Männerinfo - Krisenhelpline für Männer (Männerberatung)
+    number: "0800 400 777"
+    audience: Männer in Krisen (relevant für Säule 4); kostenlos, vertraulich
+    hours: "24/7 (Chat 16-22 Uhr)"
+    source_url: https://www.maennerinfo.at/
+    verified_at: 2026-10-25
+  - country: AT
+    service: Notruf Rettung
+    number: "144"
+    alt_numbers: ["133 (Polizei)", "112 (Euronotruf)"]
+    audience: Akute Gefahr
+    hours: "24/7"
+    source_url: https://www.gesundheit.gv.at/service/notruf.html
+    verified_at: 2026-10-25
+  # ------------------------------------------------------------------ Germany
+  - country: DE
+    service: TelefonSeelsorge Deutschland
+    number: "0800 111 0 111"
+    alt_numbers: ["0800 111 0 222", "116 123"]
+    audience: Alle Menschen in schwierigen Lebenslagen; kostenfrei (auch Mail, Chat)
+    hours: "rund um die Uhr"
+    source_url: https://www.telefonseelsorge.de/
+    verified_at: 2026-10-25
+  - country: DE
+    service: Nummer gegen Kummer - Kinder- und Jugendtelefon
+    number: "116 111"
+    audience: Kinder und Jugendliche; anonym, kostenlos (samstags beraten Jugendliche)
+    hours: "Mo-Sa 14-20 Uhr (Chat Mo-Do 14-20 Uhr)"
+    source_url: https://www.nummergegenkummer.de/
+    verified_at: 2026-10-25
+  - country: DE
+    service: Elterntelefon (Nummer gegen Kummer)
+    number: "0800 111 0 550"
+    audience: Eltern und Bezugspersonen; anonym, kostenlos
+    hours: "Mo/Mi/Fr 9-17 Uhr, Di/Do 9-19 Uhr"
+    source_url: https://www.nummergegenkummer.de/
+    verified_at: 2026-10-25
+    note: "elterntelefon.info states the same hours in its body text; its out-of-hours popup shows different times (9-11 / 17-19), treated as stale."
+  - country: DE
+    service: Notruf (Rettung/Feuerwehr, EU-weit)
+    number: "112"
+    alt_numbers: ["110 (Polizei)"]
+    audience: Akute Gefahr
+    hours: "24/7"
+    source_url: https://digital-strategy.ec.europa.eu/en/policies/112
+    verified_at: 2026-10-25
+    note: "112 confirmed on the EU Commission page; 110 is well known but was not checked against an official page this run."
+  # ------------------------------------------------------------------ Switzerland
+  - country: CH
+    service: Die Dargebotene Hand
+    number: "143"
+    alt_numbers: ["0800 143 000 (Support in English, 18-23 Uhr)"]
+    audience: Alle Menschen; persönlich, anonym, vertraulich
+    hours: "rund um die Uhr, 365 Tage"
+    source_url: https://www.143.ch/hilfesuchende/hilfesuchende-kontakt/
+    verified_at: 2026-10-25
+  - country: CH
+    service: Pro Juventute Beratung + Hilfe 147
+    number: "147"
+    audience: Kinder und Jugendliche; kostenlos, erscheint nicht auf der Rechnung
+    hours: "Telefon jederzeit (WhatsApp täglich 7.30-22 Uhr)"
+    source_url: https://www.147.ch/de/
+    verified_at: 2026-10-25
+  - country: CH
+    service: Sanitätsnotruf
+    number: "144"
+    audience: Akute medizinische Notfälle
+    hours: "24/7"
+    source_url: https://www.144.ch/
+    verified_at: 2026-10-25
+    note: "144.ch (Interverband für Rettungswesen) names the Sanitätsnotrufzentrale 144 but has no explicit 'call 144' statement; 112 also works in CH but was not checked against a Swiss official page."
