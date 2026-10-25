@@ -7,6 +7,8 @@ Rules (any one queues the account):
 - a DACH account whose video level or an on-screen citation lifts the score to >= 2 while the
   text level is < 2 (on-screen / video evidence decides the score);
 - a DACH account whose text level is >= 2 (it counts toward N_DE, which decides R1/R3; HI-01);
+- an account of either language whose score >= 2 rests on on-screen citations only, i.e. text
+  level and speech-only video level are both < 2 (on-screen text is unverifiable; HI-02);
 - an imported evidence string failed the substring guard;
 - the account would count toward S_DE or S_EN (score >= 2, faceless, male).
 An operator review (`ndc scan verify`) newer than every machine observation clears the flag.
@@ -31,6 +33,21 @@ def _int(v) -> int | None:
         return int(v)
     except (TypeError, ValueError):
         return None
+
+
+def _speech_video_level(conn, account_id: int) -> int:
+    """source_video_level recomputed from guarded speech citations only (no on-screen)."""
+    from ndc.scan.judging import VIDEO_MIN_VIDEOS, account_level
+
+    per_video = [
+        r[0]
+        for r in conn.execute(
+            "SELECT MAX(level) FROM competitor_post_citing WHERE account_id = ?"
+            " AND source = 'speech' GROUP BY video_id",
+            (account_id,),
+        )
+    ]
+    return account_level(per_video, VIDEO_MIN_VIDEOS)
 
 
 def evaluate(conn, account_id: int) -> list[str]:
@@ -101,6 +118,22 @@ def evaluate(conn, account_id: int) -> list[str]:
         if row["language"] == "de" and text is not None and text >= 2:
             reasons.append(f"DACH: text level {text} counts toward N_DE")
         score = row["source_citing_score"]
+        onscreen_max = conn.execute(
+            "SELECT MAX(level) FROM competitor_post_citing WHERE account_id = ?"
+            " AND source = 'onscreen'",
+            (account_id,),
+        ).fetchone()[0]
+        if (
+            score is not None
+            and score >= 2
+            and (text is None or text < 2)
+            and onscreen_max is not None
+            and onscreen_max >= 2
+        ):
+            speech = _speech_video_level(conn, account_id)
+            if speech < 2 and not any(r.startswith("DACH: on-screen") for r in reasons):
+                lang = (row["language"] or "?").upper()
+                reasons.append(f"{lang}: score {score} rests on on-screen citations only")
         if (
             score is not None
             and score >= 2

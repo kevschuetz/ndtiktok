@@ -241,3 +241,57 @@ def test_trivial_verbatim_evidence_is_downgraded(db):
             ), cit
     finally:
         conn.close()
+
+
+def test_unknown_video_or_post_reference_rejects_file(db, tmp_path):
+    """HI-02: fabricated video_id / post_id refuse the whole file, nothing imported."""
+    a, b = _seed_both(db)
+    data = _sample()
+    data["judgments"][1]["videos"] = [
+        {"video_id": "fake1", "onscreen": [{"text_seen": "x", "level": 3}], "face": "faceless"},
+        {"video_id": "fake2", "onscreen": [{"text_seen": "x", "level": 3}], "face": "faceless"},
+    ]
+    with pytest.raises(judging.JudgmentFileError) as exc:
+        judging.import_judgments(db, _write(tmp_path, data))
+    assert "youtube:@betachannel: video fake1" in str(exc.value)
+    assert obs_rows(db, a) == [] and obs_rows(db, b) == []
+
+    data = _sample()
+    data["judgments"][0]["posts"][0]["post_id"] = "nope"
+    with pytest.raises(judging.JudgmentFileError, match="tiktok:alpha_adhs: post nope"):
+        judging.import_judgments(db, _write(tmp_path, data))
+
+
+def test_unavailable_video_reference_rejects_file(db, tmp_path):
+    seed_account(
+        db, "alpha_adhs", posts=ALPHA_POSTS, videos=[("a1", "x", "ok"), ("a2", "", "unavailable")]
+    )
+    seed_account(
+        db, "@betachannel", platform="youtube", lang="en", posts=[("b1", "science says hi", None)]
+    )
+    with pytest.raises(judging.JudgmentFileError, match="video a2"):
+        judging.import_judgments(db, FIXTURE)
+
+
+def test_en_onscreen_only_score_is_queued(db, tmp_path):
+    """HI-02: an EN score >= 2 resting only on on-screen citations goes to the operator."""
+    seed_account(db, "alpha_adhs", posts=ALPHA_POSTS, videos=ALPHA_VIDEOS)
+    b = seed_account(
+        db,
+        "@betachannel",
+        platform="youtube",
+        lang="en",
+        posts=[("b1", "science says hi", None)],
+        videos=[("v1", "", "ok"), ("v2", "", "ok")],
+    )
+    data = _sample()
+    data["judgments"][1]["videos"] = [
+        {"video_id": v, "onscreen": [{"text_seen": "Faraone 2021", "level": 3}], "face": "face"}
+        for v in ("v1", "v2")
+    ]
+    judging.import_judgments(db, _write(tmp_path, data))
+    row = sheet_row(db, b)
+    assert row["source_citing_score"] == 3
+    assert row["needs_operator_check"] == "true"
+    flag = [r for r in obs_rows(db, b) if r["field"] == "needs_operator_check"][-1]
+    assert "EN: score 3 rests on on-screen citations only" in flag["method"]

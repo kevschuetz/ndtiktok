@@ -274,6 +274,26 @@ def _account_id(conn, key: str) -> int | None:
     return row[0] if row else None
 
 
+def _unknown_refs(conn, aid: int, j: AccountJudgment) -> list[str]:
+    """HI-02: every video_id must be an analyzed (download ok) video of this account and every
+    post_id a stored post of it, so fabricated ids cannot carry (on-screen) levels."""
+    known_v = {
+        r[0]
+        for r in conn.execute(
+            "SELECT platform_video_id FROM competitor_video WHERE account_id = ?"
+            " AND download_status = 'ok'",
+            (aid,),
+        )
+    }
+    known_p = {
+        r[0]
+        for r in conn.execute("SELECT post_id FROM competitor_post WHERE account_id = ?", (aid,))
+    }
+    out = [f"{j.account_key}: video {v.video_id}" for v in j.videos if v.video_id not in known_v]
+    out += [f"{j.account_key}: post {p.post_id}" for p in j.posts if p.post_id not in known_p]
+    return out
+
+
 def _import_one(conn, aid: int, j: AccountJudgment, method: str, run_id, now: str) -> int:
     conn.execute(
         "DELETE FROM competitor_field_obs WHERE account_id = ? AND provenance = ?",
@@ -372,6 +392,12 @@ def import_judgments(
         if missing:
             raise JudgmentFileError(
                 "judgment file refused, nothing imported: unknown account(s): " + ", ".join(missing)
+            )
+        bad_refs = [e for j in judgments for e in _unknown_refs(conn, ids[j.account_key], j)]
+        if bad_refs:
+            raise JudgmentFileError(
+                "judgment file refused, nothing imported: unknown reference(s):\n  "
+                + "\n  ".join(bad_refs)
             )
         now = _now()
         conn.execute("BEGIN")
