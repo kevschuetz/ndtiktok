@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-10-PLAN.md (de-2 judged in-session: 12 accounts, 0 guard downgrades, 7 queued; only adhs_deutschland (institutional) scores 2)
-last_updated: "2026-10-25T09:37:59.000Z"
+stopped_at: Completed 01-11-PLAN.md (en-1 judged in-session: 18 accounts, 0 guard downgrades, 10 queued; only additudemag (institutional) scores 2; no faceless-male S_EN candidate)
+last_updated: "2026-10-25T09:44:44.915Z"
 last_activity: 2026-10-25
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 15
-  completed_plans: 10
+  completed_plans: 11
   percent: 0
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-10-24)
 ## Current Position
 
 Phase: 1 of 4 (Market Decision & Content Foundation)
-Plan: 11 of 15 in current phase
+Plan: 12 of 15 in current phase
 Status: Ready to execute
 Last activity: 2026-10-25
 
-Progress: [███████░░░] 67%
+Progress: [███████░░░] 73%
 
 ## Performance Metrics
 
@@ -75,6 +75,7 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-05: topic select guard (whitelist AND safety_status != blocked) lives in the UPDATE WHERE clause of topics.select — the CONT-04 topic-level enforcement point Phase 2 relies on
 - [Phase 01]: 01-05: add_topic with no language yet checks both de and en and keeps the worst safety result; seed `notes` accepted but not stored
 - [Phase 01]: 01-07: final sample 50 (DE 20 / EN 30); mid-tier TikTok 7/7 below floor 8; TikTok pool is operator-collected; flagged off-niche operator rows left to operator
+- [Phase 01]: 01-11: en-1 judged in-session (18 accts, 0 downgrades, 10 queued); only additudemag (institutional) scores 2; no faceless-male >=2 S_EN candidate; GenericArtDad/le0zs/goxlr__ off-niche, recommend exclusion
 
 ### Pending Todos
 
@@ -95,6 +96,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-10-25T09:37:59.000Z
-Stopped at: Completed 01-10-PLAN.md (de-2 judged in-session; adhs_deutschland score 2, institutional - operator to decide N_DE/S_DE inclusion)
+Last session: 2026-10-25T09:44:44.909Z
+Stopped at: Completed 01-11-PLAN.md (en-1 judged in-session: 18 accounts, 0 guard downgrades, 10 queued; only additudemag (institutional) scores 2; no faceless-male S_EN candidate)
 Resume file: None
