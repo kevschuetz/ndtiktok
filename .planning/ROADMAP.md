@@ -39,7 +39,7 @@ steps:
   4. Running the checker on a sample script flags the terminology violations from the DE+EN table (functioning labels, "superpower", "leidet an", "Asperger" outside quotes, ABA-adjacent framing)
   5. The safety filter rejects a blacklisted subject (medication, diagnosis question, ABA, "is my child autistic?") at topic level and again when it appears in script or claim text; the style guide documents the fixed 60–75s template
 
-**Plans:** 13/15 plans executed
+**Plans:** 14/15 plans executed
 
 Plans:
 **Wave 1**
@@ -78,7 +78,7 @@ Plans:
 
 **Wave 8** *(blocked on Wave 7 completion)*
 
-- [ ] 01-14-PLAN.md — Hashtag/keyword set + crisis-line set for the chosen language; operator in-app check (W8)
+- [x] 01-14-PLAN.md — Hashtag/keyword set + crisis-line set for the chosen language; operator in-app check (W8)
 - [ ] 01-15-PLAN.md — Topic seed (~60–80, chosen language) import + operator prune; backlog snapshot (W8)
 
 **Cross-cutting constraints:**
@@ -137,7 +137,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Market Decision & Content Foundation | 13/15 | In Progress|  |
+| 1. Market Decision & Content Foundation | 14/15 | In Progress|  |
 | 2. Grounded Script Pipeline | 0/? | Not started | - |
 | 3. Launch Readiness & First Publish | 0/? | Not started | - |
 | 4. Validation Run & Go/No-Go | 0/? | Not started | - |

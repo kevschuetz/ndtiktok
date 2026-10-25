@@ -9,7 +9,7 @@
 
 - [x] **MKT-01**: Operator has a competitor-scan sheet for ADHS (DACH) vs ADHD (English) accounts recording, per account: median views of last 15 posts, source-citing score (0–3), face/faceless, voice gender, format, cadence, pillars covered, monetization
 - [x] **MKT-02**: The language decision rule is written down before the scan, and the language is decided from the scan data in validation week 1
-- [ ] **MKT-03**: Hashtag/keyword set and crisis-line set are fixed for the chosen language
+- [x] **MKT-03**: Hashtag/keyword set and crisis-line set are fixed for the chosen language
 
 ### Content foundation
 
@@ -81,7 +81,7 @@
 |-------------|-------|--------|
 | MKT-01 | Phase 1 | Complete |
 | MKT-02 | Phase 1 | Complete |
-| MKT-03 | Phase 1 | Pending |
+| MKT-03 | Phase 1 | Complete |
 | CONT-01 | Phase 1 | Pending |
 | CONT-02 | Phase 1 | Complete |
 | CONT-03 | Phase 1 | Complete |

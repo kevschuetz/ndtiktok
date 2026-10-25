@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-13-PLAN.md (language decision R1 -> German; Q 0.56, N_DE 2, S_DE 0)
-last_updated: "2026-10-25T11:08:55.104Z"
+stopped_at: Completed 01-14-PLAN.md (hashtag + crisis-line sets approved; MKT-03 complete)
+last_updated: "2026-10-25T11:53:58.734Z"
 last_activity: 2026-10-25
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 15
-  completed_plans: 13
+  completed_plans: 14
   percent: 0
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-10-24)
 ## Current Position
 
 Phase: 1 of 4 (Market Decision & Content Foundation)
-Plan: 14 of 15 in current phase
+Plan: 15 of 15 in current phase
 Status: Ready to execute
 Last activity: 2026-10-25
 
-Progress: [█████████░] 87%
+Progress: [█████████░] 93%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [█████████░] 87%
 | Phase 01 P04 | 20min | 4 tasks | 25 files |
 | Phase 01 P05 | 10min | 2 tasks | 6 files |
 | Phase 01 P13 | 30min | 2 tasks | 10 files |
+| Phase 01 P14 | 45min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,9 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-11: en-1 judged in-session (18 accts, 0 downgrades, 10 queued); only additudemag (institutional) scores 2; no faceless-male >=2 S_EN candidate; GenericArtDad/le0zs/goxlr__ off-niche, recommend exclusion
 - [Phase 01]: Milestone 1 language = German (pre-registered rule row R1; Q 0.56, N_DE 2, S_DE 0)
 - [Phase 01]: Operator 2026-10-25: institutional accounts count as source-citing; repost credits do not; 4 off-niche EN accounts excluded
+- [Phase 01]: 01-14: hashtag set v1 (de) approved as proposed + verified in app 2026-10-25; gap stand-ins kept; #ADHSPapa/#ADHSMänner/#ADHSStärken/#adhsdeutschland not added
+- [Phase 01]: 01-14: crisis-line set v1 (de, AT/DE/CH) approved 2026-10-25; 110 and CH 144 accepted as standard emergency numbers
+- [Phase 01]: 01-14: any non-ok checker status excludes a hashtag (tags have no override flow)
 
 ### Pending Todos
 
@@ -99,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-10-25T11:08:55.097Z
-Stopped at: Completed 01-13-PLAN.md (language decision R1 -> German; Q 0.56, N_DE 2, S_DE 0)
+Last session: 2026-10-25T11:53:36.327Z
+Stopped at: Completed 01-14-PLAN.md (hashtag + crisis-line sets approved; MKT-03 complete)
 Resume file: None
