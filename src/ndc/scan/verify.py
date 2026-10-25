@@ -75,9 +75,18 @@ def parse_set(item: str) -> tuple[str, str]:
 
 
 def set_fields(
-    db: Database, handle: str, platform: str, items: list[str], note: str | None
+    db: Database,
+    handle: str,
+    platform: str,
+    items: list[str],
+    note: str | None,
+    accept: bool = False,
 ) -> tuple[bool, list[str]]:
+    """Write operator_verified values. accept=True with no items only logs the operator review,
+    keeping the current (machine) values as accepted — the queue clears, no field changes."""
     pairs = [parse_set(i) for i in items]  # validate everything before writing anything
+    if not pairs and not accept:
+        raise VerifyError("nothing to set; give --set FIELD=VALUE or --accept")
     conn = db.connect()
     try:
         row = conn.execute(
@@ -88,6 +97,8 @@ def set_fields(
             raise VerifyError(f"unknown account {platform}:{handle}")
         aid = row[0]
         method = f"operator: {note}" if note else "operator"
+        if accept:
+            method = f"{method} (accepted as is)"
         now = _now()
         conn.execute("BEGIN")
         try:

@@ -132,6 +132,13 @@ def _reach(accounts: list[AccountRow], rule: DecisionRule, lang: str, platform: 
 
 
 def _sourcing(accounts: list[AccountRow], rule: DecisionRule, lang: str) -> tuple[int, int]:
+    sourced, slot = _sourcing_keys(accounts, rule, lang)
+    return len(sourced), len(slot)
+
+
+def _sourcing_keys(
+    accounts: list[AccountRow], rule: DecisionRule, lang: str, with_platform: bool = False
+) -> tuple[set[str], set[str]]:
     sourced: set[str] = set()
     slot: set[str] = set()
     for a in accounts:
@@ -142,10 +149,37 @@ def _sourcing(accounts: list[AccountRow], rule: DecisionRule, lang: str) -> tupl
         if a.source_citing_score is None or a.source_citing_score < rule.source_score_threshold:
             continue
         key = a.handle.strip().lower()
+        if with_platform:
+            key = f"{a.platform}:{key}"
         sourced.add(key)
         if a.face == rule.slot_face and a.voice_gender == rule.slot_voice_gender:
             slot.add(key)
-    return len(sourced), len(slot)
+    return sourced, slot
+
+
+def tier_of(followers: int | None, rule: DecisionRule) -> str:
+    if followers is None:
+        return "unknown"
+    if followers < rule.sample_min_followers:
+        return "below_min"
+    for name, t in rule.tiers.items():
+        if _in_tier(followers, t):
+            return name
+    return "unknown"
+
+
+def decision_context(accounts: list[AccountRow], rule: DecisionRule) -> dict:
+    """Sample counts per language/platform/tier and the handles behind N/S (for the log)."""
+    counts: dict[str, int] = {}
+    for a in accounts:
+        k = f"{a.language} {a.platform} {tier_of(a.followers, rule)}"
+        counts[k] = counts.get(k, 0) + 1
+    out: dict = {"counts": dict(sorted(counts.items())), "n_accounts": len(accounts)}
+    for lang in ("de", "en"):
+        sourced, slot = _sourcing_keys(accounts, rule, lang, with_platform=True)
+        out[f"sourced_{lang}"] = sorted(sourced)
+        out[f"slot_{lang}"] = sorted(slot)
+    return out
 
 
 def compute_metrics(accounts: list[AccountRow], rule: DecisionRule) -> dict:
@@ -206,8 +240,17 @@ def fmt_metric(v) -> str:
     return str(v)
 
 
-def write_decision_log(db: Database, res: DecisionResult, log_path: str | Path) -> int:
-    """Append a dated 'Validation week 1' section to the log and insert a language_decision row."""
+def write_decision_log(
+    db: Database,
+    res: DecisionResult,
+    log_path: str | Path,
+    context: dict | None = None,
+    prereg_evidence: dict | None = None,
+) -> int:
+    """Append a dated 'Validation week 1' section to the log and insert a language_decision row.
+
+    context (decision_context) and prereg_evidence (rule commit time vs first scan_run) add the
+    sample counts, the handles behind N/S and the pre-registration check to the section."""
     now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     m = res.metrics
     s_de_answer = "yes" if (m.get("S_DE") or 0) >= 1 else "no"
@@ -223,11 +266,38 @@ def write_decision_log(db: Database, res: DecisionResult, log_path: str | Path) 
         f"DE {fmt_metric(m.get('youtube_R_DE'))}, "
         f"EN {fmt_metric(m.get('youtube_R_EN'))}\n"
     )
+    slot_de = (context or {}).get("slot_de") or []
     lines.append(
         f"- Does a sourced, male, faceless German account exist? **{s_de_answer}** "
-        f"(S_DE = {fmt_metric(m.get('S_DE'))})\n"
+        f"(S_DE = {fmt_metric(m.get('S_DE'))}"
+        + (f"; counting: {', '.join(slot_de)}" if slot_de else "")
+        + ")\n"
     )
     lines.append(f"- rule sha256: `{res.rule_sha256}`\n")
+    if context:
+        for lang in ("de", "en"):
+            src = context.get(f"sourced_{lang}") or []
+            lines.append(
+                f"- sourced {lang.upper()} accounts (N_{lang.upper()}): "
+                f"{', '.join(src) if src else 'none'}\n"
+            )
+        n_acc = context.get("n_accounts", 0)
+        lines.append(f"- sample: {n_acc} accounts; per language/platform/tier:\n")
+        for k, n in (context.get("counts") or {}).items():
+            lines.append(f"  - {k}: {n}\n")
+    if prereg_evidence:
+        committed = prereg_evidence.get("rule_committed_at") or "not given"
+        first = prereg_evidence.get("first_scan_run_at") or "no scan_run"
+        precedes = prereg_evidence.get("precedes")
+        verdict = {True: "yes", False: "NO"}.get(precedes, "unknown")
+        lines.append(
+            f"- pre-registration: rule lock committed {committed}; first scan_run started {first}; "
+            f"commit precedes the first scan_run: {verdict}\n"
+        )
+    lines.append(
+        "- Q uses TikTok mid-tier reach only; YouTube Shorts reach is reported alongside (D-18). "
+        "Milestone 1 runs in one language only (D-08).\n"
+    )
     path = Path(log_path)
     path.parent.mkdir(parents=True, exist_ok=True)
     if not path.exists():

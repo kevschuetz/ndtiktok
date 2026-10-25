@@ -4,6 +4,7 @@ Exit codes for network commands: 3 rule lock not approved (D-20), 4 quiet hours 
 """
 
 import csv
+from datetime import datetime
 from pathlib import Path
 
 import typer
@@ -13,7 +14,14 @@ from ndc.config import config_dir, db_path
 from ndc.db import Database
 from ndc.scan import fetch as scan_fetch
 from ndc.scan import prereg, quiet_hours
-from ndc.scan.decide import AccountRow, decide, fmt_metric, load_rule, write_decision_log
+from ndc.scan.decide import (
+    AccountRow,
+    decide,
+    decision_context,
+    fmt_metric,
+    load_rule,
+    write_decision_log,
+)
 
 app = typer.Typer(help="Competitor scan and language decision (plans 01-03+).")
 rule_app = typer.Typer(help="The pre-registered language decision rule.")
@@ -76,13 +84,53 @@ def _read_accounts(path: Path) -> list[AccountRow]:
     return rows
 
 
+def _parse_ts(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def _prereg_evidence(db: Database, rule_committed_at: str | None) -> dict:
+    conn = db.connect()
+    try:
+        row = conn.execute("SELECT started_at FROM scan_run ORDER BY id LIMIT 1").fetchone()
+    finally:
+        conn.close()
+    first = row[0] if row else None
+    a, b = _parse_ts(rule_committed_at), _parse_ts(first)
+    return {
+        "rule_committed_at": rule_committed_at,
+        "first_scan_run_at": first,
+        "precedes": (a < b) if (a and b) else None,
+    }
+
+
 @app.command("decide")
 def decide_cmd(
-    accounts_csv: Path = typer.Option(..., "--accounts-csv", exists=True, dir_okay=False),
+    accounts_csv: Path | None = typer.Option(
+        None,
+        "--accounts-csv",
+        exists=True,
+        dir_okay=False,
+        help="AccountRow CSV (reproducibility). Default: read the selected sample from the DB.",
+    ),
     log_path: Path = typer.Option(Path("docs/language-decision.md"), "--log-path"),
     amend: str | None = typer.Option(None, "--amend", help="Reason for a rule change (logged)."),
+    rule_committed_at: str | None = typer.Option(
+        None,
+        "--rule-committed-at",
+        help="`git log -1 --format=%cI -- config/decision_rule.lock` (logged vs first scan_run).",
+    ),
 ) -> None:
-    """Apply the pre-registered rule to account rows; print metrics, matched row and verdict."""
+    """Apply the pre-registered rule to the sample; print metrics, matched row and verdict.
+
+    Without --accounts-csv the rows come from the DB (sheet.account_rows, the same rows
+    `scan export --accounts-csv` / sheet.export_accounts writes)."""
+    from ndc.scan import sheet
+
     cfg = config_dir()
     db = Database(db_path())
     try:
@@ -97,7 +145,11 @@ def decide_cmd(
     if status != "ok":
         typer.echo(f"warning: rule lock {status} (rule not operator-approved)")
     rule = load_rule(prereg.rule_path(cfg))
-    res = decide(_read_accounts(accounts_csv), rule)
+    accounts = _read_accounts(accounts_csv) if accounts_csv else sheet.account_rows(db)
+    typer.echo(f"source: {accounts_csv or 'DB (selected sample)'}; {len(accounts)} accounts")
+    res = decide(accounts, rule)
+    ctx = decision_context(accounts, rule)
+    evidence = _prereg_evidence(db, rule_committed_at)
     m = res.metrics
     for k in ("R_DE", "R_EN", "Q", "n_mid_de", "n_mid_en", "N_DE", "N_EN", "S_DE", "S_EN"):
         typer.echo(f"{k}: {fmt_metric(m[k])}")
@@ -106,10 +158,19 @@ def decide_cmd(
         f"youtube_R_EN: {fmt_metric(m['youtube_R_EN'])}"
         "  (reported only, not in Q)"
     )
+    typer.echo(f"sourced DE: {', '.join(ctx['sourced_de']) or 'none'}")
+    typer.echo(f"sourced EN: {', '.join(ctx['sourced_en']) or 'none'}")
+    typer.echo(f"slot (faceless+male) DE: {', '.join(ctx['slot_de']) or 'none'}")
+    typer.echo(f"slot (faceless+male) EN: {', '.join(ctx['slot_en']) or 'none'}")
+    typer.echo(
+        f"pre-registration: lock committed {evidence['rule_committed_at'] or 'not given'}, "
+        f"first scan_run {evidence['first_scan_run_at'] or 'none'}, precedes: "
+        f"{ {True: 'yes', False: 'NO'}.get(evidence['precedes'], 'unknown') }"
+    )
     typer.echo(f"matched row: {res.matched_row}{' (inconclusive)' if res.inconclusive else ''}")
     typer.echo(f"verdict: {res.verdict}")
     typer.echo(f"rule sha256: {res.rule_sha256}")
-    write_decision_log(db, res, log_path)
+    write_decision_log(db, res, log_path, context=ctx, prereg_evidence=evidence)
     typer.echo(f"logged to {log_path}")
 
 
@@ -342,6 +403,11 @@ def verify_cmd(
     platform: str | None = typer.Option(None, "--platform", help="tiktok | youtube"),
     sets: list[str] = typer.Option([], "--set", help="FIELD=VALUE (repeatable)."),
     note: str | None = typer.Option(None, "--note", help="What you checked (logged)."),
+    accept: bool = typer.Option(
+        False,
+        "--accept",
+        help="Accept the current values as they are (no field change; logs an operator review).",
+    ),
 ) -> None:
     """Operator spot-check: `--queue` lists what needs a look; HANDLE --set writes
     operator_verified values that win in the competitor sheet."""
@@ -366,16 +432,17 @@ def verify_cmd(
     if platform not in ("tiktok", "youtube"):
         typer.echo("--platform must be tiktok or youtube", err=True)
         raise typer.Exit(2)
-    if not sets:
-        typer.echo("give at least one --set FIELD=VALUE", err=True)
+    if not sets and not accept:
+        typer.echo("give at least one --set FIELD=VALUE (or --accept)", err=True)
         raise typer.Exit(2)
     try:
-        flag, reasons = verify.set_fields(db, handle, platform, sets, note)
+        flag, reasons = verify.set_fields(db, handle, platform, sets, note, accept=accept)
     except verify.VerifyError as exc:
         typer.echo(f"refused: {exc}", err=True)
         raise typer.Exit(2) from exc
     typer.echo(
-        f"stored {len(sets)} operator_verified value(s) for {platform}:{handle}; "
+        f"stored {len(sets)} operator_verified value(s){' + accepted' if accept else ''}"
+        f" for {platform}:{handle}; "
         f"needs_operator_check {'true' if flag else 'false'}"
     )
 

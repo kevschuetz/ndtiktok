@@ -37,8 +37,10 @@ def _score(v) -> int | None:
     return s if 0 <= s <= 3 else None
 
 
-def export_accounts(db: Database, path: str | Path, selected_only: bool = True) -> int:
-    """AccountRow CSV. Default: selected accounts; when nothing is selected yet, all accounts."""
+def account_rows(db: Database, selected_only: bool = True) -> list[AccountRow]:
+    """AccountRow list from v_competitor_sheet. Default: selected accounts; when nothing is
+    selected yet, all accounts. `scan decide` reads this directly (same rows export_accounts
+    writes to CSV)."""
     conn = db.connect()
     try:
         sql = "SELECT * FROM v_competitor_sheet"
@@ -51,18 +53,25 @@ def export_accounts(db: Database, path: str | Path, selected_only: bool = True) 
     for r in rows:
         if r["language"] not in ("de", "en"):
             continue
-        acc = AccountRow(
-            handle=r["handle"],
-            language=r["language"],
-            platform=r["platform"],
-            followers=r["followers"],
-            reach_median=r["median_views_15"],
-            n_reach_posts=r["n_reach_posts"] or 0,
-            source_citing_score=_score(r["source_citing_score"]),
-            face=r["face"] if r["face"] in _FACE else "unknown",
-            voice_gender=r["voice_gender"] if r["voice_gender"] in _VOICE else "unknown",
+        out.append(
+            AccountRow(
+                handle=r["handle"],
+                language=r["language"],
+                platform=r["platform"],
+                followers=r["followers"],
+                reach_median=r["median_views_15"],
+                n_reach_posts=r["n_reach_posts"] or 0,
+                source_citing_score=_score(r["source_citing_score"]),
+                face=r["face"] if r["face"] in _FACE else "unknown",
+                voice_gender=r["voice_gender"] if r["voice_gender"] in _VOICE else "unknown",
+            )
         )
-        out.append(acc.model_dump())
+    return out
+
+
+def export_accounts(db: Database, path: str | Path, selected_only: bool = True) -> int:
+    """AccountRow CSV (see account_rows)."""
+    out = [a.model_dump() for a in account_rows(db, selected_only)]
     with Path(path).open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(ACCOUNT_COLUMNS))
         w.writeheader()
