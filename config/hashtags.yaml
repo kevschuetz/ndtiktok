@@ -72,7 +72,7 @@ stats:
 
 # Harvested with >= 2 accounts, passes the checker, but deliberately not chosen.
 not_chosen:
-  - {tag: "#adhsdeutschland", reason: "9 accounts, but country-specific; the account targets DACH (operator is Austrian). Operator may swap in."}
+  - {tag: "#adhsdeutschland", reason: "9 accounts, but country-specific; the account targets DACH (operator is Austrian). Operator decided 2026-10-25: not added."}
   - {tag: "#adhd", reason: "English tag; German-only run (D-08)"}
   - {tag: "#mentalhealth", reason: "English, generic mental-health tag"}
   - {tag: "#fyp", reason: "generic reach tag, no topical signal"}
@@ -114,5 +114,8 @@ gaps:
     note: "No men/dads tag (#ADHSPapa, #ADHSMänner, #Väter ...) in the DE harvest at all - matches S_DE = 0. Partners angle only: #Beziehung (4 accounts, mid 11,724). Check #ADHSPapa / #ADHSMänner in the app."
     candidates: ["#Beziehung", "#Beziehungen", "#adhsinbeziehungen (1 account)", "#adhsundbeziehungen (1 account)"]
 
-verified_in_app: null   # set to the date the operator confirmed every tag in the TikTok app
-approved_at: null
+verified_in_app: 2026-10-25   # operator confirmed every tag in the TikTok app
+approved_at: 2026-10-25
+# Operator decisions 2026-10-25: set "Approved as proposed". Gap stand-ins kept (#Neurodiversität /
+# #Hyperfokus for strengths, #Beziehung / #Beziehungen for partners); #ADHSPapa / #ADHSMänner /
+# #ADHSStärken NOT added; #adhsdeutschland NOT added.

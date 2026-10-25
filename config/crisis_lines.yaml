@@ -6,7 +6,7 @@
 # Loaded by src/ndc/launch_sets.py.
 version: 1
 language: de
-approved_at: null
+approved_at: 2026-10-25   # operator reviewed and approved the set ("Approved")
 
 # Pinned-comment short form (emotions / burnout / crisis-adjacent topics).
 short_form: "Wenn es dir gerade nicht gut geht: AT 142 · DE 0800 111 0 111 · CH 143 (rund um die Uhr, kostenlos). Im Notfall 144 / 112."
@@ -81,7 +81,7 @@ entries:
     hours: "24/7"
     source_url: https://digital-strategy.ec.europa.eu/en/policies/112
     verified_at: 2026-10-25
-    note: "112 confirmed on the EU Commission page; 110 is well known but was not checked against an official page this run."
+    note: "112 confirmed on the EU Commission page; 110 is well known but was not checked against an official page this run. Operator accepted 110 as a standard emergency number 2026-10-25."
   # ------------------------------------------------------------------ Switzerland
   - country: CH
     service: Die Dargebotene Hand
@@ -105,4 +105,4 @@ entries:
     hours: "24/7"
     source_url: https://www.144.ch/
     verified_at: 2026-10-25
-    note: "144.ch (Interverband für Rettungswesen) names the Sanitätsnotrufzentrale 144 but has no explicit 'call 144' statement; 112 also works in CH but was not checked against a Swiss official page."
+    note: "144.ch (Interverband für Rettungswesen) names the Sanitätsnotrufzentrale 144 but has no explicit 'call 144' statement; 112 also works in CH but was not checked against a Swiss official page. Operator accepted CH 144 as a standard emergency number 2026-10-25."
