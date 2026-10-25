@@ -144,7 +144,10 @@ def test_import_writes_llm_session_obs_and_sheet(db, tmp_path):
     row = sheet_row(db, a)
     assert row["source_citing_score"] == 2 and row["face"] == "faceless"
     assert row["face_provenance"] == "llm_session"
-    assert row["needs_operator_check"] == "false"
+    # HI-01: a DE text level >= 2 counts toward N_DE, so it goes to the operator
+    assert row["needs_operator_check"] == "true"
+    flag = [r for r in obs_rows(db, a) if r["field"] == "needs_operator_check"][-1]
+    assert "text level 2 counts toward N_DE" in flag["method"]
     brow = sheet_row(db, b)
     assert brow["source_text_level"] == "0" and brow["source_video_level"] is None
 
@@ -199,3 +202,42 @@ def test_no_anthropic_anywhere():
     for p in (root / "src").rglob("*.py"):
         assert not pat.search(p.read_text(encoding="utf-8")), p
     assert "anthropic" not in (root / "pyproject.toml").read_text(encoding="utf-8").lower()
+
+
+@pytest.mark.parametrize(
+    "claimed,evidence,expected",
+    [
+        (3, "e", 0),
+        (3, "Studien zeigen", 1),
+        (2, "Studien zeigen", 1),
+        (3, "laut S3-Leitlinie ADHS", 2),
+        (2, "Barkley sagt", 2),
+        (2, "Die Forschung sagt", 1),
+        (3, "Faraone et al. 2021", 3),
+        (3, "doi:10.1/x", 0),  # one token
+        (1, "science", 0),
+    ],
+)
+def test_supported_level(claimed, evidence, expected):
+    assert judging.supported_level(claimed, evidence) == expected
+
+
+def test_trivial_verbatim_evidence_is_downgraded(db):
+    """HI-01: a substring of the stored text is not enough; it must support the claimed level."""
+    aid = seed_account(db, "alpha_adhs", posts=ALPHA_POSTS, videos=ALPHA_VIDEOS)
+    c = judging.Citation
+    conn = db.connect()
+    try:
+        for cit, expected in [
+            (c(source="caption", post_id="a1", level=3, evidence="e"), 0),
+            (c(source="caption", post_id="a4", level=3, evidence="Studien zeigen"), 1),
+            (c(source="caption", post_id="a1", level=3, evidence="laut S3-Leitlinie ADHS"), 2),
+        ]:
+            out = judging.apply_evidence_guard(conn, aid, cit)
+            assert (out.level, out.guard_result, out.claimed_level) == (
+                expected,
+                "downgraded",
+                3,
+            ), cit
+    finally:
+        conn.close()

@@ -149,6 +149,41 @@ def _contains(stored: str | None, evidence: str) -> bool:
     return evidence in stored or _ws(evidence) in _ws(stored)
 
 
+# HI-01: verbatim evidence must also be long enough and shaped like the claimed level, so a
+# trivial substring ("e", one word of the caption) or a level-1 phrase cannot hold level 2/3.
+MIN_EVIDENCE_CHARS = {1: 8, 2: 12, 3: 15}  # after whitespace collapsing
+MIN_EVIDENCE_WORDS = 2
+_L3_PAT = re.compile(r"(doi|pmid|pubmed|https?://|www\.|\b(19|20)\d{2}\b)", re.I)
+_L2_PAT = re.compile(
+    r"((?i:leitlinie|guideline|awmf|\bnice\b|journal|universit|\buni\b|institut|klinik|clinic|"
+    r"et\s+al|studie\s+der|study\s+by|meta-?analy|professor|\bprof\.|\bdr\.)"
+    r"|\b[A-Z]{2,6}\b|\b(19|20)\d{2}\b)"
+)
+_GENERIC = (
+    "Forschung|Wissenschaft|Studie|Studien|Experte|Experten|Fachleute|Science|Research|"
+    "Studies|Study|Experts|Scientists|Doctors|Ärzte"
+)
+# A named person or body: "Barkley sagt", "Russell Barkley says", "laut Faraone", "per Barkley".
+_NAMED_PAT = re.compile(
+    rf"(\b(?!(?:{_GENERIC})\b)[A-ZÄÖÜ][\w-]+\s+(says|said|sagt|sagte|schreibt|writes|found|fand)\b"
+    rf"|\b(laut|per|according\s+to)\s+(?!(?:{_GENERIC})\b)[A-ZÄÖÜ][\w-]+)"
+)
+
+
+def supported_level(claimed: int, evidence: str) -> int:
+    """Highest level <= claimed that the evidence string can support on its face."""
+    ev = _ws(evidence or "")
+    for lvl in range(claimed, 0, -1):
+        if len(ev) < MIN_EVIDENCE_CHARS[lvl] or len(ev.split()) < MIN_EVIDENCE_WORDS:
+            continue
+        if lvl == 3 and not _L3_PAT.search(ev):
+            continue
+        if lvl == 2 and not (_L2_PAT.search(ev) or _L3_PAT.search(ev) or _NAMED_PAT.search(ev)):
+            continue
+        return lvl
+    return 0
+
+
 def _stored_text(conn, account_id: int, cit: Citation) -> str | None:
     if cit.source in ("caption", "pinned_comment"):
         col = "description" if cit.source == "caption" else "pinned_comment"
@@ -166,11 +201,17 @@ def _stored_text(conn, account_id: int, cit: Citation) -> str | None:
 
 def apply_evidence_guard(conn, account_id: int, cit: Citation) -> GuardedCitation:
     """Level > 0 caption/pinned/speech citations need verbatim evidence in the stored text;
-    otherwise the level drops to 0. On-screen citations cannot be checked and keep their level."""
+    otherwise the level drops to 0. Verbatim evidence that is too short or not shaped like the
+    claimed level drops to the highest level it supports (HI-01). On-screen citations cannot be
+    checked and keep their level (they are routed to the operator when they decide the score)."""
     level, result = cit.level, "kept"
     if cit.source != "onscreen" and cit.level > 0:
         if cit.evidence is None or not _contains(_stored_text(conn, account_id, cit), cit.evidence):
             level, result = 0, "downgraded"
+        else:
+            level = supported_level(cit.level, cit.evidence)
+            if level < cit.level:
+                result = "downgraded"
     return GuardedCitation(
         **cit.model_dump(exclude={"level"}),
         level=level,

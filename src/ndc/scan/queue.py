@@ -6,6 +6,7 @@ Rules (any one queues the account):
 - every video download was unavailable (nothing could be analyzed);
 - a DACH account whose video level or an on-screen citation lifts the score to >= 2 while the
   text level is < 2 (on-screen / video evidence decides the score);
+- a DACH account whose text level is >= 2 (it counts toward N_DE, which decides R1/R3; HI-01);
 - an imported evidence string failed the substring guard;
 - the account would count toward S_DE or S_EN (score >= 2, faceless, male).
 An operator review (`ndc scan verify`) newer than every machine observation clears the flag.
@@ -97,6 +98,8 @@ def evaluate(conn, account_id: int) -> list[str]:
                 reasons.append(f"DACH: video level {video} lifts score over text level {text}")
             elif onscreen is not None and onscreen >= 2:
                 reasons.append(f"DACH: on-screen citation level {onscreen} decides the score")
+        if row["language"] == "de" and text is not None and text >= 2:
+            reasons.append(f"DACH: text level {text} counts toward N_DE")
         score = row["source_citing_score"]
         if (
             score is not None
