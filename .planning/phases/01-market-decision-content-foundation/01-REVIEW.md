@@ -58,6 +58,7 @@ findings:
   low: 9
   total: 20
 status: issues_found
+fix_status: critical_high_fixed  # 2026-10-25, see "Fix status" below
 ---
 
 # Phase 1: Code Review Report
@@ -410,6 +411,24 @@ Verified clean against the focus list:
 - **Ports:** none exposed.
 - **Memory caps:** `ndc` 1g, `ndc-heavy` 3g, swap equal to memory.
 - **Decision-rule `eval` sandbox:** sound.
+
+## Fix status (2026-10-25)
+
+Operator scope: "Fix critical + high now", plus ME-02 (topic re-check) and the two deferred
+`test_discover.py` failures (LO-03). Other medium/low findings remain open.
+
+| Finding | Status | Commit |
+|---|---|---|
+| CR-01 safety false negatives | fixed — `config/safety.yaml` v2 (`revised_at` + `revision_note`; approved_by/at kept; operator to glance at the extended list), soft-hyphen/zero-width stripping with span mapping in the matcher, all 23 probes + variants pinned (`test_known_false_negatives`), approved wording pinned block-free | `73e9854` |
+| ME-02 topic safety frozen | fixed — `select` re-checks under current rules; new `ndc topic recheck [id]`. Run on the live DB under v2: **0 of 72 topics changed** (65 backlog stay `ok` with no hits, 7 rejected stay `blocked`) | `e287e00` |
+| HI-01 trivial evidence | fixed — per-level minimum length + >= 2 words, level 3 needs DOI/PMID/link/year, level 2 a named source; otherwise drops to the supported level (`downgraded`). DE accounts with text level >= 2 are queued | `0cb2727` |
+| HI-02 unverified on-screen ids | fixed — import refuses the file on any video_id that is not a download-ok video of the account or unknown post_id; scores >= 2 resting on on-screen citations only are queued for EN and DE | `2b17952` |
+| HI-03 decide on unapproved rule | fixed — lock checked before anything is committed; not ok and no `--amend` → exit 3; lock status, amendment logged in the run and input source (`csv:<path> sha256:<hex>` / `db:selected sample`) recorded in the log section and new `language_decision` columns (migration 007). Rule, lock and the existing decision untouched | `fb7a5a6` |
+| HI-04 quiet hours at start only | fixed — analyze (per account), fetch (per candidate), discover (per query) stop cleanly, note `stopped_quiet_hours`, resumable; `--force` unchanged | `877de23` |
+| HI-05 never-attempted marked analyzed | fixed — not-attempted videos `skipped` with `analyzed_at` NULL, all-not-attempted accounts not stored, done = an ok video | `ea95cf4` |
+| LO-03 discover tests on live config | fixed — pinned fixture config | `23c0a51` |
+
+Suite after fixes: 381 passed, 0 failed; ruff clean.
 
 _Reviewed: 2026-10-25T12:21:40Z_
 _Reviewer: Claude (gsd-code-reviewer)_
