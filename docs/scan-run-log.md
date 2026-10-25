@@ -148,3 +148,96 @@ guardianofmind and adhd_alien if the correct ones are known.
 
 Targets: ~40 per language (28 TikTok / 12 YouTube), and **≥ 8 usable mid-tier TikTok accounts per
 language**. Currently: DE has 2 TikTok and 0 mid TikTok; EN has 4 TikTok and 1 mid TikTok.
+
+## Operator review (Task 2)
+
+Operator reply: "list edited". Two orchestrator commits applied the edits:
+- `48f0b68`: the executor's exclude/relabel suggestions, as approved by the operator. 12 rows
+  set to `exclude` (news outlets, brands, kids' news, off-niche channels, and the suspect seeds
+  hey_mamaleben and adhd_alien). 5 YouTube rows relabelled `de` → `en`.
+- `704bd89`: 36 TikTok handles the operator collected in the app (`discovery_source=tiktok_app`),
+  18 `en` and 18 `de`. Two are `include`: adhsabenteuer and meinadhsleben.
+- The four "check niche" YouTube rows (@GenericArtDad, @Gossipduckling, @SquirrelDad,
+  @olivialutfallah) were left blank, so the quota decides.
+
+| discovery_source | rows | include | exclude | blank |
+|---|---|---|---|---|
+| seed_d04 | 11 | 0 | 2 | 9 |
+| ytsearch | 30 | 0 | 10 | 20 |
+| tiktok_app (added) | 36 | 2 | 0 | 34 |
+| **total** | **77** | **2** | **12** | **63** |
+
+## Final sample
+
+Runs on 2026-10-25, outside the quiet hours, no `--force`, rule sha256 `ea401c5d…1b904b04`:
+
+| Step | Command | UTC | scan_run | Result |
+|---|---|---|---|---|
+| Re-import | `scan import-candidates scan/candidates.csv` | 07:21 | — | inserted 36, updated 41, rejected 0 |
+| Profile fetch | `scan fetch --stage profile` | 07:22:06–07:25:15 | 19 | ok 36, skipped fresh 24, failed 5, stopped 0 |
+| Select DE | `scan select --lang de` | 07:25:26 | 20 | total 20 |
+| Select EN | `scan select --lang en` | 07:25:28 | 21 | total 30 |
+
+All 36 operator-added TikTok handles resolved; none failed. The 5 failures are the same ones as
+before: 3 YouTube channels without a Shorts tab (@bvlegasthenie, @autismusspektruminfo,
+@AdventuresofNeryn), plus the seeds verena_eisbrenner and guardianofmind (no data). The fetch
+also retried @RDXMixer, which is excluded.
+
+Check: 0 mismatches between `operator_decision` and `status`. Both `include` rows are
+`selected`, and no `exclude` row is.
+Status counts: 50 selected, 12 excluded, and 15 candidate (below 1000 followers or no data).
+
+### Selected, by language × platform × tier
+
+| Language | Platform | micro | mid | macro | mega | total |
+|---|---|---|---|---|---|---|
+| de | tiktok | 9 | 7 | 2 | 0 | 18 |
+| de | youtube | 2 | 0 | 0 | 0 | 2 |
+| **de** | | **11** | **7** | **2** | **0** | **20** |
+| en | tiktok | 6 | 7 | 6 | 1 | 20 |
+| en | youtube | 4 | 2 | 3 | 1 | 10 |
+| **en** | | **10** | **9** | **9** | **2** | **30** |
+| **total** | | **21** | **16** | **11** | **2** | **50** |
+
+Against a target of ~40 per language (28 TT / 12 YT, ~80 total), the sample is **50**: DE 20, EN 30.
+Shortfalls, verbatim from `scan select`:
+- de: `mid tier shortfall: 7 of 12`
+- en: `mid tier shortfall: 9 of 12`
+
+Shortfall reason: the selected set is again everything with ≥ 1000 followers that is not
+excluded. The quota cut nothing; the pool is the limit. DE YouTube is down to 2 because most
+DE-query channels were English (relabelled) or off-niche (excluded). Neither language reaches 30.
+
+### Mid-tier TikTok vs the validity floor (≥ 8 per language)
+
+| Language | mid TikTok selected | of which clearly ND-niche by bio | floor |
+|---|---|---|---|
+| de | 7: adhsabenteuer, robin.haegle, bene_adhso, neuroceline, adhs.reise, susis_synapsensalat, daily.katze | 6 (daily.katze unclear) | 8 → **short by 1–2** |
+| en | 7: adhdventurers, theautismspectrum, messagetodaniel, adhddude, tim.adhd, adhdautism4, le0zs | 6 (le0zs unclear) | 8 → **short by 1–2** |
+
+The operator's in-app collection raised the counts from DE 0 / EN 1 to DE 7 / EN 7. Both
+languages are still below the validity floor of 8. This is a finding for MKT-01. Two to four more
+mid-tier (10k–100k) ND TikTok handles per language would close the gap.
+
+### Flags on operator-added or blank rows (not excluded; the decision stays the operator's)
+
+Judged from the fetched bio only:
+- **daily.katze** (de, TikTok, mid 22.2k): bio "Dinge erklärt von Kadse 👇 Merch👇". This looks
+  like a general explainer or cat account, not obviously ND. It counts toward DE mid.
+- **le0zs** (en, TikTok, mid 56.9k): bio "See you in hell for the sequel". No ND signal; it may
+  be a personal account. It counts toward EN mid.
+- **goxlr__** (en, TikTok, micro 1.1k): bio "Berserk X StarWars". Looks off-niche, a personal or
+  fandom account.
+- **user8445982006957** (de, TikTok, micro 1.8k): the handle is an auto-generated default and the
+  bio is empty. Identity and niche are unverifiable.
+- **christian_durstewitz** (de, TikTok, macro 330k): bio "MENTAL HEALTH Safespace Depressionen |
+  ADHS". ND-adjacent: general mental health with ADHS. Probably fine.
+- **@Gossipduckling** (en, YouTube, mid 17.4k, left blank by the operator): bio is celebrity
+  gossip. Likely off-niche, and it counts toward EN mid (YouTube).
+- Not selected (below 1000 followers): bitecheesechili (945, personal "isfp sx 4w5" bio),
+  adhs.wissen (554), and audhs.info (7 followers).
+- The seeds verena_eisbrenner and guardianofmind are still "not on platform" (no data). Nobody has
+  supplied a corrected handle.
+
+If the operator excludes daily.katze and le0zs, mid-tier TikTok falls to DE 6 / EN 6. Plan 08
+collects posts for exactly the 50 `selected` rows unless the operator changes decisions first.
