@@ -2,7 +2,7 @@
 
 from ndc.checks.models import Finding
 from ndc.checks.rules import Rule
-from ndc.checks.text import normalize, strip_quoted, tokens
+from ndc.checks.text import normalize, strip_invisible, strip_quoted, tokens
 
 
 def _seq_spans(toks, seq: list[set[str]], window: int):
@@ -26,13 +26,14 @@ def _seq_spans(toks, seq: list[set[str]], window: int):
 
 def apply_rules(text: str, lang: str, rules: list[Rule], source_file: str) -> list[Finding]:
     norm = normalize(text)
-    stripped = strip_quoted(norm)
+    clean, idx = strip_invisible(norm)  # spans below are on `clean`; idx maps back to `norm`
+    stripped = strip_quoted(clean)
     tok_cache: dict[bool, list] = {}
     out: dict[tuple[str, int, int], Finding] = {}
     for rule in rules:
         if not rule.applies_to(lang):
             continue
-        hay = stripped if rule.allow_in_quotes else norm
+        hay = stripped if rule.allow_in_quotes else clean
         for m in rule.matches:
             spans: list[tuple[int, int]] = []
             if m.regex:
@@ -49,7 +50,8 @@ def apply_rules(text: str, lang: str, rules: list[Rule], source_file: str) -> li
                 else:
                     seq = [{w.lower() for w in step} for step in m.lemma_seq]
                     spans = list(_seq_spans(toks, seq, m.window))
-            for s, e in spans:
+            for cs, ce in spans:
+                s, e = idx[cs], idx[ce - 1] + 1
                 key = (rule.id, s, e)
                 if key not in out:
                     out[key] = Finding(

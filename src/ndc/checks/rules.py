@@ -66,6 +66,8 @@ class _RuleFile(_Strict):
     version: int
     approved_by: str | None = None
     approved_at: date | datetime | str | None = None
+    revised_at: date | datetime | str | None = None
+    revision_note: str | None = None
 
     @staticmethod
     def _unique(rules: list[Rule]) -> list[Rule]:

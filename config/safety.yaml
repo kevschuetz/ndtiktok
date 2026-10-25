@@ -4,9 +4,17 @@
 # script is still caught. Quoted text is NOT exempt here (allow_in_quotes defaults to false).
 # config/crisis_lines.yaml (plan 09) is exempt from checking; it naturally contains "Suizid".
 # Regex matching is case-insensitive unless case_sensitive: true.
-version: 1
+# Soft hyphens and zero-width characters are removed before matching (checks/text.py).
+version: 2
 approved_by: operator
 approved_at: 2026-10-24
+revised_at: 2026-10-25
+revision_note: >-
+  v2 is a coverage fix from the Phase 1 code review (CR-01): 23 ordinary phrasings of blacklisted
+  subjects passed v1. The operator approved fixing the gaps; the extended patterns (diagnosis
+  listicles/modal questions/tests, more drug names and generic drug words, self-harm wording,
+  supplements, lowercase "aba therapy") should still be glanced at by the operator.
+  Regression probes: tests/checks/test_safety.py::test_known_false_negatives.
 scope: subject
 levels: [topic, script, claim]
 
@@ -23,6 +31,8 @@ rules:
       - regex: '\bAntidepressiv\w*'
       - regex: '\bDosis\b|\bDosierung\w*|\bdosier\w*'
       - regex: '\bTablette\w*|\bPille\w*'
+      - regex: '\bPsychopharmak\w*|\bArznei\w*|\bNeurolepti\w*'
+      - regex: '\bverschreib\w*|\bverschrieben\b|\bRezeptpflicht\w*'
     message: "Medikamente sind kein Thema dieses Accounts (kein medizinischer Rat)."
     suggest: null
   - id: any.medication_names
@@ -30,7 +40,7 @@ rules:
     tier: block
     category: medication
     match:
-      - regex: '\b(Methylphenidat\w*|methylphenidate|Ritalin|Medikinet|Concerta|Elvanse|Vyvanse|Adderall|Lisdexamfetamin\w*|lisdexamfetamine|Atomoxetin\w*|atomoxetine|Strattera|Guanfacin\w*|guanfacine|Intuniv|Amphetamin\w*|amphetamines?|Dexamfetamin\w*|Melatonin|Risperidon\w*|risperidone|Aripiprazol\w*|aripiprazole)\b'
+      - regex: '\b(Methylphenidat\w*|methylphenidate|Ritalin|Medikinet|Concerta|Elvanse|Vyvanse|Adderall|Lisdexamfetamin\w*|lisdexamfetamine|Atomoxetin\w*|atomoxetine|Strattera|Guanfacin\w*|guanfacine|Intuniv|Amphetamin\w*|amphetamines?|Dexamfetamin\w*|Melatonin|Risperidon\w*|risperidone|Aripiprazol\w*|aripiprazole|bupropion|Bupropion\w*|Wellbutrin|Elontril|clonidine|Clonidin\w*|modafinil|Modafinil\w*|viloxazine|Viloxazin\w*|Qelbree|Focalin|Dexedrine|Equasym|Kinecteen|Attentin)s?\b'
       - regex: '\bSSRIs?\b'
     message: "Medication / Wirkstoff — blacklisted subject."
     suggest: null
@@ -43,6 +53,7 @@ rules:
       - regex: '\bstimulants?\b|\bantidepressants?\b'
       - regex: '\bdos(e|es|age|ages|ing)\b'
       - regex: '\bpills?\b|\btablets?\b'
+      - regex: '\bdrugs?\b|\bprescri\w*|\bRx\b'
     message: "Medication is out of scope (no medical advice)."
     suggest: null
 
@@ -53,14 +64,18 @@ rules:
     category: diagnosis_question
     match:
       - regex: '\b(habe?|hast)\s+(ich|du)\s+(\w+\s+){0,2}?(ADHS|ADS|Autismus)\b'
-      - regex: '\b(bin\s+ich|bist\s+du)\s+(\w+\s+){0,2}?(autistisch|neurodivergent|ein\s+Autist\w*)'
+      - regex: '\b(bin\s+ich|bist\s+du)\s+(\w+\s+){0,2}?(neurodivergent|ADHSler\w*|(ein\s+)?Autist\w*)'
+      - regex: '\b(könnte|könnten|könntest|kann|kannst)\s+(ich|du|mein\s+\w+)\s+(\w+\s+){0,2}?(ADHS|ADS|Autismus|autistisch)\s+(haben|sein)\b'
+      - regex: '\b(ADHS|ADS|Autismus|Autismus-Spektrum)-?(Test|Selbsttest|Quiz|Screening)\w*'
+      - regex: '\bwie\s+(bekomme|kriege|erhalte|bekommt|kriegt|erhält)\s+(ich|man|du)\b(\W+\w+){0,4}?\W+\w*Diagnose\w*'
+      - regex: '\b(diagnostizieren|testen|abklären)\s+lassen\b'
       - regex: '\b(ist|wird)\s+mein\s+(Kind|Sohn|Tochter|Baby|Partner\w*|Mann|Frau)\s+(\w+\s+){0,2}?autistisch'
       - regex: '\bhat\s+mein\s+(Kind|Sohn|Tochter|Baby|Partner\w*|Mann|Frau)\s+(\w+\s+){0,2}?(ADHS|ADS|Autismus)\b'
       - regex: '\bworan\s+erkenne\s+ich\b'
       - regex: '\bselbst-?test\w*'
       - regex: '\bCheckliste\w*'
       - regex: '\b\d+\s+(Anzeichen|Warnzeichen|Hinweise|Symptome)\b'
-      - regex: '\b(Anzeichen|Warnzeichen)\s+(für|von)\s+(ADHS|ADS|Autismus)\b'
+      - regex: '\b(Anzeichen|Warnzeichen|Symptome)\s+(für|von)\s+(ADHS|ADS|Autismus)\b'
       - regex: '\btest(e)?\s+dich\b'
     message: "Diagnose-Frage / Selbsttest — nie diagnostisch."
     suggest: null
@@ -76,6 +91,10 @@ rules:
       - regex: '\bsigns?\s+(that\s+)?(you|your\s+\w+)\s+(have|has|might\s+have|may\s+have|is|are)\b'
       - regex: '\b\d+\s+(signs?|symptoms?|red\s+flags?)\b'
       - regex: '\bself-?test\w*|\bquiz\w*|\bchecklists?\b'
+      - regex: '\b(signs?|symptoms?|traits?|red\s+flags?|indicators?)\s+of\s+(adhd|add|autism|audhd|asd|being\s+autistic)\b'
+      - regex: '\b(could|might|may|can)\s+(i|you|my\s+\w+)\s+(have|be)\b(\W+\w+){0,3}?\W+(adhd|autis\w*|neurodivergent)\b'
+      - regex: '\bget(ting|s)?\s+(\w+\s+){0,2}?diagnos\w*'
+      - regex: '\b(adhd|autism|asd)[-\s](test|tests|testing|quiz\w*|screen\w*|assessment\w*)\b'
     message: "Diagnosis question / self-test — never diagnostic."
     suggest: null
 
@@ -87,6 +106,7 @@ rules:
     match:
       - regex: '\bABA\b'
         case_sensitive: true
+      - regex: '\baba[-\s]?(therap\w*|program\w*|interven\w*)'
       - regex: '\bangewandte[nr]?\s+Verhaltensanalyse\b|\bapplied\s+behaviou?r(al)?\s+analysis\b'
     message: "ABA — blacklisted subject."
     suggest: null
@@ -99,6 +119,8 @@ rules:
     match:
       - regex: '\bSuizid\w*|\bSelbstmord\w*|\bSelbsttötung\w*|\bSelbstverletz\w*'
       - regex: '\britz(en|t|e|te|ten)\b'
+      - regex: '\bumbring\w*|\bumzubringen\b|\bnicht\s+mehr\s+leben\b'
+      - regex: '\b(will|möchte|wollte|mag)\s+(\w+\s+){0,2}?sterben\b'
     message: "Suizid / Selbstverletzung — nicht als Thema (Krisenlinien siehe crisis_lines.yaml)."
     suggest: null
   - id: en.self_harm
@@ -106,8 +128,9 @@ rules:
     tier: block
     category: self_harm
     match:
-      - regex: '\bsuicid\w*|\bself-?harm\w*|\bself-?injur\w*'
+      - regex: '\bsuicid\w*|\bself[-\s]?harm\w*|\bself[-\s]?injur\w*'
       - regex: '\bkill(ing)?\s+(myself|yourself)\b|\bcutting\s+(myself|yourself)\b'
+      - regex: '\bend(ing)?\s+(my|your)\s+(own\s+)?life\b|\bwant(s|ed)?\s+to\s+die\b'
     message: "Suicide / self-harm — not a topic."
     suggest: null
 
@@ -117,7 +140,7 @@ rules:
     tier: block
     category: eating_disorder
     match:
-      - regex: '\bEssstörung\w*|\bMagersucht\w*|\bmagersüchtig\w*|\bAnorexi\w*|\bBulimi\w*|\bBinge-?Eating\w*'
+      - regex: '\bEssstörung\w*|\bMagersucht\w*|\bmagersüchtig\w*|\bAnorexi\w*|\bBulimi\w*|\bBinge[-\s]?Eating\w*'
     message: "Essstörungen — blacklisted subject."
     suggest: null
   - id: en.eating_disorder
@@ -163,6 +186,7 @@ rules:
     category: supplements_diet
     match:
       - regex: '\bNahrungsergänzung\w*|\bSupplement\w*|\bOmega-?3\w*'
+      - regex: '\bVitamin\w*|\bMagnesium\w*|\bZink\b|\bCBD\b|\bCannabidiol\w*|\bEisen(präparat\w*|tablette\w*|mangel\w*)?\b|\bFischöl\w*'
       - regex: '\b(ADHS|Autismus)-?Diät\w*'
       - regex: '\bzuckerfrei\w*(?:\W+\w+){0,4}?\W+(heil|hilft\s+gegen|gegen\s+(ADHS|Autismus))'
     message: "Nahrungsergänzung / Diät als Behandlung — blacklisted."
@@ -173,6 +197,7 @@ rules:
     category: supplements_diet
     match:
       - regex: '\bsupplement(s|ation|ing)?\b|\bomega-?3\w*'
+      - regex: '\bvitamins?\b|\bmagnesium\b|\bzinc\b|\bCBD\b|\bcannabidiol\b|\bfish\s+oil\b|\biron\s+(supplement\w*|deficiency|levels?|pills?)\b'
       - regex: '\b(adhd|autism)\s+diet\b'
       - regex: '\b(sugar|gluten|dairy)[-\s]free\b(?:\W+\w+){0,4}?\W+(cure|cures|fix|fixes|treat\w*)\b'
     message: "Supplements / diet-as-treatment — blacklisted."

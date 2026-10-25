@@ -49,3 +49,71 @@ def test_every_safety_rule_is_block():
 def test_harmless_topic_ok():
     res = check("ADHS und Morgenroutine mit Kindern", "de", "topic")
     assert res.status == "ok", res.findings
+
+
+# CR-01 (Phase 1 code review): ordinary phrasings that passed safety.yaml v1. Each must block.
+KNOWN_FALSE_NEGATIVES = [
+    ("Signs of ADHD in women", "en"),
+    ("symptoms of autism in adults", "en"),
+    ("Could I have ADHD?", "en"),
+    ("how to get diagnosed with ADHD as an adult", "en"),
+    ("ADHD test online", "en"),
+    ("ADHD drugs and your brain", "en"),
+    ("Should you get a prescription?", "en"),
+    ("Wellbutrin for ADHD", "en"),
+    ("self harm and autism", "en"),
+    ("I want to end my life", "en"),
+    ("aba therapy", "en"),
+    ("magnesium for ADHD", "en"),
+    ("Bin ich Autist?", "de"),
+    ("Könnte ich ADHS haben?", "de"),
+    ("Wie bekomme ich eine ADHS-Diagnose?", "de"),
+    ("ADHS-Test für Erwachsene", "de"),
+    ("Binge Eating und ADHS", "de"),
+    ("Psychopharmaka bei Autismus", "de"),
+    ("Arzneimittel gegen ADHS", "de"),
+    ("Ritalins Wirkung", "de"),
+    ("Vitamin D bei ADHS", "de"),
+    ("Ich will mich umbringen", "de"),
+    ("Medi­kamente", "de"),
+    # variants of the same gaps
+    ("self-harm and autism", "en"),
+    ("Medi​kamente gegen ADHS", "de"),
+    ("Concertas Nebenwirkungen", "de"),
+]
+
+
+@pytest.mark.parametrize("text,lang", KNOWN_FALSE_NEGATIVES)
+def test_known_false_negatives(text, lang):
+    findings = check_safety(text, lang, "topic")
+    assert any(f.tier == "block" for f in findings), text
+    assert check(text, lang, "topic").status == "blocked"
+
+
+def test_obfuscated_span_maps_to_original_text():
+    text = "Neue Medi­kamente"
+    f = check_safety(text, "de", "script")[0]
+    assert text[f.span[0] : f.span[1]] == f.matched_text
+    assert f.matched_text == "Medi­kamente"
+
+
+# Approved wording (style guide hedging/disclaimers/identity terms) must stay block-free.
+APPROVED_SAFE = [
+    ("Kein Ersatz für ärztliche oder psychotherapeutische Beratung.", "de"),
+    ("Ich bin kein Therapeut – ich lese die Forschung und übersetze sie.", "de"),
+    ("Not a substitute for medical or psychotherapeutic advice.", "en"),
+    ("I'm not a therapist — I read the research and translate it.", "en"),
+    ("Manche Menschen mit ADHS erleben Zeit anders.", "de"),
+    ("Eine Person im Autismus-Spektrum kann Geräusche stärker wahrnehmen.", "de"),
+    ("Nach der Diagnose fühlen sich manche Erwachsene erleichtert.", "de"),
+    ("After the diagnosis, some adults feel relieved.", "en"),
+    ("That doesn't mean it's the same for everyone.", "en"),
+    ("Was kann ich als Vater bei ADHS im Alltag tun?", "de"),
+    ("How can you support a partner with ADHD?", "en"),
+]
+
+
+@pytest.mark.parametrize("text,lang", APPROVED_SAFE)
+def test_approved_wording_has_no_block(text, lang):
+    res = check(text, lang, "script")
+    assert [f for f in res.findings if f.tier == "block"] == [], text

@@ -29,6 +29,11 @@ _QUOTE_RES = [
 ]
 TOKEN_RE = re.compile(r"\w+(?:-\w+)*")
 
+# Invisible characters used (deliberately or by copy-paste) inside words: soft hyphen,
+# zero-width space/non-joiner/joiner, word joiner, BOM. They are removed before matching so
+# "Medi\u00adkamente" still matches; strip_invisible() returns an index map to recover spans.
+INVISIBLE = frozenset("\u00ad\u200b\u200c\u200d\u2060\ufeff")
+
 
 def nfc(text: str) -> str:
     return unicodedata.normalize("NFC", text)
@@ -37,6 +42,15 @@ def nfc(text: str) -> str:
 def normalize(text: str) -> str:
     """NFC + dash normalization. Callers should pass the result of nfc() for stable spans."""
     return nfc(text).translate(_DASHES)
+
+
+def strip_invisible(text: str) -> tuple[str, list[int]]:
+    """Remove INVISIBLE chars. Returns (clean, idx) with idx[i] = position in `text` of clean[i]
+    and idx[len(clean)] = len(text). Identity map when nothing is removed."""
+    if not any(c in INVISIBLE for c in text):
+        return text, list(range(len(text) + 1))
+    keep = [i for i, c in enumerate(text) if c not in INVISIBLE]
+    return "".join(text[i] for i in keep), keep + [len(text)]
 
 
 def strip_quoted(text: str) -> str:
