@@ -2,16 +2,23 @@
 
 import json
 import os
+import shutil
 from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
+import yaml
 
 from ndc.cli import app
 from ndc.db import Database
 from ndc.scan import discover, quiet_hours
 
 FIX = Path(__file__).resolve().parents[1] / "fixtures" / "scan"
+REPO_CFG = Path(__file__).resolve().parents[2] / "config"
+# Discovery knobs and queries are pinned here, not read from the tunable live config/scan.yaml
+# (LO-03: plan 01-07 retuned ytsearch_results/min_niche_shorts and broke these tests).
+DE_QUERIES = ["ADHS", "Autismus", "ADHS Eltern", "ADHS Männer", "ADHS Papa", "Neurodivergenz"]
+EN_QUERIES = ["ADHD", "autism", "ADHD parenting", "ADHD men"]
 SEARCH = json.loads((FIX / "ytsearch.json").read_text(encoding="utf-8"))
 
 MODASH_HTML = (
@@ -25,6 +32,19 @@ MODASH_HTML = (
 @pytest.fixture(autouse=True)
 def _noon(monkeypatch):
     monkeypatch.setattr(quiet_hours, "utcnow", lambda: datetime(2026, 10, 24, 12, 0, tzinfo=UTC))
+
+
+@pytest.fixture(autouse=True)
+def cfg(tmp_path, monkeypatch):
+    """Repo config (rule lock etc.) with a pinned discovery section in scan.yaml."""
+    c = tmp_path / "config"
+    shutil.copytree(REPO_CFG, c)
+    scan = yaml.safe_load((c / "scan.yaml").read_text(encoding="utf-8"))
+    scan["discovery"] = {"ytsearch_results": 30, "min_niche_shorts": 3}
+    scan["queries"] = {"de": DE_QUERIES, "en": EN_QUERIES}
+    (c / "scan.yaml").write_text(yaml.safe_dump(scan, allow_unicode=True), encoding="utf-8")
+    monkeypatch.setenv("NDC_CONFIG_DIR", str(c))
+    return c
 
 
 @pytest.fixture
@@ -71,8 +91,8 @@ def test_aggregate_keeps_channels_with_three_shorts():
 def test_discover_youtube_inserts_candidates(db):
     sleeps = Sleeps()
     rep = discover.discover_youtube(db, "de", sleep=sleeps, search=_search)
-    assert rep.requests == 10  # one request per DE query in config/scan.yaml
-    assert len(sleeps) == 9 and all(3 <= s <= 6 for s in sleeps)
+    assert rep.requests == len(DE_QUERIES)  # one request per DE query in the pinned scan.yaml
+    assert len(sleeps) == len(DE_QUERIES) - 1 and all(3 <= s <= 6 for s in sleeps)
     assert sorted(rep.inserted) == ["@adhsalltag", "@autismuswissen", "UCcccccccccccccccccccccc"]
     conn = db.connect()
     rows = conn.execute("SELECT * FROM competitor_candidate ORDER BY handle").fetchall()
@@ -147,3 +167,22 @@ def test_other_language_match_is_flagged(db):
     ).fetchone()
     assert row["language"] == "de"
     assert "also found by en ytsearch queries: check language" in row["notes"]
+
+
+def test_discover_stops_cleanly_when_quiet_hours_begin(db, monkeypatch):
+    """HI-04: discovery re-checks quiet hours before each query and stops (resumable)."""
+    clock = {"t": datetime(2026, 10, 24, 0, 14, tzinfo=UTC)}
+    monkeypatch.setattr(quiet_hours, "utcnow", lambda: clock["t"])
+    asked = []
+
+    def search(query, n):
+        asked.append(query)
+        clock["t"] = datetime(2026, 10, 24, 0, 16, tzinfo=UTC)
+        return SEARCH.get(query, {"entries": []})
+
+    rep = discover.discover_youtube(db, "de", sleep=Sleeps(), search=search)
+    assert asked == ["ADHS"] and rep.stopped_quiet_hours
+    conn = db.connect()
+    notes = conn.execute("SELECT notes FROM scan_run").fetchone()[0]
+    conn.close()
+    assert "stopped_quiet_hours" in notes
