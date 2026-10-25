@@ -1,0 +1,66 @@
+id,pillar,condition,domain,audience,angle,working_title,list_tag,safety_status,source_likely,status
+1,challenge_science_help,adhd,time_perception,nd_adults,mechanism_why,Warum fünf Minuten sich manchmal wie zwei anfühlen,whitelist,ok,yes,backlog
+2,challenge_science_help,adhd,executive_function,nd_adults,mechanism_why,Wenn Anfangen schwerer ist als Durchhalten,whitelist,ok,yes,backlog
+3,challenge_science_help,adhd,emotion_regulation,nd_adults,myth_vs_research,Starke Gefühle bei ADHS: was die Forschung zur Emotionsregulation zeigt,whitelist,ok,yes,backlog
+4,challenge_science_help,autism,sensory,nd_adults,mechanism_why,Warum manche Geräusche für autistische Menschen körperlich wehtun können,whitelist,ok,yes,backlog
+5,challenge_science_help,autism,energy_burnout,nd_adults,what_research_doesnt_know,Autistischer Burnout: was die Forschung schon weiß und was nicht,whitelist,ok,maybe,backlog
+6,challenge_science_help,autism,masking,nd_adults,study_explained,Masking erklärt: was Studien über die Kosten des Anpassens zeigen,whitelist,ok,yes,backlog
+7,challenge_science_help,audhd,focus_attention,nd_adults,human_not_only_adhd,AuDHS: wenn Routine und Neues gleichzeitig wichtig sind,whitelist,ok,maybe,backlog
+8,challenge_science_help,dyspraxia_dcd,routines_household,nd_adults,mechanism_why,Dyspraxie im Alltag: warum Schuhe binden Kraft kosten kann,whitelist,ok,maybe,backlog
+9,challenge_science_help,tourette,communication,general_public,myth_vs_research,Tourette ist meist nicht das Fluchen,whitelist,ok,yes,backlog
+10,challenge_science_help,dyscalculia,school_learning,nd_adults,mechanism_why,Dyskalkulie bei Erwachsenen: warum Uhrzeit und Wechselgeld schwerfallen können,whitelist,ok,maybe,backlog
+11,challenge_science_help,adhd,sleep,nd_adults,try_this_strategy,"Abends nicht abschalten können: Schlafroutinen, die Studien bei ADHS nahelegen",whitelist,ok,maybe,backlog
+12,challenge_science_help,nd_general,late_identification,nd_adults,lived_story_consented,Späte Erkenntnis mit 40: wie Menschen ihr Leben neu einordnen,whitelist,ok,maybe,backlog
+13,challenge_science_help,adhd,money,nd_adults,try_this_strategy,"Impulskäufe bei ADHS: wenn es juckt, probier eine 24-Stunden-Regel",whitelist,ok,maybe,backlog
+14,challenge_science_help,autism,communication,general_public,myth_vs_research,Das Double-Empathy-Problem: warum Missverständnisse zwei Seiten haben,whitelist,ok,yes,backlog
+15,challenge_science_help,dyslexia,work,nd_adults,try_this_strategy,"Legasthenie im Job: Vorlesefunktion und andere Hilfen, die Studien prüfen",whitelist,ok,maybe,backlog
+16,challenge_science_help,adhd,focus_attention,nd_adults,what_research_doesnt_know,Hilft Musik beim Konzentrieren? Was die Studienlage bei ADHS offenlässt,whitelist,ok,maybe,backlog
+19,strengths,autism,focus_attention,nd_adults,strength_with_caveat,"Intensive Interessen als Ressource, mit ihren Grenzen",whitelist,ok,yes,backlog
+20,strengths,adhd,focus_attention,nd_adults,strength_with_caveat,Hyperfokus: Stärke mit Preis,whitelist,ok,maybe,backlog
+21,strengths,adhd,work,nd_adults,study_explained,Unternehmergeist und ADHS: was eine Studie wirklich gemessen hat,whitelist,ok,maybe,backlog
+22,strengths,dyslexia,school_learning,general_public,myth_vs_research,Legasthenie und räumliches Denken: Mythos oder Befund?,whitelist,ok,maybe,backlog
+23,strengths,autism,work,nd_adults,strength_with_caveat,Detailwahrnehmung bei autistischen Menschen: was Studien zeigen und was nicht,whitelist,ok,yes,backlog
+24,strengths,adhd,emotion_regulation,nd_adults,strength_with_caveat,Neugier und Offenheit bei ADHS: was Persönlichkeitsforschung andeutet,whitelist,ok,maybe,backlog
+25,strengths,dyspraxia_dcd,work,nd_adults,human_not_only_adhd,"Dyspraxie und Ausdauer: Strategien, die Erwachsene selbst entwickeln",whitelist,ok,maybe,backlog
+26,strengths,tourette,social,nd_adults,strength_with_caveat,Tourette und Selbstkontrolle: was ein paar Studien andeuten,whitelist,ok,maybe,backlog
+27,strengths,autism,communication,nd_adults,myth_vs_research,Ehrlich und direkt: autistische Kommunikation ist kein Mangel,whitelist,ok,maybe,backlog
+28,strengths,audhd,sensory,nd_adults,strength_with_caveat,AuDHS und Kreativität: was belegt ist und was Wunschdenken,whitelist,ok,maybe,backlog
+29,strengths,nd_general,work,general_public,study_explained,Neurodiverse Teams: was Studien über Zusammenarbeit wirklich zeigen,whitelist,ok,maybe,backlog
+30,strengths,adhd,executive_function,nd_adults,try_this_strategy,"Wenn Routineaufgaben liegen bleiben, probier Neuheit und kurze Fristen",whitelist,ok,maybe,backlog
+31,strengths,dyscalculia,school_learning,general_public,human_not_only_adhd,Dyskalkulie hat nichts mit Intelligenz zu tun,whitelist,ok,yes,backlog
+32,strengths,autism,social,nd_adults,lived_story_consented,Autistische Freundschaften: tief statt breit,whitelist,ok,maybe,backlog
+33,strengths,nd_general,masking,nd_adults,what_research_doesnt_know,Stärkenorientierte Forschung: warum sie noch so jung ist,whitelist,ok,maybe,backlog
+34,strengths,dyslexia,communication,nd_adults,strength_with_caveat,Legasthenie und mündliches Erzählen: Stärke mit Einschränkung,whitelist,ok,maybe,backlog
+37,parents,adhd,routines_household,parents,try_this_strategy,"Wenn der Morgen kippt, probier visuelle Abläufe",whitelist,ok,yes,backlog
+38,parents,autism,parenting_coregulation,parents,mechanism_why,Co-Regulation: warum ruhige Erwachsene beim Runterfahren helfen können,whitelist,ok,maybe,backlog
+39,parents,autism,sensory,parents,try_this_strategy,"Wenn der Supermarkt zu laut ist, probier einen Reizplan",whitelist,ok,maybe,backlog
+40,parents,adhd,school_learning,parents,study_explained,Hausaufgaben und ADHS: was Studien zu kurzen Lernblöcken sagen,whitelist,ok,maybe,backlog
+41,parents,adhd,emotion_regulation,parents,myth_vs_research,Wutausbrüche sind kein Erziehungsfehler,whitelist,ok,yes,backlog
+42,parents,autism,communication,parents,myth_vs_research,Blickkontakt ist kein Beweis für Zuhören,whitelist,ok,maybe,backlog
+43,parents,dyslexia,school_learning,parents,try_this_strategy,Legasthenie in der Schule: welche Förderung Studien bei Kindern stützen,whitelist,ok,yes,backlog
+44,parents,dyspraxia_dcd,family_life,parents,human_not_only_adhd,Ungeschickt ist das falsche Wort: Dyspraxie bei Kindern verstehen,whitelist,ok,maybe,backlog
+45,parents,tourette,school_learning,parents,try_this_strategy,"Tics in der Schule: wenn Lehrkräfte fragen, probier eine kurze Erklärkarte",whitelist,ok,maybe,backlog
+46,parents,dyscalculia,school_learning,parents,mechanism_why,Warum Fingerzählen bei Dyskalkulie kein Rückschritt sein muss,whitelist,ok,maybe,backlog
+47,parents,adhd,sleep,parents,try_this_strategy,Abendroutinen für Kinder mit ADHS und was Studien dazu sagen,whitelist,ok,maybe,backlog
+48,parents,autism,family_life,parents,lived_story_consented,Geschwister eines autistischen Kindes: eine Familie erzählt,whitelist,ok,maybe,backlog
+49,parents,nd_general,parenting_coregulation,parents,what_research_doesnt_know,Neurodivergente Eltern mit neurodivergenten Kindern: eine Forschungslücke,whitelist,ok,maybe,backlog
+50,parents,audhd,routines_household,parents,human_not_only_adhd,AuDHS bei Kindern: wenn Struktur hilft und gleichzeitig nervt,whitelist,ok,maybe,backlog
+51,parents,autism,energy_burnout,parents,mechanism_why,Nach der Schule ist der Akku leer: was Forschung zu Anpassung bei Kindern zeigt,whitelist,ok,maybe,backlog
+52,parents,adhd,parenting_coregulation,parents,study_explained,Elterntraining bei ADHS: was eine große Übersichtsarbeit zeigt,whitelist,ok,yes,backlog
+55,men_dads_partners,adhd,relationships,partners,human_not_only_adhd,Vergesslichkeit in der Partnerschaft: was ADHS erklärt und was nicht,whitelist,ok,maybe,backlog
+56,men_dads_partners,adhd,work,men,study_explained,Männer mit ADHS im Job: was Langzeitstudien zeigen,whitelist,ok,maybe,backlog
+57,men_dads_partners,autism,late_identification,men,lived_story_consented,Spät erkannt als Mann: wie autistische Männer ihre Geschichte neu lesen,whitelist,ok,maybe,backlog
+58,men_dads_partners,adhd,parenting_coregulation,dads,try_this_strategy,"Väter mit ADHS: wenn die Geduld kippt, probier die Zehn-Sekunden-Pause",whitelist,ok,maybe,backlog
+59,men_dads_partners,nd_general,emotion_regulation,men,myth_vs_research,Rückzug heißt nicht Gleichgültigkeit,whitelist,ok,maybe,backlog
+60,men_dads_partners,autism,relationships,partners,mechanism_why,Autistisch in der Partnerschaft: warum klare Absprachen Nähe schaffen können,whitelist,ok,maybe,backlog
+61,men_dads_partners,adhd,emotion_regulation,partners,study_explained,Streit und Impulsivität: was Paarstudien zu ADHS zeigen,whitelist,ok,maybe,backlog
+62,men_dads_partners,audhd,social,men,what_research_doesnt_know,AuDHS bei Männern: warum es kaum Daten gibt,whitelist,ok,no,backlog
+63,men_dads_partners,dyslexia,family_life,dads,human_not_only_adhd,Vater mit Legasthenie: Vorlesen anders denken,whitelist,ok,maybe,backlog
+64,men_dads_partners,tourette,work,men,lived_story_consented,Tics im Büro: ein Mann mit Tourette über Offenheit im Job,whitelist,ok,maybe,backlog
+65,men_dads_partners,adhd,money,partners,try_this_strategy,"Geld als Paar mit ADHS: wenn Rechnungen liegen bleiben, probier feste Geldtermine",whitelist,ok,maybe,backlog
+66,men_dads_partners,autism,work,men,strength_with_caveat,Spezialinteressen im Beruf: Stärke mit Grenzen für autistische Männer,whitelist,ok,maybe,backlog
+67,men_dads_partners,adhd,time_perception,partners,myth_vs_research,Zu spät ist nicht gleich respektlos,whitelist,ok,yes,backlog
+68,men_dads_partners,nd_general,family_life,dads,what_research_doesnt_know,Neurodivergente Väter: warum es fast keine Studien gibt,whitelist,ok,no,backlog
+69,men_dads_partners,dyspraxia_dcd,social,men,human_not_only_adhd,"Dyspraxie bei Männern: Sport, Scham und Strategien",whitelist,ok,maybe,backlog
+70,men_dads_partners,autism,communication,partners,try_this_strategy,"Wenn Gespräche eskalieren, probier schriftliche Absprachen",whitelist,ok,maybe,backlog
+71,men_dads_partners,adhd,sleep,men,mechanism_why,Nachteule mit ADHS: was Studien über den späten Schlafrhythmus sagen,whitelist,ok,yes,backlog
