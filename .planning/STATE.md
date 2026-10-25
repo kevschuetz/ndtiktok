@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "Completed 01-12-PLAN.md (en-2 judged in-session: 17 accounts, 0 guard downgrades, 10 queued; S_EN trips theautismspectrum + hypeneo1 rest on repost credits only)"
-last_updated: "2026-10-25T09:58:48.190Z"
+stopped_at: Completed 01-13-PLAN.md (language decision R1 -> German; Q 0.56, N_DE 2, S_DE 0)
+last_updated: "2026-10-25T11:08:55.104Z"
 last_activity: 2026-10-25
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 15
-  completed_plans: 12
+  completed_plans: 13
   percent: 0
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-10-24)
 ## Current Position
 
 Phase: 1 of 4 (Market Decision & Content Foundation)
-Plan: 13 of 15 in current phase
+Plan: 14 of 15 in current phase
 Status: Ready to execute
 Last activity: 2026-10-25
 
-Progress: [████████░░] 80%
+Progress: [█████████░] 87%
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [████████░░] 80%
 | Phase 01 P03 | 10min | 3 tasks | 9 files |
 | Phase 01 P04 | 20min | 4 tasks | 25 files |
 | Phase 01 P05 | 10min | 2 tasks | 6 files |
+| Phase 01 P13 | 30min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - [Phase 01]: 01-05: add_topic with no language yet checks both de and en and keeps the worst safety result; seed `notes` accepted but not stored
 - [Phase 01]: 01-07: final sample 50 (DE 20 / EN 30); mid-tier TikTok 7/7 below floor 8; TikTok pool is operator-collected; flagged off-niche operator rows left to operator
 - [Phase 01]: 01-11: en-1 judged in-session (18 accts, 0 downgrades, 10 queued); only additudemag (institutional) scores 2; no faceless-male >=2 S_EN candidate; GenericArtDad/le0zs/goxlr__ off-niche, recommend exclusion
+- [Phase 01]: Milestone 1 language = German (pre-registered rule row R1; Q 0.56, N_DE 2, S_DE 0)
+- [Phase 01]: Operator 2026-10-25: institutional accounts count as source-citing; repost credits do not; 4 off-niche EN accounts excluded
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-10-25T09:58:48.183Z
-Stopped at: Completed 01-11-PLAN.md (en-1 judged in-session: 18 accounts, 0 guard downgrades, 10 queued; only additudemag (institutional) scores 2; no faceless-male S_EN candidate)
+Last session: 2026-10-25T11:08:55.097Z
+Stopped at: Completed 01-13-PLAN.md (language decision R1 -> German; Q 0.56, N_DE 2, S_DE 0)
 Resume file: None
