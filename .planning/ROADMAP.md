@@ -18,7 +18,7 @@ steps:
 
 ## Phases
 
-- [ ] **Phase 1: Market Decision & Content Foundation** - Language chosen from competitor data; topic matrix, style guide, terminology check and safety filter in place
+- [x] **Phase 1: Market Decision & Content Foundation** - Language chosen from competitor data; topic matrix, style guide, terminology check and safety filter in place (completed 2026-10-25)
 - [ ] **Phase 2: Grounded Script Pipeline** - A topic goes in; a cited, adversarially fact-checked, operator-approved script and its rendered source list come out
 - [ ] **Phase 3: Launch Readiness & First Publish** - Recording diff, crisis playbook, accounts, pre-registered readout and metrics log all exist, and video 1 is published and logged
 - [ ] **Phase 4: Validation Run & Go/No-Go** - 24–28 videos published on the rotation, readout names the winning formats (or "inconclusive"), and the monetization legal checklist is resolved
@@ -39,7 +39,7 @@ steps:
   4. Running the checker on a sample script flags the terminology violations from the DE+EN table (functioning labels, "superpower", "leidet an", "Asperger" outside quotes, ABA-adjacent framing)
   5. The safety filter rejects a blacklisted subject (medication, diagnosis question, ABA, "is my child autistic?") at topic level and again when it appears in script or claim text; the style guide documents the fixed 60–75s template
 
-**Plans:** 14/15 plans executed
+**Plans:** 15/15 plans complete
 
 Plans:
 **Wave 1**
@@ -79,7 +79,7 @@ Plans:
 **Wave 8** *(blocked on Wave 7 completion)*
 
 - [x] 01-14-PLAN.md — Hashtag/keyword set + crisis-line set for the chosen language; operator in-app check (W8)
-- [ ] 01-15-PLAN.md — Topic seed (~60–80, chosen language) import + operator prune; backlog snapshot (W8)
+- [x] 01-15-PLAN.md — Topic seed (~60–80, chosen language) import + operator prune; backlog snapshot (W8)
 
 **Cross-cutting constraints:**
 
@@ -137,7 +137,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Market Decision & Content Foundation | 14/15 | In Progress|  |
+| 1. Market Decision & Content Foundation | 15/15 | Complete   | 2026-10-25 |
 | 2. Grounded Script Pipeline | 0/? | Not started | - |
 | 3. Launch Readiness & First Publish | 0/? | Not started | - |
 | 4. Validation Run & Go/No-Go | 0/? | Not started | - |

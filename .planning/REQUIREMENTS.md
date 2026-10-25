@@ -13,7 +13,7 @@
 
 ### Content foundation
 
-- [ ] **CONT-01**: Operator can browse a topic matrix (pillar × condition × domain × audience × angle) stored in SQLite, each topic tagged whitelist/blacklist
+- [x] **CONT-01**: Operator can browse a topic matrix (pillar × condition × domain × audience × angle) stored in SQLite, each topic tagged whitelist/blacklist
 - [x] **CONT-02**: A style guide defines the fixed video template (60–75s, hook in first 1–2s spoken + on-screen, one topic per video, hedged non-diagnostic tone, calm visuals, burned-in accurate captions)
 - [x] **CONT-03**: A German+English terminology table exists, and every script is automatically checked against it (bans functioning labels, "superpower" hype, "leidet an", "Asperger" outside quotes, ABA-adjacent framing; identity-first default)
 - [x] **CONT-04**: The safety filter rejects blacklisted subjects (medication, diagnosis questions, ABA, "is my child autistic?") at topic, script and claim level
@@ -82,7 +82,7 @@
 | MKT-01 | Phase 1 | Complete |
 | MKT-02 | Phase 1 | Complete |
 | MKT-03 | Phase 1 | Complete |
-| CONT-01 | Phase 1 | Pending |
+| CONT-01 | Phase 1 | Complete |
 | CONT-02 | Phase 1 | Complete |
 | CONT-03 | Phase 1 | Complete |
 | CONT-04 | Phase 1 | Complete |
