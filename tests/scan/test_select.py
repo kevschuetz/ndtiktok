@@ -136,3 +136,18 @@ def test_reimport_updates_operator_decision(db, tmp_path):
     fetch.import_candidates(db, p)
     row = conn.execute("SELECT operator_decision, status FROM competitor_candidate").fetchone()
     assert tuple(row) == ("include", "candidate")
+
+
+def test_reimport_relabel_propagates_to_account(db, tmp_path):
+    """A language relabel on re-import must reach competitor_account (sheet, select, bundles)."""
+    p = tmp_path / "c.csv"
+    p.write_text(HDR + "@chan,youtube,de,ops,,0,,\n", encoding="utf-8")
+    fetch.import_candidates(db, p)
+    conn = db.connect()
+    cand = conn.execute("SELECT * FROM competitor_candidate").fetchone()
+    with conn:
+        fetch._ensure_account(conn, cand)
+    p.write_text(HDR + "@chan,youtube,en,ops,,0,,\n", encoding="utf-8")
+    fetch.import_candidates(db, p)
+    row = conn.execute("SELECT language FROM competitor_account").fetchone()
+    assert row["language"] == "en"

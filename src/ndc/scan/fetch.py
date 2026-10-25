@@ -213,6 +213,12 @@ def import_candidates(db: Database, path: Path) -> ImportReport:
                         existing["id"],
                     ),
                 )
+                # A relabel must reach the account row too: the sheet, select and the judging
+                # bundles all group by competitor_account.language.
+                conn.execute(
+                    "UPDATE competitor_account SET language = ? WHERE candidate_id = ?",
+                    (language, existing["id"]),
+                )
                 rep.updated += 1
             else:
                 conn.execute(
