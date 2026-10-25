@@ -402,6 +402,7 @@ class FetchReport:
     failed: list = field(default_factory=list)
     stopped: list = field(default_factory=list)
     lines: list = field(default_factory=list)
+    stopped_quiet_hours: bool = False
 
 
 def _fresh(ts: str | None, fresh_hours: float, now_ts: float) -> bool:
@@ -472,6 +473,11 @@ def run_fetch(
         if not refresh and _fresh(cand[ts_col], fresh_hours, now()):
             rep.skipped.append(label)
             continue
+        if quiet_hours.entered(scfg, force):
+            rep.stopped_quiet_hours = True
+            rep.lines.append(quiet_hours.STOP_LINE)
+            add_run_note(db, run_id, quiet_hours.STOP_NOTE)
+            break
         if polite.stopped(cand["platform"]):
             _set_status(db, cand, status_col, "stopped_failures")
             rep.stopped.append(label)

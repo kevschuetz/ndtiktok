@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 import httpx
 
 from ndc.db import Database
-from ndc.scan import fetch, handles
+from ndc.scan import fetch, handles, quiet_hours
 from ndc.scan.tiktok import MAX_BYTES, TIMEOUT_S, USER_AGENT
 
 MAX_SHORT_SECONDS = 180
@@ -36,6 +36,7 @@ class DiscoverReport:
     existing: list = field(default_factory=list)
     conflicts: list = field(default_factory=list)
     errors: list = field(default_factory=list)
+    stopped_quiet_hours: bool = False
 
 
 # --- YouTube ytsearch ------------------------------------------------------------
@@ -121,6 +122,11 @@ def discover_youtube(
     rep = DiscoverReport(run_id=run_id, source="ytsearch", language=language)
     results: dict[str, list[dict]] = {}
     for query in (scfg.get("queries") or {}).get(language) or []:
+        if quiet_hours.entered(scfg, force):
+            rep.stopped_quiet_hours = True
+            rep.errors.append(quiet_hours.STOP_LINE)
+            fetch.add_run_note(db, run_id, quiet_hours.STOP_NOTE)
+            break
         if polite.stopped("youtube"):
             rep.errors.append(f"{query}: skipped (3 consecutive failures)")
             continue

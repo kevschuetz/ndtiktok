@@ -230,3 +230,34 @@ def test_analyze_with_separate_audio_and_frames(db, cfg, tmp_path):
     assert rep.results[0].status == "analyzed" and rep.results[0].contact_sheet
     assert obs_rows(db, aid, "voice_gender")[-1]["value"] == "female"
     assert not any((tmp_path / "media").rglob("*.mp4"))
+
+
+def test_analyze_stops_between_accounts_when_quiet_hours_begin(db, cfg, monkeypatch):
+    """HI-04: a long analyze run re-checks quiet hours before each account and stops cleanly."""
+    for handle in ("alpha_adhs", "beta_adhs"):
+        aid = seed_account(db, handle, posts=[(f"7{handle.startswith('b'):05d}9", "c", None)])
+        conn = db.connect()
+        try:
+            conn.execute(
+                "UPDATE competitor_post SET posted_at = ? WHERE account_id = ?",
+                (int(NOW) - 5 * 86400, aid),
+            )
+        finally:
+            conn.close()
+    clock = {"t": datetime(2026, 10, 24, 23, 59, tzinfo=UTC)}
+    monkeypatch.setattr(quiet_hours, "utcnow", lambda: clock["t"])
+
+    def downloader(url, out_dir, max_mb):
+        clock["t"] = datetime(2026, 10, 25, 0, 30, tzinfo=UTC)
+        return make_video(out_dir / "x.mp4")
+
+    rep = analyze.run_analyze(
+        db, cfg=cfg, transcriber=FakeTranscriber(), downloader=downloader, polite=_polite()
+    )
+    assert len(rep.results) == 1 and rep.stopped_quiet_hours
+    assert any("entered quiet hours" in line for line in rep.lines)
+    clock["t"] = datetime(2026, 10, 25, 7, 0, tzinfo=UTC)
+    rep = analyze.run_analyze(
+        db, cfg=cfg, transcriber=FakeTranscriber(), downloader=downloader, polite=_polite()
+    )
+    assert len(rep.results) == 1 and len(rep.skipped) == 1  # resumed with the other account

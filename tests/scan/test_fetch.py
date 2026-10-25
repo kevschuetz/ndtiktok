@@ -308,3 +308,36 @@ def test_add_manual_rejects_bad_handle(runner):
         ],
     )
     assert res.exit_code == 2
+
+
+def test_fetch_stops_cleanly_when_quiet_hours_begin_mid_run(db, tmp_path, monkeypatch):
+    """HI-04: quiet hours are re-checked before each account; the run stops and is resumable."""
+    _seed(db, tmp_path, ["acct0,tiktok,de,s,,0,,", "acct1,tiktok,de,s,,0,,"])
+    clock = {"t": datetime(2026, 10, 24, 0, 14, tzinfo=UTC)}
+    monkeypatch.setattr(quiet_hours, "utcnow", lambda: clock["t"])
+    calls = []
+
+    def prof(h):
+        calls.append(h)
+        clock["t"] = datetime(2026, 10, 24, 0, 16, tzinfo=UTC)  # the window opens meanwhile
+        return {"followers": 2000, "video_count": 1}
+
+    monkeypatch.setattr(tiktok, "fetch_profile", prof)
+    rep = fetch.run_fetch(db, "profile", sleep=Sleeps())
+    assert len(calls) == 1 and rep.stopped_quiet_hours
+    assert any("entered quiet hours" in line for line in rep.lines)
+    conn = db.connect()
+    notes = conn.execute("SELECT notes FROM scan_run").fetchone()[0]
+    conn.close()
+    assert "stopped_quiet_hours" in notes
+    clock["t"] = datetime(2026, 10, 24, 6, 5, tzinfo=UTC)
+    rep = fetch.run_fetch(db, "profile", sleep=Sleeps())
+    assert len(calls) == 2 and len(rep.ok) == 1 and len(rep.skipped) == 1
+
+
+def test_fetch_with_force_keeps_running_through_quiet_hours(db, tmp_path, monkeypatch):
+    _seed(db, tmp_path, ["acct0,tiktok,de,s,,0,,", "acct1,tiktok,de,s,,0,,"])
+    monkeypatch.setattr(quiet_hours, "utcnow", lambda: datetime(2026, 10, 24, 1, 0, tzinfo=UTC))
+    monkeypatch.setattr(tiktok, "fetch_profile", lambda h: {"followers": 2000, "video_count": 1})
+    rep = fetch.run_fetch(db, "profile", sleep=Sleeps(), force=True)
+    assert len(rep.ok) == 2 and not rep.stopped_quiet_hours

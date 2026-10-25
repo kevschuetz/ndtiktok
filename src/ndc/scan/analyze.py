@@ -16,7 +16,7 @@ from pathlib import Path
 
 from ndc.config import config_dir as _config_dir
 from ndc.db import Database
-from ndc.scan import fetch, frames, media, pitch, queue
+from ndc.scan import fetch, frames, media, pitch, queue, quiet_hours
 from ndc.scan.fetch import PlatformStopped, now_iso
 
 
@@ -57,6 +57,7 @@ class AnalyzeReport:
     results: list = field(default_factory=list)
     skipped: list = field(default_factory=list)
     lines: list = field(default_factory=list)
+    stopped_quiet_hours: bool = False
 
 
 def analysis_config(cfg: str | Path | None = None) -> dict:
@@ -271,6 +272,11 @@ def run_analyze(
     todo, done = target_accounts(db, only, lang, reanalyze)
     rep.skipped = [account_key(a["platform"], a["handle"]) for a in done]
     for acc in todo:
+        if quiet_hours.entered(scfg, force):
+            rep.stopped_quiet_hours = True
+            rep.lines.append(quiet_hours.STOP_LINE)
+            fetch.add_run_note(db, run_id, quiet_hours.STOP_NOTE)
+            break
         res = analyze_account(
             db, acc, acfg, transcriber, polite, downloader or media.download_video, now_ts
         )

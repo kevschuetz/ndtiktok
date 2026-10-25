@@ -24,6 +24,19 @@ def in_quiet_hours(now: datetime | None = None, start: str = "00:15", end: str =
     return t >= s or t < e  # window wrapping midnight
 
 
+STOP_LINE = "stopped: entered quiet hours; the run is resumable, re-run after the window ends"
+STOP_NOTE = "stopped_quiet_hours"
+
+
+def entered(cfg: dict, force: bool) -> bool:
+    """HI-04: True when a long run should stop now (inside the window, no --force). Long loops
+    (analyze, fetch, discover) call this before each item, not only at command start."""
+    if force:
+        return False
+    qh = (cfg or {}).get("quiet_hours") or {}
+    return in_quiet_hours(utcnow(), qh.get("start", "00:15"), qh.get("end", "06:00"))
+
+
 def check(cfg: dict, force: bool) -> str | None:
     """Raise QuietHours inside the window without force; return an override note with force."""
     qh = (cfg or {}).get("quiet_hours") or {}
