@@ -23,7 +23,9 @@ built only for the formats that win here.
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Competitor scan + data-backed language decision: **German** (rule R1, Q=0.56, N_DE=2; no sourced/faceless/male DACH account exists) — Phase 1
+- ✓ Style guide, topic matrix (65-topic German backlog, 16–17 per pillar), DE+EN terminology checker and safety filter (v2 after code review) — Phase 1
+- ✓ German hashtag set and verified AT/DE/CH crisis-line set — Phase 1
 
 ### Active
 
@@ -97,7 +99,7 @@ Tone: neurodiversity-affirming, hedged ("some people…"), never diagnostic.
 |----------|-----------|---------|
 | Milestone 1 = validation + light tooling; automation is milestone 2 | Automate only formats with proven traction | — Pending |
 | Traction = relative winners (top 1–2 formats vs own median on retention/saves/shares) | No arbitrary absolute bar on a brand-new account | — Pending |
-| Language decided by data in week 1 (ADHS vs ADHD competitor scan) | German leaning, but the market decides | — Pending |
+| Language decided by data in week 1 (ADHS vs ADHD competitor scan) | German leaning, but the market decides | ✓ German (R1, 2026-10-25) |
 | Operator's own male voice, no AI persona | Authenticity; differentiator for the men/dads pillar | — Pending |
 | Positioning: "not a therapist, I translate research with sources" | No clinician; credibility comes from sourcing | — Pending |
 | Claims grounded only in retrieved sources + adversarial verification + operator review | Core value: credibility | — Pending |
@@ -125,4 +127,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-24 after initialization*
+*Last updated: 2026-10-25 after Phase 1*
