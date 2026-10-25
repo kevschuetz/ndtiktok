@@ -355,3 +355,11 @@ had to be synced before `prepare-judging`.
 
 59 selected accounts in total (DE 24, EN 35). Host paths are under
 `/home/nd-content-volumes/data/judging/`.
+
+## Decision (plan 01-13, 2026-10-25)
+
+- Operator spot-check: 32 queued accounts closed by category rulings (4 score overrides, 4 exclusions,
+  28 accepted as judged). Queue: 0.
+- `ndc scan export --csv scan/competitor_sheet.csv` → 86 rows.
+- `ndc scan decide` (DB source, 55 selected accounts) → **R1 → German** (Q 0.56, N_DE 2, S_DE 0).
+- Full log with metrics and reasoning: [docs/language-decision.md](language-decision.md).

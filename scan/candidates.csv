@@ -29,7 +29,7 @@ adhd_alien,tiktok,en,seed_d04,,1,exclude,"D-04 seed: ADHD Alien; handle unverifi
 adhddude,tiktok,en,seed_d04,,1,,D-04 seed: ADHD Dude; handle unverified
 @HowtoADHD,youtube,en,seed_d04,,1,,D-04 seed: How to ADHD
 @ADHDDude,youtube,en,seed_d04,,1,,D-04 seed: ADHD Dude; handle unverified; also found by de ytsearch queries: check language
-@GenericArtDad,youtube,en,ytsearch,ADHD dad; AuDHD,0,,GenericArtDad; 3 Shorts in search; channel_id UClxlF0LMmgrDXkfV6cN4fuA | executor suggestion: check niche (ND content share unknown)
+@GenericArtDad,youtube,en,ytsearch,ADHD dad; AuDHD,0,exclude,"GenericArtDad; 3 Shorts in search; channel_id UClxlF0LMmgrDXkfV6cN4fuA | executor suggestion: check niche (ND content share unknown) | operator 2026-10-25: exclude, off-niche English account"
 @Gossipduckling,youtube,en,ytsearch,AuDHD,0,,Gossip Duckling; 2 Shorts in search; channel_id UCZGDAgLMZT_wT9UrJzkyiCg | executor suggestion: check niche (ND content share unknown)
 @SquirrelDad,youtube,en,ytsearch,ADHD dad,0,,SquirrelDad; 2 Shorts in search; channel_id UCZe4sgkRHQD22onJTzO9y0w | executor suggestion: check niche (ND dad content?)
 @News4JAX,youtube,en,ytsearch,ADHD; dyslexia,0,exclude,News4JAX The Local Station; 2 Shorts in search; channel_id UC_YFbvKedjnVjqrZqBR4L8Q | executor suggestion: exclude (local news outlet)
@@ -41,8 +41,8 @@ adhddude,tiktok,en,seed_d04,,1,,D-04 seed: ADHD Dude; handle unverified
 @CBCTheNational,youtube,en,ytsearch,ADHD,0,exclude,CBC News: The National; 2 Shorts in search; channel_id UCKjU3KzdbJE1EFcHVqXC3_g | executor suggestion: exclude (news outlet)
 @additudemag,youtube,en,ytsearch,ADHD; ADHD parenting,0,,ADDitude Magazine; 2 Shorts in search; channel_id UC_3d1NVczqxa-cQzFt2iVSw
 bitecheesechili,tiktok,en,tiktok_app,operator in-app search,0,,operator-collected 2026-10-25
-le0zs,tiktok,en,tiktok_app,operator in-app search,0,,operator-collected 2026-10-25
-goxlr__,tiktok,en,tiktok_app,operator in-app search,0,,operator-collected 2026-10-25
+le0zs,tiktok,en,tiktok_app,operator in-app search,0,exclude,"operator-collected 2026-10-25 | operator 2026-10-25: exclude, off-niche English account"
+goxlr__,tiktok,en,tiktok_app,operator in-app search,0,exclude,"operator-collected 2026-10-25 | operator 2026-10-25: exclude, off-niche English account"
 adhdsciences,tiktok,en,tiktok_app,operator in-app search,0,,operator-collected 2026-10-25
 adhdparenting_coachsue,tiktok,en,tiktok_app,operator in-app search,0,,operator-collected 2026-10-25
 adhdventurers,tiktok,en,tiktok_app,operator in-app search,0,,operator-collected 2026-10-25
@@ -80,7 +80,7 @@ neuroduck0,tiktok,en,tiktok_app,operator in-app search (mid-tier top-up),0,,"ope
 adhdminds111,tiktok,en,tiktok_app,operator in-app search (mid-tier top-up),0,,"operator-collected 2026-10-25, top-up"
 unique_adhd,tiktok,en,tiktok_app,operator in-app search (mid-tier top-up),0,,"operator-collected 2026-10-25, top-up"
 hypeneo1,tiktok,en,tiktok_app,operator in-app search (mid-tier top-up),0,,"operator-collected 2026-10-25, top-up"
-lix.psl,tiktok,en,tiktok_app,operator in-app search (mid-tier top-up),0,,"operator-collected 2026-10-25, top-up"
+lix.psl,tiktok,en,tiktok_app,operator in-app search (mid-tier top-up),0,exclude,"operator-collected 2026-10-25, top-up | operator 2026-10-25: exclude, off-niche English account"
 jannes_patrick,tiktok,de,tiktok_app,operator in-app search (mid-tier top-up),0,,"operator-collected 2026-10-25, top-up"
 leoniemachtsachen,tiktok,de,tiktok_app,operator in-app search (mid-tier top-up),0,,"operator-collected 2026-10-25, top-up"
 adhs_deutschland,tiktok,de,tiktok_app,operator in-app search (mid-tier top-up),0,,"operator-collected 2026-10-25, top-up"

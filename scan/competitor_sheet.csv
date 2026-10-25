@@ -1,0 +1,264 @@
+account_id,handle,platform,language,followers,followers_provenance,tier,median_views_15,n_reach_posts,median_views_provenance,source_citing_score,source_citing_provenance,source_text_level,source_video_level,face,face_provenance,voice_gender,voice_gender_provenance,format,format_provenance,cadence_posts_per_week,pillars,audiences,monetization_signals,monetization_provenance,saves_per_1k,shares_per_1k,needs_operator_check,bio,bio_link,fetch_status,posts_fetch_status,captured_at,seed_named,discovery_source,status
+73,adhs.reise,tiktok,de,24000,scraped,mid,7932.0,15,scraped,0,llm_session,0,0,unknown,llm_session,female,auto,text_on_screen,llm_session,0.36,challenge_science_help,nd_adults,linktree,llm_session,16.01,7.88,false,"ADHS im Alltag 🎯 Tipps & Motivation ✨
+Erhalten Sie den Ratgeber kostenlos 👇",https://bit.ly/4exjIgn,ok,ok,2026-10-25T07:24:55Z,0,tiktok_app,selected
+70,adhs.wissen,tiktok,de,554,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,ADHS WISSEN,,ok,,2026-10-25T07:24:41Z,0,tiktok_app,candidate
+85,adhs_deutschland,tiktok,de,4965,scraped,micro,2921.0,15,scraped,2,operator_verified,2,0,face,llm_session,unknown,auto,talking_head,llm_session,0.9,"challenge_science_help,parents","nd_adults,parents",none,llm_session,14.44,3.35,false,Offizieller Account des ADHS Deutschland e. V.,https://linktr.ee/adhs_deutschland,ok,ok,2026-10-25T07:43:58Z,0,tiktok_app,selected
+71,adhs_positiv,tiktok,de,6317,scraped,micro,357.0,15,scraped,0,llm_session,0,0,face,llm_session,male,auto,talking_head,llm_session,2.95,challenge_science_help,nd_adults,affiliate,llm_session,7.16,1.84,false,"Neue Wege mit ADHS
+
+-PODCAST mit @waynewayneless
+-10% auf therapeutischen 🍄 
+👇",https://linktr.ee/nicolasbauer,ok,ok,2026-10-25T07:24:46Z,0,tiktok_app,selected
+61,adhsabenteuer,tiktok,de,50700,scraped,mid,10400.0,15,scraped,0,llm_session,0,0,unknown,llm_session,unknown,auto,text_on_screen,llm_session,10.64,challenge_science_help,nd_adults,linktree,llm_session,13.52,6.94,false,"Hol dir ADHS-Ressourcen, Tools & Hilfe 👇",beacons.ai/adhsabenteuer/tt,ok,ok,2026-10-25T07:23:53Z,0,tiktok_app,selected
+72,audhs.info,tiktok,de,7,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,"Deutschsprachige Infos, Critical Autism Studies + AuDHD Studies",,ok,,2026-10-25T07:24:51Z,0,tiktok_app,candidate
+76,bene_adhso,tiktok,de,28700,scraped,mid,5816.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,skit,llm_session,0.57,"challenge_science_help,strengths",nd_adults,none,llm_session,8.56,12.57,false,Eure ADHS- Autismaus 🐭,https://wonderl.ink/@bene_adhso,ok,ok,2026-10-25T07:25:10Z,0,tiktok_app,selected
+62,christian_durstewitz,tiktok,de,330500,scraped,macro,37900.0,15,scraped,0,llm_session,0,0,faceless,llm_session,unknown,auto,voiceover_broll,llm_session,2.45,challenge_science_help,nd_adults,course,llm_session,13.58,22.18,false,"🧠 MENTAL HEALTH Safespace
+Depressionen | ADHS 
+Zur den Programmen👇",https://linktr.ee/ChristianDurstewitz,ok,ok,2026-10-25T07:23:59Z,0,tiktok_app,selected
+77,daily.katze,tiktok,de,22200,scraped,mid,8914.0,15,scraped,0,llm_session,0,0,faceless,llm_session,male,auto,animation,llm_session,6.99,challenge_science_help,nd_adults,shop,llm_session,19.02,14.75,false,"Dinge erklärt von Kadse
+👇 Merch👇",DailyKatze.de,ok,ok,2026-10-25T07:25:15Z,0,tiktok_app,selected
+69,gedankenflut.fuehlen,tiktok,de,2220,scraped,micro,743.0,15,scraped,0,llm_session,0,0,unknown,llm_session,female,auto,text_on_screen,llm_session,3.17,"challenge_science_help,parents","parents,nd_adults",none,llm_session,9.12,1.81,false,"„Autismus ist keine Grenze, sondern eine andere Landkarte.""",www.gedankenflut-fuehlen.de,ok,ok,2026-10-25T07:24:37Z,0,tiktok_app,selected
+6,guardianofmind,tiktok,de,,,,,0,,,,,,,,,,,,,,,,,,,false,,,no_data,,,1,seed_d04,candidate
+4,hey_mamaleben,tiktok,de,3,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,,,ok,,2026-10-24T22:01:59Z,1,seed_d04,excluded
+83,jannes_patrick,tiktok,de,92700,scraped,mid,11100.0,15,scraped,0,llm_session,0,0,face,llm_session,unknown,auto,talking_head,llm_session,11.82,challenge_science_help,"nd_adults,men",none,llm_session,11.16,4.51,false,"🧠 Leben mit ADHS|Alltag, Chaos & Aufbau
+☕ 12 Tabs offen, 1 Plan im Kopf
+🎯 Zeig was bei mir wirklich funktioniert (und was nicht)",https://jannes-patrick.jim.do/bio,ok,ok,2026-10-25T07:43:49Z,0,tiktok_app,selected
+1,kirmesimkopf,tiktok,de,5046,scraped,micro,1181.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,talking_head,llm_session,1.06,"challenge_science_help,strengths",nd_adults,book,llm_session,2.54,10.71,false,"CEO of Chaos 💥🤯
+ADHD is having the best ideas and then",,ok,ok,2026-10-24T21:18:20Z,1,seed_d04,selected
+74,kopfkino.mit.untertitel,tiktok,de,3646,scraped,micro,1114.0,15,scraped,0,llm_session,0,0,face,llm_session,male,auto,text_on_screen,llm_session,0.98,challenge_science_help,nd_adults,none,llm_session,12.94,12.49,false,"🎬 Kopfkino mit Untertitel
+🧠 ADHS Spätdiagnose mit 38 – endlich verstanden
+😂 Humor, Alltag & Aha-Momente
+👇 Komm mit.",,ok,ok,2026-10-25T07:24:59Z,0,tiktok_app,selected
+86,lebenmitadhs,tiktok,de,7005,scraped,micro,10300.0,15,scraped,0,llm_session,0,0,unknown,llm_session,male,auto,text_on_screen,llm_session,14.24,challenge_science_help,nd_adults,linktree,llm_session,11.03,6.49,false,"🧠 ADHS verstehen & meistern
+✨ Tipps, Strategien & Mindset
+👇 Hol dir den Ratgeber",https://shop.beacons.ai/vivreavectdah/55b32c88-a5b1-442e-81cd-db6a52b94413,ok,ok,2026-10-25T07:44:02Z,0,tiktok_app,selected
+84,leoniemachtsachen,tiktok,de,233600,scraped,macro,27600.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,talking_head,llm_session,6.09,"challenge_science_help,parents","nd_adults,parents",sponsor,llm_session,9.25,6.55,false,"🤠 eure Physiomaus mit ADHS 
+💜 professionelle Quasselstrippe & Mutti 😼
+📍Munich
+
+collabs: leonie@franklyagency.de",https://instagram.com/frankly.impressum?vrfl=MWE3Nzh5M3lheDJhYg%3D%3D,ok,ok,2026-10-25T07:43:53Z,0,tiktok_app,selected
+67,luciemenow,tiktok,de,5641,scraped,micro,3791.0,15,scraped,3,llm_session,3,2,face,llm_session,female,auto,talking_head,llm_session,0.84,challenge_science_help,nd_adults,none,llm_session,12.0,6.04,false,"🧠 psychologie zwischen forschung & alltag
+👩‍🎓 master in psychotherapie & klinische psychologie (lädt) 
+🤳🏽 insta: luciemenow",https://kyurme.com/,ok,ok,2026-10-25T07:24:26Z,0,tiktok_app,selected
+65,meinadhsleben,tiktok,de,9911,scraped,micro,2183.0,15,scraped,0,llm_session,0,0,unknown,llm_session,female,auto,text_on_screen,llm_session,6.13,"challenge_science_help,parents","nd_adults,parents","book,affiliate",llm_session,15.35,5.77,false,Entdecke unseren Bestseller auf Amazon,https://www.amazon.de/dp/B0FMPT1NQ9/,ok,ok,2026-10-25T07:24:15Z,0,tiktok_app,selected
+3,nessadhs,tiktok,de,122400,scraped,macro,7137.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,skit,llm_session,7.5,challenge_science_help,nd_adults,none,llm_session,7.81,11.74,false,"ADHS Quatsch Content (keine Expertin)
+➡️ https://www.nessadhs.de/impressum",https://linktr.ee/nessadhs,ok,ok,2026-10-24T22:01:53Z,1,seed_d04,selected
+64,neuroceline,tiktok,de,26200,scraped,mid,32000.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,talking_head,llm_session,19.5,"challenge_science_help,strengths",nd_adults,none,llm_session,28.65,8.93,false,"Celine | 🇦🇹 Autismus & ADHS | 26 | Teile meine dummen Gedanken hier  ✨
+📩 neuroceline@web.de
+IG: Neuroceline",,ok,ok,2026-10-25T07:24:09Z,0,tiktok_app,selected
+68,neuronbird,tiktok,de,4862,scraped,micro,2733.0,15,scraped,0,llm_session,0,0,faceless,llm_session,male,auto,animation,llm_session,4.09,challenge_science_help,nd_adults,none,llm_session,27.73,12.93,false,"🧠🐱Psychologie erklärt🐱🧠
+Neurodiverse und neurowissenschaftliche Themen.
+Folge mir und erkenne dich wieder!",,ok,ok,2026-10-25T07:24:31Z,0,tiktok_app,selected
+66,neuropinguin,tiktok,de,2155,scraped,micro,25950.0,8,scraped,0,llm_session,0,0,faceless,llm_session,male,auto,animation,llm_session,0.87,challenge_science_help,nd_adults,none,llm_session,28.94,21.2,false,"Neurowissenschaft muss nicht trocken sein.
+~ ADHS, Diagnose seit 2008",,ok,ok,2026-10-25T07:24:20Z,0,tiktok_app,selected
+75,robin.haegle,tiktok,de,35700,scraped,mid,1156.0,15,scraped,0,llm_session,0,0,face,llm_session,male,auto,talking_head,llm_session,68.92,challenge_science_help,nd_adults,"sponsor,course",llm_session,23.89,14.13,false,"🎓 Sozialpädagoge mit ADHS
+🎬 Mein Alltag zwischen Chaos, Humor und Sport
+🧠 ADHS verständlich erklärt
+👇 Beratung · Vorträge · Workshops",https://linktr.ee/robin.haegle,ok,ok,2026-10-25T07:25:04Z,0,tiktok_app,selected
+60,susis_synapsensalat,tiktok,de,14600,scraped,mid,561.0,15,scraped,0,llm_session,0,0,mixed,llm_session,female,auto,text_on_screen,llm_session,35.24,"parents,challenge_science_help","parents,nd_adults",linktree,llm_session,4.36,1.94,false,"🧠 ADHS 👩 & AuDHS 👦
+🧩 Neurodivergent Family
+🤍 Familiäre Grenzen & neue Wege
+🌱 Unser Weg – ehrlich & ungeschönt
+⬇️ Impressum, Datenschutz & Links",https://wonderl.ink/@adhs_autismus_family,ok,ok,2026-10-25T07:23:47Z,0,tiktok_app,selected
+63,user8445982006957,tiktok,de,1782,scraped,micro,824.0,15,scraped,0,llm_session,0,0,faceless,llm_session,unknown,auto,voiceover_broll,llm_session,24.46,"challenge_science_help,men_dads_partners",men,none,llm_session,23.24,15.04,false,,,ok,ok,2026-10-25T07:24:05Z,0,tiktok_app,selected
+5,verena_eisbrenner,tiktok,de,,,,,0,,,,,,,,,,,,,,,,,,,false,,,no_data,,,1,seed_d04,candidate
+35,@BennyRabbit86,youtube,de,585,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,Geordie. ADHD. Silly bugger.,,ok,,2026-10-24T22:04:38Z,0,ytsearch,candidate
+15,@Clips4Freedoom,youtube,de,122,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,Marli clips für freedom shirts!,,ok,,2026-10-24T22:02:58Z,0,ytsearch,candidate
+13,@DyspraxieOnline,youtube,de,619,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,"Dyspraxie Online ist seit 2014 eine deutschsprachige Informations- und Selbsthilfeplattform für Familien mit Dyspraxie. Sie erklärt verständlich, was Dyspraxie, DCD und UEMF bedeuten, sammelt Fachwissen und Alltagstipps und macht Betroffene mit passenden Hilfen, Materialien und Kontakten vertraut. Als bundesweite Selbsthilfegruppe fördert die Plattform Austausch, regionale Treffen, Online-Formate und die Vernetzung mit Fachkräften. So werden Kinder, Eltern und Angehörige im Alltag entlastet und das Thema in Öffentlichkeit, Schule und Therapie sichtbarer.
+
+Mit leicht verständlichen Videos, praktischen Tipps und persönlichen Einblicken unterstützt Dyspraxie Online Betroffene, Angehörige und Interessierte dabei, Dyspraxie besser zu verstehen und sicherer damit umzugehen. Ziel ist es, Wissen zu teilen, aufzuklären und den Austausch zu fördern.
+
+Impressum von Dyspraxie-Online: https://www.dyspraxie-online.de/impressum.html",,ok,,2026-10-24T22:02:48Z,0,ytsearch,candidate
+18,@GoallyApps,youtube,de,14800,scraped,mid,,0,,,,,,,,,,,,,,,,,,,false,"We are Goally; your one-stop-info-shop for all things emotional regulation, ADHD, Autism, Kids tablets and tech!
+
+We've got diagnosis explainers, therapy videos, vocabulary breakdowns, product reviews, and parenting tips. Like & subscribe to keep up with all the goodness.
+
+Brought to you by Goally, a groundbreaking suite of therapy apps for special needs kids. Our mission is to ease the lives of neurodiverse kids and their families with easily accessible technology. Goally's apps are used by clinicians, educators, and parents everywhere to help your children gain independence. Check out our suite of apps and tablets designed specifically for autism & ADHD at www.getgoally.com.
+
+#parenting #technology #autism #awareness #kidslearning #Neurodiversity #adhd  #vocabulary  #teaching #education  #parents  #neurodiverse #neurodivergent #add #downsyndrome  #executivefunctioning  #technology  #consumertech  
+",,ok,,2026-10-24T22:03:12Z,0,ytsearch,excluded
+36,@RDXMixer,youtube,de,,,,,0,,,,,,,,,,,,,,,,,,,false,,,failed,,,0,ytsearch,excluded
+28,@VisualKnowledge,youtube,de,8380,scraped,micro,59.0,15,scraped,0,llm_session,0,0,face,llm_session,male,auto,talking_head,llm_session,1.09,"strengths,challenge_science_help",nd_adults,book,llm_session,,,false,"Visual Knowledge produces animations that support neurodiversity. this chanel is also connected to the Social Enterprise Neuro Expression.
+
+Check out our free 10 page sample
+https://neuroexpression.co.uk/download-my-book-neurodiverse-voices/
+",,ok,ok,2026-10-24T22:04:02Z,0,ytsearch,selected
+19,@adhsautismus,youtube,de,4570,scraped,micro,1646.0,15,scraped,0,llm_session,0,0,faceless,llm_session,female,auto,mixed,llm_session,0.21,"challenge_science_help,parents,strengths","nd_adults,parents",shop,llm_session,,,false,ADHS & Autismus Beratungsnetzwerk Wetterau e.V.,,ok,ok,2026-10-24T22:03:18Z,0,ytsearch,selected
+29,@autismusspektruminfo,youtube,de,,,,,0,,,,,,,,,,,,,,,,,,,false,,,failed,,,0,ytsearch,candidate
+34,@bbcdeepwatch,youtube,de,2420000,scraped,mega,,0,,,,,,,,,,,,,,,,,,,false,"Docs to binge for your 2am doomscroll
+
+BBC deepwatch takes you inside the stories, worlds and lives shaping young Britain today. If you’re into the secret lives of crime lords, fascinating internet deep dives or mind-bending stories, we make immersive documentaries that stay with you.
+
+Powered by BBC Three.
+",,ok,,2026-10-24T22:04:32Z,0,ytsearch,excluded
+32,@beatriceribaux4537,youtube,de,801,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,"Ich zeige Dir in meinem exklusiven 180 Tage Coaching, wie Du mit der LSO-Methode für mehr Erfolg in deiner Karriere und im Beruf FEHLERFREI UND MIT LEICHTIGKEIT SCHREIBEN LERNST 
+► KOSTENLOSES ERSTGESPRÄCH: https://beatriceribaux.com/termin-vereinbaren",,ok,,2026-10-24T22:04:22Z,0,ytsearch,candidate
+16,@bvlegasthenie,youtube,de,,,,,0,,,,,,,,,,,,,,,,,,,false,,,failed,,,0,ytsearch,candidate
+20,@logo-nachrichten,youtube,de,121000,scraped,macro,,0,,,,,,,,,,,,,,,,,,,false,"Bei logo! bekommt Ihr jeden Tag live die logo!-Kindernachrichten mit dem Wichtigsten aus aller Welt 🌍, verständlich erklärt – präsentiert von den logo!-Moderatoren Lotte, Linda, Maral und Sherif. Produziert wird der Kanal vom ZDF in Zusammenarbeit mit dem Autorenkombinat. 
+
+Das Kanal-Team diskutiert gerne mit Euch in den Kommentaren und beantwortet Eure Fragen. Um für alle eine gute Diskussionsatmosphäre zu schaffen, gilt auf unserem Kanal eine Netiquette. Diese findet Ihr hier: https://www.zdf.de/kinder/logo/netiquette-102.html?at_medium=Social%20Media&at_campaign=YouTube&at_specific=ZDFtivi&at_content=logo
+
+Gerne können Webseiten zu unseren Videos verlinken und auf logo! verweisen.
+
+👉 Mehr logo! in der ZDF-Mediathek: https://www.zdf.de/kinder/logo
+
+👉 logo! auf Instagram: https://www.instagram.com/zdflogo
+
+⁉️ Lob, Kritik, Fragen, Themenwünsche? Schreibt uns in die Kommentare! Dort gilt unsere Netiquette.
+",,ok,,2026-10-24T22:03:21Z,0,ytsearch,excluded
+17,@miss_divergantz,youtube,de,190,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,"Hello all, I am an AuDHD Clinician, Specialist Behaviour Practitioner (non ABA), Educator and have previously worked in law, community services and disability. These clips are to help educate us all from an Actually Autistic perspective :)
+
+https://linktr.ee/tarakent",,ok,,2026-10-24T22:03:07Z,0,ytsearch,candidate
+31,@neurochallenged,youtube,de,715000,scraped,macro,,0,,,,,,,,,,,,,,,,,,,false,"📝 Pass your next test with my neuroscience videos! 
+
+I’m Marc, a university professor at Penn State, and I’m here to take you on a journey into the fascinating world of the brain. I created this channel to break down complex topics into easy-to-understand snippets—perfect for both students and curious minds alike. 📚 
+
+My goal is to make learning neuroscience fun and accessible. Whether you're a student looking to supplement your studies or simply eager to understand the basics of the brain, this channel is for you. 
+
+Hit subscribe and get to know your brain, one video at a time! 🧠
+
+With only a few exceptions, all drawings used in my videos are drawn by me (Marc Dingman) unless otherwise stated.
+",,ok,,2026-10-24T22:04:15Z,0,ytsearch,excluded
+49,adhd.partner.support,tiktok,en,1579,scraped,micro,1366.0,15,scraped,0,llm_session,0,0,faceless,llm_session,male,auto,text_on_screen,llm_session,0.25,"men_dads_partners,challenge_science_help",partners,none,llm_session,4.67,2.81,false,"Support for partners of people with ADHD ❤️ Tips, empathy, and real talk!",,ok,ok,2026-10-25T07:23:00Z,0,tiktok_app,selected
+9,adhd_alien,tiktok,en,1061,scraped,micro,,0,,,,,,,,,,,,,,,,,,,false,"Pre-order ""Feeling like an ADHD Alien"" anywhere! Releases Sept 15",,ok,,2026-10-24T22:02:24Z,1,seed_d04,excluded
+52,adhdautism4,tiktok,en,15300,scraped,mid,41500.0,15,scraped,0,llm_session,0,0,unknown,llm_session,female,auto,text_on_screen,llm_session,0.22,challenge_science_help,nd_adults,none,llm_session,5.53,7.54,false,"we are diagnosed with autism and adhd
+it's a spectrum, don't forget that!❤️",,ok,ok,2026-10-25T07:23:14Z,0,tiktok_app,selected
+10,adhddude,tiktok,en,58000,scraped,mid,751.0,15,scraped,0,llm_session,0,0,mixed,llm_session,male,auto,mixed,llm_session,4.9,parents,parents,"course,membership",llm_session,13.4,7.02,false,"Confident Parents, Capable Kids by ADHD Dude 
+Parent Behavior Training that works
+Ryan Wexelblatt, LCSW",https://linktr.ee/adhddude,ok,ok,2026-10-24T22:02:30Z,1,seed_d04,selected
+79,adhdminds111,tiktok,en,12500,scraped,mid,131900.0,15,scraped,0,llm_session,0,0,unknown,llm_session,male,auto,text_on_screen,llm_session,0.53,challenge_science_help,nd_adults,none,llm_session,34.81,8.45,false,,,ok,ok,2026-10-25T07:43:26Z,0,tiktok_app,selected
+46,adhdparenting_coachsue,tiktok,en,7400,scraped,micro,1004.0,15,scraped,0,llm_session,0,0,face,llm_session,male,auto,talking_head,llm_session,2.97,parents,parents,course,llm_session,11.52,5.67,false,Helping ADHD parents move from battlefield to balance.,https://www.parentingwithcoachsue.com/links,ok,ok,2026-10-25T07:22:47Z,0,tiktok_app,selected
+45,adhdsciences,tiktok,en,8842,scraped,micro,2571.0,15,scraped,0,llm_session,0,0,unknown,llm_session,male,auto,text_on_screen,llm_session,27.71,challenge_science_help,nd_adults,none,llm_session,15.19,6.39,false,"ADHD Explained Daily... 💙🤍
+Tips, Hacks & Support for Distracted Minds 🧠📝",,ok,ok,2026-10-25T07:22:43Z,0,tiktok_app,selected
+47,adhdventurers,tiktok,en,96800,scraped,mid,4722.0,15,scraped,0,llm_session,0,0,unknown,llm_session,male,auto,text_on_screen,llm_session,2.51,challenge_science_help,nd_adults,book,llm_session,11.06,3.67,false,"Get The ADHD Playbook, tools & help 👇",Myadhdventure.com,ok,ok,2026-10-25T07:22:51Z,0,tiktok_app,selected
+50,adhdvision,tiktok,en,1800000,scraped,mega,13200.0,15,scraped,0,llm_session,0,0,face,llm_session,male,auto,skit,llm_session,0.66,"challenge_science_help,strengths",nd_adults,affiliate,llm_session,6.24,3.53,false,"💡ADHD Mentor & Coach with ADHD 🇩🇪
+Try The ADHD Sound App I Use👇",https://link.adhdvision.com/Pwj1,ok,ok,2026-10-25T07:23:05Z,0,tiktok_app,selected
+59,audhd30,tiktok,en,5956,scraped,micro,,0,,0,llm_session,0,,unknown,llm_session,,,mixed,llm_session,,,nd_adults,none,llm_session,,,false,"Hi everyone I am Anna I have audhd  , sensory processing disorder , anxiety , rejection sensitive dysphoria and learning disabilities",,ok,ok,2026-10-25T07:23:42Z,0,tiktok_app,selected
+42,bitecheesechili,tiktok,en,945,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,"just my thoughts
+isfp sx 4w5",,ok,,2026-10-25T07:22:30Z,0,tiktok_app,candidate
+8,danidonovan,tiktok,en,623200,scraped,macro,721.0,15,scraped,0,llm_session,0,0,mixed,llm_session,female,auto,mixed,llm_session,1.81,challenge_science_help,nd_adults,"book,shop",llm_session,4.77,0.74,false,"📚 Creator of “The Anti-Planner”
+🎨 ADHD comics
+🗞️ Featured in New York Times, Washington Post",,ok,ok,2026-10-24T22:02:18Z,1,seed_d04,selected
+58,diplomaduck,tiktok,en,241500,scraped,macro,127400.0,15,scraped,0,llm_session,0,0,faceless,llm_session,male,auto,animation,llm_session,1.44,"challenge_science_help,strengths",nd_adults,shop,llm_session,23.9,23.28,false,Duck merch 👇,DiplomaDuck.com,ok,ok,2026-10-25T07:23:38Z,0,tiktok_app,selected
+44,goxlr__,tiktok,en,1063,scraped,micro,1082.0,15,scraped,0,llm_session,0,0,faceless,llm_session,female,auto,mixed,llm_session,0.31,,,none,llm_session,28.08,7.09,false,Berserk X StarWars,,ok,ok,2026-10-25T07:22:39Z,0,tiktok_app,excluded
+7,howtoadhd,tiktok,en,100800,scraped,macro,4643.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,talking_head,llm_session,0.12,challenge_science_help,"nd_adults,parents","book,sponsor",llm_session,5.59,1.73,false,Science based brain hacks and practical strategies to make (ADHD) life easier.,,ok,ok,2026-10-24T22:02:14Z,1,seed_d04,selected
+81,hypeneo1,tiktok,en,127900,scraped,macro,362700.0,15,scraped,0,operator_verified,2,0,faceless,llm_session,male,auto,voiceover_broll,llm_session,1.92,"challenge_science_help,strengths",nd_adults,"course,linktree",llm_session,29.02,15.8,false,↓ Learn How i create my viral content ↓,https://beacons.ai/hypeadhd,ok,ok,2026-10-25T07:43:37Z,0,tiktok_app,selected
+43,le0zs,tiktok,en,56900,scraped,mid,2821.0,15,scraped,0,llm_session,0,0,faceless,llm_session,female,auto,text_on_screen,llm_session,0.74,,,none,llm_session,17.58,11.82,false,See you in hell for the sequel,,ok,ok,2026-10-25T07:22:36Z,0,tiktok_app,excluded
+82,lix.psl,tiktok,en,12800,scraped,mid,257200.0,15,scraped,0,llm_session,0,0,faceless,llm_session,male,auto,mixed,llm_session,0.24,,,sponsor,llm_session,15.05,18.85,false,,,ok,ok,2026-10-25T07:43:44Z,0,tiktok_app,excluded
+57,messagetodaniel,tiktok,en,59000,scraped,mid,5415.0,15,scraped,0,llm_session,0,0,faceless,llm_session,unknown,auto,voiceover_broll,llm_session,4.45,challenge_science_help,nd_adults,sponsor,llm_session,37.2,6.84,false,"Stop fighting your ADHD. Use it.
+Daily tips to start + finish
+💬 I text people their goals",https://goalswithdaniel.com/,ok,ok,2026-10-25T07:23:34Z,0,tiktok_app,selected
+54,myadhdventure,tiktok,en,565500,scraped,macro,5474.0,15,scraped,0,llm_session,0,0,unknown,llm_session,unknown,auto,text_on_screen,llm_session,10.89,"challenge_science_help,men_dads_partners","nd_adults,partners",shop,llm_session,10.96,6.67,false,"Get The ADHD Playbook, tools & help 👇",Myadhdventure.io/tt,ok,ok,2026-10-25T07:23:23Z,0,tiktok_app,selected
+78,neuroduck0,tiktok,en,11200,scraped,mid,65100.0,13,scraped,0,llm_session,0,0,faceless,llm_session,male,auto,animation,llm_session,1.1,challenge_science_help,nd_adults,none,llm_session,19.57,28.71,false,,,ok,ok,2026-10-25T07:43:22Z,0,tiktok_app,selected
+56,propeladhd,tiktok,en,257400,scraped,macro,5518.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,skit,llm_session,7.0,challenge_science_help,nd_adults,shop,llm_session,4.87,2.99,false,"Train your ADHD brain with fun games 🧠
+Memory, focus, logic & math
+Try it now👇",https://propeladhd.onelink.me/Awo6/iga8dvyi,ok,ok,2026-10-25T07:23:31Z,0,tiktok_app,selected
+48,raising_happy_homes,tiktok,en,1245,scraped,micro,445.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,talking_head,llm_session,4.19,"challenge_science_help,parents",parents,none,llm_session,23.7,19.51,false,"Certified ADHD Coach
+Board Certified Behavior Analyst
+Mom of 2",,ok,ok,2026-10-25T07:22:55Z,0,tiktok_app,selected
+51,raisingkevin_,tiktok,en,801100,scraped,macro,152600.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,skit,llm_session,4.9,parents,parents,none,llm_session,1.74,1.57,false,"Parenting | Family Life | Autism Joy ✨
+🏆 TikTok Voice for Change 2025
+🏆 ITV Parenting Creator 2026
+📧raisingkevin@season25.com",https://jobsandskills.campaign.gov.uk/,ok,ok,2026-10-25T07:23:10Z,0,tiktok_app,selected
+53,theautismspectrum,tiktok,en,69800,scraped,mid,2583.0,15,scraped,0,operator_verified,2,0,faceless,llm_session,male,auto,talking_head,llm_session,0.25,"challenge_science_help,strengths,parents","nd_adults,parents",none,llm_session,10.44,5.91,false,"Creating informative posts about autism, mental health, and overall well-being.",,ok,ok,2026-10-25T07:23:17Z,0,tiktok_app,selected
+55,tim.adhd,tiktok,en,16400,scraped,mid,2011.0,15,scraped,0,llm_session,0,0,face,llm_session,male,auto,talking_head,llm_session,0.42,challenge_science_help,nd_adults,linktree,llm_session,8.7,1.95,false,"#LateDiagnosed at 43. 
+ADHD, Autism, C-PTSD, FND, OSDD. 
+💙 Normalizing Complex Mental Health 
+⬇️LATE DIAGNOSED RESOURCES⬇️",https://linktr.ee/tim.adhd,ok,ok,2026-10-25T07:23:27Z,0,tiktok_app,selected
+80,unique_adhd,tiktok,en,21100,scraped,mid,1097.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,talking_head,llm_session,2.02,"challenge_science_help,strengths",nd_adults,"course,linktree",llm_session,8.35,31.15,false,"Take our FREE ADHD quiz 🧠✨
+Tools & planner for ADHD minds
+👇 Download Unique for FREE",,ok,ok,2026-10-25T07:43:31Z,0,tiktok_app,selected
+39,@8NewsNowVegas,youtube,en,467000,scraped,macro,,0,,,,,,,,,,,,,,,,,,,false,"8NewsNow.com is the website powered by KLAS-TV, Channel 8 in Las Vegas. The site features breaking news, weather, traffic, neighborhood news for those living in southern Nevada.",,ok,,2026-10-24T22:04:58Z,0,ytsearch,excluded
+11,@ADHDDude,youtube,en,92900,scraped,mid,2367.0,15,scraped,0,llm_session,0,0,face,llm_session,male,auto,talking_head,llm_session,0.34,parents,parents,"course,membership",llm_session,,,false,"Raising a child with ADHD can be exhausting when arguing, meltdowns, and power struggles take over your home. It doesn't have to stay that way.
+
+ADHD Dude Parent Behavior Training was created by Ryan Wexelblatt, LCSW, a therapist and father who raised a son with ADHD. It's grounded in evidence, not trends.
+
+You'll get clear, step-by-step strategies to reduce difficult behavior and help your child recognize how capable they are.
+
+Start your Parent Behavior Training at ADHDDude.com.
+",,ok,ok,2026-10-24T22:02:36Z,1,seed_d04,selected
+33,@AdventuresofNeryn,youtube,en,,,,,0,,,,,,,,,,,,,,,,,,,false,,,failed,,,0,ytsearch,candidate
+27,@AllAboutSpeechTherapy,youtube,en,1380,scraped,micro,917.0,15,scraped,0,llm_session,0,0,mixed,llm_session,female,auto,talking_head,llm_session,0.13,parents,parents,"course,book",llm_session,,,false,"💙Helping parents and educators of children who are desperate to speak yet haven't yet had the right tools and techniques. Award-winning, published child speech therapist Karen has worked as a therapist both for the NHS in special education and privately for the past 17 years. She has written for publications including US Autism Parenting Magazine and UK SEN Magazine, appeared on Early Years TV and is a double #SBS winner! 💙She has published books on Autism & Apraxia of Speech, Communication in Down Syndrome at Primary School & Total Speech.  💙The Empowering Speech Consultant is now CEO of All About Speech Therapy Ltd, which she runs with her business partner Charlotte. They have a growing team of therapists and therapy assistants. Karen is passionate about what she does and has enjoyed seeing so many children develop speech, literally giving them their voice, and she is on a mission to help many many more 💙 Trustee of Mikey's Wish Foundation charity",,ok,ok,2026-10-24T22:03:56Z,0,ytsearch,selected
+40,@CBCTheNational,youtube,en,2200000,scraped,mega,,0,,,,,,,,,,,,,,,,,,,false,"The National is the flagship of CBC News, showcasing award-winning journalism from across Canada and around the world. Led by Chief Correspondent Adrienne Arsenault and Ian Hanomansing, our team of trusted reporters help you make sense of the world, wherever you are.",,ok,,2026-10-24T22:05:04Z,0,ytsearch,excluded
+21,@GenericArtDad,youtube,en,343000,scraped,macro,167406.0,15,scraped,0,llm_session,0,0,face,llm_session,unknown,auto,skit,llm_session,1.55,,,sponsor,llm_session,,,false,"Do you like eating rocks?  Or, like the rest of us, do you sometimes wonder how the world actually works?  Why are the ultra wealthy playing a different game than us?  What is autism & why does everyone have ADHD?  How do politicians get way with corruption?  Why is food so addictive?  How do our bodies know when a fart is going to stink?  Why do good people do bad things?  
+
+Want more questions? Do I make high quality content?  Eh 🤷‍♂️.  Are my jokes funny?  Not in particular.  Do I know what I'm talking about?  Emphatically no.   
+
+What I do do, is make words good.  
+James Randi meets Sesame Street for adults. 
+
+mgmt@chrisgad.com
+",,ok,ok,2026-10-24T22:03:25Z,0,ytsearch,excluded
+22,@Gossipduckling,youtube,en,17400,scraped,mid,9602.0,15,scraped,0,llm_session,0,0,faceless,llm_session,male,auto,animation,llm_session,7.01,challenge_science_help,nd_adults,none,llm_session,,,false,"Welcome to Gossip Duckling! 🐥✨
+Your go-to place for the latest celebrity gossip, trending entertainment news, viral stories, and pop culture updates. We bring you fun, fresh, and easy-to-watch content about what’s happening in Hollywood, social media, and the entertainment world.
+
+Subscribe to Gossip Duckling and stay updated with the hottest trends and buzz!
+",,ok,ok,2026-10-24T22:03:31Z,0,ytsearch,selected
+37,@HealthgradesInc,youtube,en,2700,scraped,micro,,0,,,,,,,,,,,,,,,,,,,false,"Feel better about finding healthcare. Healthgrades helps you connect with the doctor, hospital or treatment that's right for you.",,ok,,2026-10-24T22:04:50Z,0,ytsearch,excluded
+2,@HowtoADHD,youtube,en,1960000,scraped,mega,9473.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,talking_head,llm_session,0.93,challenge_science_help,nd_adults,"book,membership,sponsor",llm_session,,,false,"Have ADHD? Know someone with ADHD? Want to learn more? You're in the right place!
+
+Most weeks I post a new video with tips, tricks & insights into the ADHD brain.
+
+This channel is my ADHD toolbox -- a place to keep all the strategies I've learned about having & living with ADHD.  It's also grown into an amazing community of brains (& hearts!) who support & help each other.  Anyone looking to learn more about ADHD is welcome here!
+
+Support me on Patreon: http://patreon.com/howtoadhd
+Check out our website! www.howtoadhd.com
+Check out our book! www.howtoadhdbook.com
+
+Follow me on
+Facebook: http://facebook.com/howtoadhd
+IG: https://www.instagram.com/howtoadhd/
+
+Send me things! (no food please :D )
+
+Jessica McCabe
+How to ADHD
+9030 35th Avenue SW Suite 100 #1006
+Seattle, WA 98126
+
+COMMENT POLICY
++=+=+=+=+
+I encourage positive discussion about nearly any topic; however, I have a family-friendly, no-bullying policy and comments that contain insults, triggers or R-rated language may be deleted.",,ok,ok,2026-10-24T21:18:52Z,1,seed_d04,selected
+25,@Neurodivergent_Musician,youtube,en,267,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,"composer, guitarist, keyboard & synth obsessive with late diagnosed autism, ADHD and Tourettes
+
+As someone with ADHD, Tourettes & late diagnosed autism, I've had to come to terms with who I really am and my limitations/capabilities. Being treated for my neurodivergence has changed my life and helped me to be creative in ways I never could have before. The name ""Neurodivergent Music"" refers not only to these facts, but to the ways my neurodivergence has affected my musical sensibilities and expression.",,ok,,2026-10-24T22:03:45Z,0,ytsearch,candidate
+24,@News4JAX,youtube,en,543000,scraped,macro,,0,,,,,,,,,,,,,,,,,,,false,"News4JAX, WJXT4, The Local Station, News4JAX.com—the most trusted source for local news in Northeast Florida and Southeast Georgia. The Weather Authority keeps you safe with accurate forecasting for your neighborhood. The News4JAX Sports team tells stories of local athletes and the best analysis of your favorite teams. Anchors and reporters you trust, telling the story of the local community, everything WJXT does is with our community in mind. That’s why WJXT has been the market leader for more than 65 years.
+",,ok,,2026-10-24T22:03:41Z,0,ytsearch,excluded
+14,@PashaMarlowe,youtube,en,1420,scraped,micro,673.0,15,scraped,0,llm_session,0,0,face,llm_session,unknown,auto,talking_head,llm_session,0.14,"men_dads_partners,challenge_science_help","nd_adults,partners",book,llm_session,,,false,"Pasha Marlowe (she/her), MFT, is a global wellbeing, relational intelligence, and neuroinclusion speaker. She is the author of ""Creating Cultures of Neuroinclusion"" and the host of the ""Neuroinclusion"" podcast When Pasha is not coaching neurodivergent clients, Pasha collaborates with international organizations and schools to teach neuroinclusive leadership and design, neurodiversity-affirming practices, and how to reduce stigma about differences and disabilities. With her 32 years of experience as a mental health professional and 55 years of lived experience as a multiply-neurodivergent person, Pasha brings much needed representation and integrity to the neuroinclusion conversation. 
+Website: pashamarlowe.com
+Email: pasha@pashamarlowe.com
+Linkedin: @PashaMarlowe
+",,ok,ok,2026-10-24T22:02:53Z,0,ytsearch,selected
+12,@SensoryBlum,youtube,en,79,scraped,below_min,,0,,,,,,,,,,,,,,,,,,,false,"Welcome to Sensory Blum! 
+
+A warm, fun, and cozy space filled with magical sensory videos for autistic and neurodivergent individuals. Our content features playful visuals like dancing bubbles and glowing shapes, paired with gentle, comforting sounds. It’s the perfect safe haven to help self-regulate, unwind, and bloom at your own pace.
+
+✨ Subscribe to join the Sensory Blum family and explore a world of calm fun together! ✨",,ok,,2026-10-24T22:02:42Z,0,ytsearch,candidate
+23,@SquirrelDad,youtube,en,7270,scraped,micro,209.0,15,scraped,0,llm_session,0,0,face,llm_session,male,auto,talking_head,llm_session,1.44,challenge_science_help,nd_adults,none,llm_session,,,false,Content Creator. Sweary Autism & ADHD Advocate. EDM Producer. Artist. Dad. Streamer.,,ok,ok,2026-10-24T22:03:36Z,0,ytsearch,selected
+41,@additudemag,youtube,en,109000,scraped,macro,1706.0,15,scraped,2,operator_verified,2,2,face,llm_session,female,auto,talking_head,llm_session,0.32,"challenge_science_help,men_dads_partners","nd_adults,parents,men,partners",membership,llm_session,,,false,"https://www.additudemag.com
+
+ADDitude is the trusted resource for anyone with attention deficit disorder (ADD or ADHD) and related conditions — and the professionals who work with them. 
+
+The ultimate source of important news, well-vetted expert advice, and judgment-free understanding to help families and adults navigate the very real challenges that arise from ADHD and related mental health conditions. 
+
+Our mission is to be your most reliable advisor and ally, and a source of inspiration along your path to health and well-being.",,ok,ok,2026-10-24T22:05:08Z,0,ytsearch,selected
+38,@local12WKRC,youtube,en,283000,scraped,macro,,0,,,,,,,,,,,,,,,,,,,false,"Local 12, WKRC, Cincinnati, Television
+",,ok,,2026-10-24T22:04:54Z,0,ytsearch,excluded
+26,@olivialutfallah,youtube,en,611000,scraped,macro,50965.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,skit,llm_session,4.9,challenge_science_help,nd_adults,none,llm_session,,,false,"Welcome to the cool kids club!! I talk about the good, the bad and the ugly of ADHD. I love golf, cookies, and YOU🩷. You can find me on snap, insta, and tiktok @olivialutfallah",,ok,ok,2026-10-24T22:03:50Z,0,ytsearch,selected
+30,@sociallyausome,youtube,en,2150,scraped,micro,975.0,15,scraped,0,llm_session,0,0,face,llm_session,female,auto,talking_head,llm_session,28.55,"challenge_science_help,parents","nd_adults,parents","book,affiliate,sponsor",llm_session,,,false,"ADHD business advice for entrepreneurs who are tired of forcing their brains to work like everyone else’s.
+
+I’m Alyece Smith, TEDx speaker, author, ADHD coach, entrepreneur, and founder of Socially Ausome™.
+
+I help ADHD entrepreneurs build businesses and create systems that work with their brains. Here we talk about ADHD and entrepreneurship, executive dysfunction, time blindness, burnout, productivity, business systems, social media marketing, content creation, and life with a neurodivergent brain.
+
+I’m the author of FLOW-First Thinking™, my framework for building success around the brain you actually have, and What Now, Mama?, written for autism families navigating life after diagnosis.
+
+🎤 TEDx + Free Spark Tracker:
+https://sociallyausome.com/tedx-talk
+
+📚 Books:
+https://sociallyausome.com/books/flow-first-thinking
+
+🌐 Work with me:
+https://sociallyausome.com
+
+",,ok,ok,2026-10-24T22:04:10Z,0,ytsearch,selected
