@@ -1,42 +1,42 @@
 handle,platform,language,discovery_source,query,seed_named,operator_decision,notes
 kirmesimkopf,tiktok,de,seed_d04,,1,,D-04 seed: kirmesimkopf
 nessadhs,tiktok,de,seed_d04,,1,,D-04 seed: nessadhs
-hey_mamaleben,tiktok,de,seed_d04,,1,,D-04 seed: hey_mamaleben | executor note: fetched profile has 3 followers - handle probably wrong; operator to supply the correct TikTok handle
+hey_mamaleben,tiktok,de,seed_d04,,1,exclude,"D-04 seed: hey_mamaleben | executor note: fetched profile has 3 followers - handle probably wrong; operator to supply the correct TikTok handle; operator: wrong account, excluded"
 verena_eisbrenner,tiktok,de,seed_d04,,1,,D-04 seed: verena_eisbrenner | executor note: TikTok profile returned no data - handle probably wrong or account private; operator to supply the correct handle
 guardianofmind,tiktok,de,seed_d04,,1,,D-04 seed: guardianofmind | executor note: TikTok profile returned no data - handle probably wrong or account private; operator to supply the correct handle
-@SensoryBlum,youtube,de,ytsearch,Neurodivergenz,0,,Sensory Blum; 7 Shorts in search; channel_id UCLidZexyy3Ab2iLjkLWgMcg; also found by en ytsearch queries: check language | executor suggestion: relabel language en
+@SensoryBlum,youtube,en,ytsearch,Neurodivergenz,0,,Sensory Blum; 7 Shorts in search; channel_id UCLidZexyy3Ab2iLjkLWgMcg; also found by en ytsearch queries: check language | executor suggestion: relabel language en
 @DyspraxieOnline,youtube,de,ytsearch,Dyspraxie,0,,Dyspraxie Online; 4 Shorts in search; channel_id UCqRxCFWl_khxnPEl2KuGN0g
-@PashaMarlowe,youtube,de,ytsearch,Neurodivergenz; AuDHD,0,,"Pasha Marlowe, MFT, Neurodiversity Speaker ; 3 Shorts in search; channel_id UCHIKCBH-7r-wwkvzRlVJGFA; also found by en ytsearch queries: check language | executor suggestion: relabel language en (English neurodiversity speaker)"
+@PashaMarlowe,youtube,en,ytsearch,Neurodivergenz; AuDHD,0,,"Pasha Marlowe, MFT, Neurodiversity Speaker ; 3 Shorts in search; channel_id UCHIKCBH-7r-wwkvzRlVJGFA; also found by en ytsearch queries: check language | executor suggestion: relabel language en (English neurodiversity speaker)"
 @Clips4Freedoom,youtube,de,ytsearch,ADHS; ADHS Männer,0,,Clips4freedom; 3 Shorts in search; channel_id UCSg9K-QDiWbCCO-QaV40gJA
 @bvlegasthenie,youtube,de,ytsearch,Legasthenie,0,,bvlegasthenie; 3 Shorts in search; channel_id UCXlDL2oiUspXebJdb042ZSw
 @miss_divergantz,youtube,de,ytsearch,AuDHD,0,,miss_divergantz; 2 Shorts in search; channel_id UC09aKR7XedNXpkFp8A1FTxw; also found by en ytsearch queries: check language | executor suggestion: check language
-@GoallyApps,youtube,de,ytsearch,Neurodivergenz; AuDHD,0,,Goally Apps ; 2 Shorts in search; channel_id UCbDNb4EyUuBL_l6DLLUAKBw | executor suggestion: exclude (English app brand channel) or relabel en
+@GoallyApps,youtube,de,ytsearch,Neurodivergenz; AuDHD,0,exclude,Goally Apps ; 2 Shorts in search; channel_id UCbDNb4EyUuBL_l6DLLUAKBw | executor suggestion: exclude (English app brand channel) or relabel en
 @adhsautismus,youtube,de,ytsearch,ADHS; ADHS Eltern,0,,ADHS & Autismus Beratungsnetzwerk Wetterau e.V.; 2 Shorts in search; channel_id UCtLVJTnU5q2429UURhVSvSA
-@logo-nachrichten,youtube,de,ytsearch,ADHS; ADHS Eltern; ADHS Männer,0,,"logo!; 2 Shorts in search; channel_id UCuziK4bUFRr3z62bE7FMDPQ | executor suggestion: exclude (German children's news outlet, off-niche)"
-@AllAboutSpeechTherapy,youtube,de,ytsearch,Dyspraxie,0,,All About Speech Therapy 💙; 4 Shorts in search; channel_id UCC8LbQqhPyhdVbz6toR77Mg; also found by en ytsearch queries: check language | executor suggestion: relabel language en (English speech therapy)
+@logo-nachrichten,youtube,de,ytsearch,ADHS; ADHS Eltern; ADHS Männer,0,exclude,"logo!; 2 Shorts in search; channel_id UCuziK4bUFRr3z62bE7FMDPQ | executor suggestion: exclude (German children's news outlet, off-niche)"
+@AllAboutSpeechTherapy,youtube,en,ytsearch,Dyspraxie,0,,All About Speech Therapy 💙; 4 Shorts in search; channel_id UCC8LbQqhPyhdVbz6toR77Mg; also found by en ytsearch queries: check language | executor suggestion: relabel language en (English speech therapy)
 @VisualKnowledge,youtube,de,ytsearch,Dyspraxie,0,,Visual Knowledge; 3 Shorts in search; channel_id UCcuAHPRxqFgUd7gwJHErL0g; also found by en ytsearch queries: check language | executor suggestion: check language (likely en) and niche
 @autismusspektruminfo,youtube,de,ytsearch,Autismus,0,,AutismusSpektrum_Info; 2 Shorts in search; channel_id UCBugNAMKNhbNtY3sXKQS5Iw
-@sociallyausome,youtube,de,ytsearch,Neurodivergenz,0,,The ADHD CEO: Alyece Smith l Socially Ausome™; 2 Shorts in search; channel_id UCMjBwbsVhB0SCiboaJj27MA; also found by en ytsearch queries: check language | executor suggestion: relabel language en (English ADHD creator)
-@neurochallenged,youtube,de,ytsearch,Autismus; Tourette; AuDHD,0,,"Neuroscientifically Challenged; 2 Shorts in search; channel_id UCUgZq9PkDp1xaEivtcfJPSg | executor suggestion: exclude (English general neuroscience explainer, not ND niche)"
+@sociallyausome,youtube,en,ytsearch,Neurodivergenz,0,,The ADHD CEO: Alyece Smith l Socially Ausome™; 2 Shorts in search; channel_id UCMjBwbsVhB0SCiboaJj27MA; also found by en ytsearch queries: check language | executor suggestion: relabel language en (English ADHD creator)
+@neurochallenged,youtube,de,ytsearch,Autismus; Tourette; AuDHD,0,exclude,"Neuroscientifically Challenged; 2 Shorts in search; channel_id UCUgZq9PkDp1xaEivtcfJPSg | executor suggestion: exclude (English general neuroscience explainer, not ND niche)"
 @beatriceribaux4537,youtube,de,ytsearch,Legasthenie,0,,Beatrice Ribaux; 2 Shorts in search; channel_id UCX92AlCFFRnQV9ZNxGxsHcg
-@AdventuresofNeryn,youtube,de,ytsearch,AuDHD,0,,Adventures of Neryn; 2 Shorts in search; channel_id UCaPd4CvOs4Ha3qXJWcAxNSQ; also found by en ytsearch queries: check language | executor suggestion: relabel language en; no Shorts tab
-@bbcdeepwatch,youtube,de,ytsearch,Tourette,0,,"BBC deepwatch; 2 Shorts in search; channel_id UCcjoLhqu3nyOFmdqF17LeBQ | executor suggestion: exclude (English news/documentary outlet, not an ND creator)"
+@AdventuresofNeryn,youtube,en,ytsearch,AuDHD,0,,Adventures of Neryn; 2 Shorts in search; channel_id UCaPd4CvOs4Ha3qXJWcAxNSQ; also found by en ytsearch queries: check language | executor suggestion: relabel language en; no Shorts tab
+@bbcdeepwatch,youtube,de,ytsearch,Tourette,0,exclude,"BBC deepwatch; 2 Shorts in search; channel_id UCcjoLhqu3nyOFmdqF17LeBQ | executor suggestion: exclude (English news/documentary outlet, not an ND creator)"
 @BennyRabbit86,youtube,de,ytsearch,AuDHD,0,,Benny Rabbit 🐰 ; 2 Shorts in search; channel_id UCco2jrHIPwSyDDHzAIhMgfw; also found by en ytsearch queries: check language | executor suggestion: check language
-@RDXMixer,youtube,de,ytsearch,ADHS Papa,0,,RDX Mixer; 2 Shorts in search; channel_id UCvdvK5gDalBHYZt4gY6EMCg | executor suggestion: exclude (no Shorts tab; off-niche name)
+@RDXMixer,youtube,de,ytsearch,ADHS Papa,0,exclude,RDX Mixer; 2 Shorts in search; channel_id UCvdvK5gDalBHYZt4gY6EMCg | executor suggestion: exclude (no Shorts tab; off-niche name)
 howtoadhd,tiktok,en,seed_d04,,1,,D-04 seed: How to ADHD; handle unverified
 danidonovan,tiktok,en,seed_d04,,1,,D-04 seed: Dani Donovan; handle unverified
-adhd_alien,tiktok,en,seed_d04,,1,,D-04 seed: ADHD Alien; handle unverified
+adhd_alien,tiktok,en,seed_d04,,1,exclude,"D-04 seed: ADHD Alien; handle unverified; operator: wrong account, excluded"
 adhddude,tiktok,en,seed_d04,,1,,D-04 seed: ADHD Dude; handle unverified
 @HowtoADHD,youtube,en,seed_d04,,1,,D-04 seed: How to ADHD
 @ADHDDude,youtube,en,seed_d04,,1,,D-04 seed: ADHD Dude; handle unverified; also found by de ytsearch queries: check language
 @GenericArtDad,youtube,en,ytsearch,ADHD dad; AuDHD,0,,GenericArtDad; 3 Shorts in search; channel_id UClxlF0LMmgrDXkfV6cN4fuA | executor suggestion: check niche (ND content share unknown)
 @Gossipduckling,youtube,en,ytsearch,AuDHD,0,,Gossip Duckling; 2 Shorts in search; channel_id UCZGDAgLMZT_wT9UrJzkyiCg | executor suggestion: check niche (ND content share unknown)
 @SquirrelDad,youtube,en,ytsearch,ADHD dad,0,,SquirrelDad; 2 Shorts in search; channel_id UCZe4sgkRHQD22onJTzO9y0w | executor suggestion: check niche (ND dad content?)
-@News4JAX,youtube,en,ytsearch,ADHD; dyslexia,0,,News4JAX The Local Station; 2 Shorts in search; channel_id UC_YFbvKedjnVjqrZqBR4L8Q | executor suggestion: exclude (local news outlet)
+@News4JAX,youtube,en,ytsearch,ADHD; dyslexia,0,exclude,News4JAX The Local Station; 2 Shorts in search; channel_id UC_YFbvKedjnVjqrZqBR4L8Q | executor suggestion: exclude (local news outlet)
 @Neurodivergent_Musician,youtube,en,ytsearch,neurodivergent,0,,Neurodivergent Musician; 2 Shorts in search; channel_id UC_nR5zf1DXu5q37y396J01Q; also found by de ytsearch queries: check language | executor suggestion: check language
 @olivialutfallah,youtube,en,ytsearch,ADHD; ADHD men; AuDHD,0,,Olivia Lutfallah; 2 Shorts in search; channel_id UCqwHsK4DjnLFSN87HKln3YA | executor suggestion: check niche (ND content share unknown)
-@HealthgradesInc,youtube,en,ytsearch,ADHD; ADHD parenting; ADHD dad,0,,"Healthgrades; 3 Shorts in search; channel_id UClu9HHawXqv5fLgJMkX0s6A | executor suggestion: exclude (health brand, not ND niche)"
-@local12WKRC,youtube,en,ytsearch,autism; ADHD dad,0,,LOCAL 12; 2 Shorts in search; channel_id UC673WfesrYoCgG9VsekGlEQ | executor suggestion: exclude (local news outlet)
-@8NewsNowVegas,youtube,en,ytsearch,autism,0,,8 News Now — Las Vegas; 2 Shorts in search; channel_id UCFuzExfO2fUVmNK5_COvsNg | executor suggestion: exclude (local news outlet)
-@CBCTheNational,youtube,en,ytsearch,ADHD,0,,CBC News: The National; 2 Shorts in search; channel_id UCKjU3KzdbJE1EFcHVqXC3_g | executor suggestion: exclude (news outlet)
+@HealthgradesInc,youtube,en,ytsearch,ADHD; ADHD parenting; ADHD dad,0,exclude,"Healthgrades; 3 Shorts in search; channel_id UClu9HHawXqv5fLgJMkX0s6A | executor suggestion: exclude (health brand, not ND niche)"
+@local12WKRC,youtube,en,ytsearch,autism; ADHD dad,0,exclude,LOCAL 12; 2 Shorts in search; channel_id UC673WfesrYoCgG9VsekGlEQ | executor suggestion: exclude (local news outlet)
+@8NewsNowVegas,youtube,en,ytsearch,autism,0,exclude,8 News Now — Las Vegas; 2 Shorts in search; channel_id UCFuzExfO2fUVmNK5_COvsNg | executor suggestion: exclude (local news outlet)
+@CBCTheNational,youtube,en,ytsearch,ADHD,0,exclude,CBC News: The National; 2 Shorts in search; channel_id UCKjU3KzdbJE1EFcHVqXC3_g | executor suggestion: exclude (news outlet)
 @additudemag,youtube,en,ytsearch,ADHD; ADHD parenting,0,,ADDitude Magazine; 2 Shorts in search; channel_id UC_3d1NVczqxa-cQzFt2iVSw
