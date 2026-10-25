@@ -241,3 +241,9 @@ Judged from the fetched bio only:
 
 If the operator excludes daily.katze and le0zs, mid-tier TikTok falls to DE 6 / EN 6. Plan 08
 collects posts for exactly the 50 `selected` rows unless the operator changes decisions first.
+
+## Operator top-up (2026-10-25 07:43 UTC)
+
+Operator added 9 TikTok handles (EN: neuroduck0, adhdminds111, unique_adhd, hypeneo1, lix.psl; DE: jannes_patrick, leoniemachtsachen, adhs_deutschland, lebenmitadhs) and declared the list final ("So thats it"). Operator chose to KEEP the flagged possibly-off-niche accounts (daily.katze, le0zs, goxlr__, user8445982006957, @Gossipduckling).
+scan_run 22 (profile): ok 9, failed 5 (known). Re-select: de total 24 (mid 8), en total 35 (mid 13).
+Mid-tier TikTok after top-up: DE 8 (adhs.reise, adhsabenteuer, bene_adhso, daily.katze, jannes_patrick, neuroceline, robin.haegle, susis_synapsensalat) — exactly at the validity floor before the ≥8-posts check; EN 11.
