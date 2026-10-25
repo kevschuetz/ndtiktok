@@ -202,6 +202,20 @@ def select_cmd(topic_id: int = typer.Argument(..., help="Topic id (backlog)")) -
     typer.echo(f"selected {topic_id}")
 
 
+@app.command("recheck")
+def recheck_cmd(
+    topic_id: int | None = typer.Argument(None, help="Topic id (default: every topic)"),
+) -> None:
+    """Re-run the safety check on stored topics under the current rules (after a rules change).
+
+    Updates safety_status/safety_hits_json only; never deletes or changes a topic's status."""
+    changes = topics.recheck_safety(Database(db_path()), topic_id)
+    for c in changes:
+        hits = _hits_text(c.hits_json)
+        typer.echo(f"{c.id}\t{c.status}\t{c.old} -> {c.new}\t{c.working_title}\t({hits})")
+    typer.echo(f"rechecked; {len(changes)} topic(s) changed safety status")
+
+
 @app.command("stats")
 def stats_cmd() -> None:
     """Counts per pillar x status, and kept whitelist topics per pillar vs the target."""

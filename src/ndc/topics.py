@@ -352,10 +352,66 @@ def kill(db: Database, topic_id: int, reason: str) -> None:
         conn.close()
 
 
+@dataclass
+class SafetyChange:
+    id: int
+    working_title: str
+    status: str
+    old: str
+    new: str
+    hits_json: str | None
+
+
+def recheck_safety(db: Database, topic_id: int | None = None) -> list[SafetyChange]:
+    """Re-run the topic-level safety check under the CURRENT safety/terminology rules and store
+    the result. safety_status is otherwise frozen at insert time, so a rules fix (e.g. a
+    safety.yaml coverage bump) would not reach topics already in the backlog. Checking is
+    CPU-only and done before the single short write. Returns the topics whose status changed."""
+    conn = db.connect()
+    try:
+        sql = "SELECT id, working_title, summary, language, status, safety_status, "
+        sql += "safety_hits_json FROM topic"
+        rows = conn.execute(
+            sql + (" WHERE id = ?" if topic_id is not None else " ORDER BY id"),
+            (topic_id,) if topic_id is not None else (),
+        ).fetchall()
+    finally:
+        conn.close()
+    updates, changes = [], []
+    for r in rows:
+        status, hits = safety_check(r["working_title"], r["summary"], r["language"])
+        if status != r["safety_status"] or hits != r["safety_hits_json"]:
+            updates.append((status, hits, r["id"]))
+        if status != r["safety_status"]:
+            changes.append(
+                SafetyChange(
+                    r["id"], r["working_title"], r["status"], r["safety_status"], status, hits
+                )
+            )
+    if updates:
+        conn = db.connect()
+        try:
+            conn.execute("BEGIN IMMEDIATE")
+            try:
+                conn.executemany(
+                    "UPDATE topic SET safety_status = ?, safety_hits_json = ? WHERE id = ?",
+                    updates,
+                )
+                conn.execute("COMMIT")
+            except Exception:
+                conn.execute("ROLLBACK")
+                raise
+        finally:
+            conn.close()
+    return changes
+
+
 def select(db: Database, topic_id: int) -> None:
     """backlog -> selected. The CONT-04 topic-level enforcement point Phase 2 relies on:
-    a blacklist-tagged or safety-blocked topic can never be selected. The guard is in the
-    UPDATE's WHERE clause, so it holds even if the pre-read below is skipped or stale."""
+    a blacklist-tagged or safety-blocked topic can never be selected. Safety is re-evaluated
+    under the current rules first (ME-02). The guard is in the UPDATE's WHERE clause, so it
+    holds even if the pre-read below is skipped or stale."""
+    recheck_safety(db, topic_id)
     conn = db.connect()
     try:
         cur = conn.execute(

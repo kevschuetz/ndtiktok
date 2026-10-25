@@ -279,3 +279,42 @@ def test_stats_per_pillar(db):
     assert p["parents"]["kept_safe_whitelist"] == 0
     assert p["men_dads_partners"]["kept_safe_whitelist"] == 1  # 7 flagged counts, 8 blacklist not
     assert all(v["below_target"] for v in p.values())
+
+
+def _set_safety(db, topic_id, status, hits=None):
+    conn = db.connect()
+    try:
+        conn.execute(
+            "UPDATE topic SET safety_status = ?, safety_hits_json = ? WHERE id = ?",
+            (status, hits, topic_id),
+        )
+    finally:
+        conn.close()
+
+
+def test_select_rechecks_safety_under_current_rules(db):
+    """ME-02: a topic stored as 'ok' under older rules is re-evaluated at select time."""
+    topics.import_seed(db, FIXTURE)
+    topics.keep(db, [2])
+    _set_safety(db, 2, "ok")  # as if imported before the Melatonin rule existed
+    with pytest.raises(TopicError) as exc:
+        topics.select(db, 2)
+    assert "blocked" in str(exc.value)
+    row = _status(db, 2)
+    assert row["status"] == "backlog" and row["safety_status"] == "blocked"
+
+
+def test_recheck_reports_and_stores_changes_without_touching_status(db, runner):
+    from ndc.cli import app
+
+    topics.import_seed(db, FIXTURE)
+    topics.keep(db, [2, 3])
+    _set_safety(db, 2, "ok")
+    _set_safety(db, 3, "blocked", '[{"rule_id": "x", "tier": "block", "matched_text": "x"}]')
+    res = runner.invoke(app, ["topic", "recheck"])
+    assert res.exit_code == 0, res.output
+    assert "2 topic(s) changed" in res.output
+    assert _status(db, 2)["safety_status"] == "blocked"
+    assert _status(db, 3)["safety_status"] == "ok"
+    assert _status(db, 2)["status"] == "backlog" and _status(db, 3)["status"] == "backlog"
+    assert topics.recheck_safety(db) == []  # idempotent
