@@ -246,6 +246,7 @@ def write_decision_log(
     log_path: str | Path,
     context: dict | None = None,
     prereg_evidence: dict | None = None,
+    provenance: dict | None = None,
 ) -> int:
     """Append a dated 'Validation week 1' section to the log and insert a language_decision row.
 
@@ -294,6 +295,15 @@ def write_decision_log(
             f"- pre-registration: rule lock committed {committed}; first scan_run started {first}; "
             f"commit precedes the first scan_run: {verdict}\n"
         )
+    prov = provenance or {}
+    if provenance:
+        amend_txt = "none"
+        if prov.get("amendment_id"):
+            amend_txt = f"#{prov['amendment_id']} ({prov.get('amendment_reason') or 'no reason'})"
+        lines.append(
+            f"- provenance: rule lock {prov.get('lock_status') or 'unknown'}; amendment logged in "
+            f"this run: {amend_txt}; input: {prov.get('input_source') or 'unknown'}\n"
+        )
     lines.append(
         "- Q uses TikTok mid-tier reach only; YouTube Shorts reach is reported alongside (D-18). "
         "Milestone 1 runs in one language only (D-08).\n"
@@ -311,7 +321,8 @@ def write_decision_log(
     try:
         cur = conn.execute(
             "INSERT INTO language_decision (verdict, matched_row, inconclusive, metrics_json,"
-            " rule_sha256, decided_at) VALUES (?, ?, ?, ?, ?, ?)",
+            " rule_sha256, decided_at, lock_status, amendment_id, input_source)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 res.verdict,
                 res.matched_row,
@@ -319,6 +330,9 @@ def write_decision_log(
                 metrics_json,
                 res.rule_sha256,
                 now,
+                prov.get("lock_status"),
+                prov.get("amendment_id"),
+                prov.get("input_source"),
             ),
         )
         return cur.lastrowid

@@ -129,24 +129,48 @@ def decide_cmd(
 
     Without --accounts-csv the rows come from the DB (sheet.account_rows, the same rows
     `scan export --accounts-csv` / sheet.export_accounts writes)."""
+    import hashlib
+
     from ndc.scan import sheet
 
     cfg = config_dir()
     db = Database(db_path())
+    # HI-03: D-20 needs an operator-approved rule. The lock is checked BEFORE anything is
+    # committed (incl. an amendment row). The only way past a missing/mismatched lock is the
+    # explicit amendment path (--amend "reason"), and that is recorded with the decision.
+    status = prereg.lock_status(cfg)
+    if status != "ok" and not amend:
+        typer.echo(
+            f"refused: rule lock {status} (rule not operator-approved); approve it or pass "
+            '--amend "reason" to decide under an amended rule (logged)',
+            err=True,
+        )
+        raise typer.Exit(3)
     try:
-        prereg.check_rule_unchanged(db, amend, cfg)
+        amendment_id = prereg.check_rule_unchanged(db, amend, cfg)
     except prereg.RuleChanged as exc:
         typer.echo(f"refused: {exc}", err=True)
         raise typer.Exit(2) from exc
     except ValueError as exc:
         typer.echo(f"refused: {exc}", err=True)
         raise typer.Exit(2) from exc
-    status = prereg.lock_status(cfg)
     if status != "ok":
-        typer.echo(f"warning: rule lock {status} (rule not operator-approved)")
+        typer.echo(f"warning: rule lock {status}; deciding under amendment: {amend}")
     rule = load_rule(prereg.rule_path(cfg))
-    accounts = _read_accounts(accounts_csv) if accounts_csv else sheet.account_rows(db)
-    typer.echo(f"source: {accounts_csv or 'DB (selected sample)'}; {len(accounts)} accounts")
+    if accounts_csv:
+        digest = hashlib.sha256(accounts_csv.read_bytes()).hexdigest()
+        input_source = f"csv:{accounts_csv} sha256:{digest}"
+        accounts = _read_accounts(accounts_csv)
+    else:
+        input_source = "db:selected sample"
+        accounts = sheet.account_rows(db)
+    typer.echo(f"source: {input_source}; {len(accounts)} accounts")
+    provenance = {
+        "lock_status": status,
+        "amendment_id": amendment_id,
+        "amendment_reason": amend.strip() if (amend and amendment_id) else None,
+        "input_source": input_source,
+    }
     res = decide(accounts, rule)
     ctx = decision_context(accounts, rule)
     evidence = _prereg_evidence(db, rule_committed_at)
@@ -170,7 +194,9 @@ def decide_cmd(
     typer.echo(f"matched row: {res.matched_row}{' (inconclusive)' if res.inconclusive else ''}")
     typer.echo(f"verdict: {res.verdict}")
     typer.echo(f"rule sha256: {res.rule_sha256}")
-    write_decision_log(db, res, log_path, context=ctx, prereg_evidence=evidence)
+    write_decision_log(
+        db, res, log_path, context=ctx, prereg_evidence=evidence, provenance=provenance
+    )
     typer.echo(f"logged to {log_path}")
 
 

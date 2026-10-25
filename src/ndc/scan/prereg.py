@@ -88,15 +88,16 @@ def _reference_sha(conn) -> str | None:
 
 def check_rule_unchanged(
     db: Database, amend_reason: str | None, cfg: str | Path | None = None
-) -> None:
+) -> int | None:
     """No scan_run yet -> nothing to compare. Otherwise the current hash must equal the first
-    scan_run's hash (or the latest amendment's new hash); else an amendment reason is required."""
+    scan_run's hash (or the latest amendment's new hash); else an amendment reason is required.
+    Returns the id of the rule_amendment row logged by this call, or None."""
     current = rule_sha256(cfg)
     conn = db.connect()
     try:
         ref = _reference_sha(conn)
         if ref is None or ref == current:
-            return
+            return None
         if amend_reason is None:
             raise RuleChanged(
                 f"decision rule changed after the first scan run ({ref[:12]} -> {current[:12]}); "
@@ -104,10 +105,11 @@ def check_rule_unchanged(
             )
         if len(amend_reason.strip()) < 5:
             raise ValueError("amendment reason must be at least 5 characters")
-        conn.execute(
+        cur = conn.execute(
             "INSERT INTO rule_amendment (old_sha256, new_sha256, reason, created_at)"
             " VALUES (?, ?, ?, ?)",
             (ref, current, amend_reason.strip(), _now()),
         )
+        return cur.lastrowid
     finally:
         conn.close()

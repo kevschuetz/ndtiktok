@@ -102,6 +102,7 @@ def test_decide_from_db_writes_log_and_row(cfg, db, runner, tmp_path):
     assert "one language only" in text
     assert "de tiktok mid" in text
     assert current_language(db) == "de"
+    assert "input: db:selected sample" in text and "rule lock ok" in text
 
 
 def test_decide_from_db_refuses_changed_rule(cfg, db, runner, tmp_path):
@@ -111,7 +112,8 @@ def test_decide_from_db_refuses_changed_rule(cfg, db, runner, tmp_path):
     p.write_text(p.read_text(encoding="utf-8") + "\n# edited\n", encoding="utf-8")
     log = tmp_path / "decision.md"
     res = runner.invoke(app, ["scan", "decide", "--log-path", str(log)])
-    assert res.exit_code == 2, res.output
+    assert res.exit_code == 3, res.output  # HI-03: lock no longer matches -> refused first
+    assert "refused: rule lock" in res.output
     assert not log.exists()
     assert current_language(db) is None
 
