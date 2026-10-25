@@ -291,3 +291,67 @@ Short of 8 reach posts:
 
 Saves/shares per 1k views are exposed on TikTok only; YouTube rows carry views, likes and
 comments (saves/shares NULL), as designed.
+
+## Collection — analysis
+
+`ndc-heavy` (3g cap, 1 CPU, nice 19, one thread), outside the quiet hours, no `--force`.
+`free -m` during the DE run: ~4.5 GB available (stop threshold 1.5 GB); container at
+~1.15 / 3 GiB.
+
+| Step | Command | UTC | scan_run | Result |
+|---|---|---|---|---|
+| Analyze DE | `ndc-heavy scan analyze --lang de` | 08:17:14–08:47:38 | 27 | 26 accounts processed, 1 already analyzed (kirmesimkopf, plan 06) |
+| Analyze EN | `ndc-heavy scan analyze --lang en` | 08:48:00–09:23:08 | 28 | 32 accounts processed |
+| Language sync | `scan import-candidates scan/candidates.csv` (unchanged CSV, after fix 056a77f) | 09:24 | — | updated 86, 0 account/candidate language mismatches left |
+| Bundles | `scan prepare-judging` | 09:25 | — | see batches below |
+| Queue | `scan queue` | 09:25 | — | queued 12, clear 74 (all fetched accounts) |
+
+`--lang` filters on the account's language. Before the fix, 3 operator-relabelled EN YouTube
+channels (@PashaMarlowe, @AllAboutSpeechTherapy, @sociallyausome) still carried `de` on
+competitor_account, so they were analyzed in the DE run. That changes nothing in the
+analysis, but the sheet and the judging bundles group by account language, so the language
+had to be synced before `prepare-judging`.
+
+### Per selected account (grouped by candidate language)
+
+| Language | Platform | accounts with videos | videos ok | videos unavailable | non-empty transcripts |
+|---|---|---|---|---|---|
+| de | tiktok | 22 / 22 | 66 | 0 | 51 |
+| de | youtube | 2 / 2 | 6 | 0 | 5 |
+| en | tiktok | 24 / 25 | 71 | 1 | 46 |
+| en | youtube | 10 / 10 | 29 | 1 | 27 |
+| **total** | | **58 / 59** | **172** | **2** | **129** |
+
+- No account has all of its downloads unavailable.
+- Unavailable videos:
+  - unique_adhd: one post had no video formats (2/3 ok).
+  - @SquirrelDad: one HTTP 403 (2/3 ok).
+  - Neither was retried with a login.
+- **audhd30** has no competitor_video row. It has 0 posts ≥ 72 h old (see Collection — posts), so
+  there was nothing eligible to analyze. It drops out per the rule.
+- ok videos with an empty transcript (43): music-only or no-speech clips.
+- Mean wall-clock per video attempt: ~23 s (171 attempts in 3,932 s). That includes download,
+  decode, whisper, pitch, frame sampling and the 3–6 s pacing. Transcription was not timed
+  separately.
+- Contact sheets: 48 of 58 analyzed accounts. The other 10 TikTok accounts got no frames:
+  adhdsciences, adhdventurers, adhdautism4, myadhdventure, adhsabenteuer, meinadhsleben,
+  gedankenflut.fuehlen, adhs.reise, adhdminds111, lebenmitadhs.
+  - Probe of one adhdsciences post (one metadata request): yt-dlp exposes only an audio-only m4a
+    for it. That means a TikTok photo carousel, which has no video stream to sample.
+  - Their transcripts and pitch exist. The judging session sees captions and transcripts but no
+    images for these accounts.
+  - **Carousel/slideshow is itself a format signal.** The format, face and on-screen-citation
+    fields for these 10 accounts should go to the operator queue if the judge is unsure.
+- `find /home/nd-content-volumes/data/media -type f | wc -l` → **0** (probe dir also removed).
+
+### Judging batches
+
+| Batch | Accounts | Manifest |
+|---|---|---|
+| de-1 | 12 | /data/judging/de-1/manifest.json |
+| de-2 | 12 | /data/judging/de-2/manifest.json |
+| en-1 | 18 | /data/judging/en-1/manifest.json |
+| en-2 | 17 | /data/judging/en-2/manifest.json |
+
+59 selected accounts in total (DE 24, EN 35). Host paths are under
+`/home/nd-content-volumes/data/judging/`.
