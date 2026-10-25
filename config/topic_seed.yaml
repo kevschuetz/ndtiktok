@@ -1,0 +1,733 @@
+# nd-content topic seed (plan 01-15, CONT-01, D-09..D-11). Drafted in-session by Claude (D-19/D-21:
+# no runtime API call), reviewed by the operator via `ndc topic review` / keep / kill.
+# Language: German (verdict R1, docs/language-decision.md). Import: `ndc topic import config/topic_seed.yaml`.
+# source_likely: yes = AWMF-S3-Leitlinie and/or solid reviews expected; maybe = studies exist but thin;
+# no = known research gap (the topic IS the gap). notes: not stored; non-ADHD/autism topics carry
+# 'pubmed_reviews' (D-10). Blacklist entries document excluded subjects and must stay blocked.
+version: 1
+language: de
+topics:
+  # ---------------------------------------------------------------- challenge_science_help
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: time_perception
+    audience: nd_adults
+    angle: mechanism_why
+    working_title: "Warum fünf Minuten sich manchmal wie zwei anfühlen"
+    summary: "Zeitschätzung bei ADHS: Metaanalysen zu Zeitwahrnehmung, eingeordnet mit der AWMF-S3-Leitlinie ADHS."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: executive_function
+    audience: nd_adults
+    angle: mechanism_why
+    working_title: "Wenn Anfangen schwerer ist als Durchhalten"
+    summary: "Aufgabenbeginn bei ADHS: Übersichtsarbeiten zu exekutiven Funktionen und Belohnungsaufschub."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: emotion_regulation
+    audience: nd_adults
+    angle: myth_vs_research
+    working_title: "Starke Gefühle bei ADHS: was die Forschung zur Emotionsregulation zeigt"
+    summary: "Emotionale Dysregulation als häufiges Merkmal bei Erwachsenen mit ADHS, belegt durch Metaanalysen."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: challenge_science_help
+    condition: autism
+    domain: sensory
+    audience: nd_adults
+    angle: mechanism_why
+    working_title: "Warum manche Geräusche für autistische Menschen körperlich wehtun können"
+    summary: "Reizempfindlichkeit bei autistischen Menschen: Übersichtsarbeiten zur sensorischen Verarbeitung."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: challenge_science_help
+    condition: autism
+    domain: energy_burnout
+    audience: nd_adults
+    angle: what_research_doesnt_know
+    working_title: "Autistischer Burnout: was die Forschung schon weiß und was nicht"
+    summary: "Erste qualitative Studien zu autistischem Burnout, offen benannt als junge Forschung ohne Leitlinienstand."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 deckt das nicht ab; qualitative Studien (z. B. Raymaker 2020)"
+  - pillar: challenge_science_help
+    condition: autism
+    domain: masking
+    audience: nd_adults
+    angle: study_explained
+    working_title: "Masking erklärt: was Studien über die Kosten des Anpassens zeigen"
+    summary: "Camouflaging bei autistischen Erwachsenen: Studien zu Erschöpfung und Wohlbefinden, vorsichtig eingeordnet."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 + Studien zu Camouflaging (Hull, Cage)"
+  - pillar: challenge_science_help
+    condition: audhd
+    domain: focus_attention
+    audience: nd_adults
+    angle: human_not_only_adhd
+    working_title: "AuDHS: wenn Routine und Neues gleichzeitig wichtig sind"
+    summary: "Das gemeinsame Auftreten von Autismus und ADHS: was Übersichtsarbeiten dazu sagen und wo Daten fehlen."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: challenge_science_help
+    condition: dyspraxia_dcd
+    domain: routines_household
+    audience: nd_adults
+    angle: mechanism_why
+    working_title: "Dyspraxie im Alltag: warum Schuhe binden Kraft kosten kann"
+    summary: "Motorische Koordination bei Erwachsenen mit Dyspraxie, gestützt auf Übersichtsarbeiten zu UEMF/DCD."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews; zusätzlich prüfen: AWMF-Leitlinie für Kinder und Jugendliche (Registernummer verifizieren)"
+  - pillar: challenge_science_help
+    condition: tourette
+    domain: communication
+    audience: general_public
+    angle: myth_vs_research
+    working_title: "Tourette ist meist nicht das Fluchen"
+    summary: "Unwillkürliches Fluchen betrifft nur einen Teil der Menschen mit Tourette, laut Übersichtsarbeiten zur Häufigkeit."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "pubmed_reviews"
+  - pillar: challenge_science_help
+    condition: dyscalculia
+    domain: school_learning
+    audience: nd_adults
+    angle: mechanism_why
+    working_title: "Dyskalkulie bei Erwachsenen: warum Uhrzeit und Wechselgeld schwerfallen können"
+    summary: "Zahlenverarbeitung bei Dyskalkulie im Erwachsenenalter, belegt durch Übersichtsarbeiten."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews; zusätzlich prüfen: AWMF-Leitlinie für Kinder und Jugendliche (Registernummer verifizieren)"
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: sleep
+    audience: nd_adults
+    angle: try_this_strategy
+    working_title: "Abends nicht abschalten können: Schlafroutinen, die Studien bei ADHS nahelegen"
+    summary: "Schlafhygiene und feste Abendroutinen bei Erwachsenen mit ADHS, nur Verhalten und Studienlage."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 + Studien zu Schlaf bei ADHS; nur Routinen, keine Schlafmittel"
+  - pillar: challenge_science_help
+    condition: nd_general
+    domain: late_identification
+    audience: nd_adults
+    angle: lived_story_consented
+    working_title: "Späte Erkenntnis mit 40: wie Menschen ihr Leben neu einordnen"
+    summary: "Erfahrungsbericht mit Zustimmung, eingeordnet durch qualitative Studien zur späten Identifikation."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews; nie Selbsttest"
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: money
+    audience: nd_adults
+    angle: try_this_strategy
+    working_title: "Impulskäufe bei ADHS: wenn es juckt, probier eine 24-Stunden-Regel"
+    summary: "Finanzielle Impulsivität bei ADHS: Studien zu Geldverhalten plus eine einfache Verzögerungsstrategie."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: challenge_science_help
+    condition: autism
+    domain: communication
+    audience: general_public
+    angle: myth_vs_research
+    working_title: "Das Double-Empathy-Problem: warum Missverständnisse zwei Seiten haben"
+    summary: "Experimentelle Studien zur Kommunikation zwischen autistischen und nicht-autistischen Menschen."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 + Studien (Milton, Crompton 2020)"
+  - pillar: challenge_science_help
+    condition: dyslexia
+    domain: work
+    audience: nd_adults
+    angle: try_this_strategy
+    working_title: "Legasthenie im Job: Vorlesefunktion und andere Hilfen, die Studien prüfen"
+    summary: "Assistive Technik für Erwachsene mit Legasthenie, gestützt auf Übersichtsarbeiten."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews; zusätzlich prüfen: AWMF-Leitlinie für Kinder und Jugendliche (Registernummer verifizieren)"
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: focus_attention
+    audience: nd_adults
+    angle: what_research_doesnt_know
+    working_title: "Hilft Musik beim Konzentrieren? Was die Studienlage bei ADHS offenlässt"
+    summary: "Kleine Studien zu Hintergrundgeräuschen und Aufmerksamkeit bei ADHS, mit klarer Lücke benannt."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: focus_attention
+    audience: nd_adults
+    angle: study_explained
+    working_title: "Welches ADHS-Medikament wirkt am besten?"
+    summary: "Medikamentenvergleich, bewusst ausgeschlossen (kein medizinischer Rat)."
+    list_tag: blacklist
+    source_likely: "no"
+    notes: "Beispiel ausgeschlossenes Thema (dokumentiert, nicht produzieren): Medikation"
+  - pillar: challenge_science_help
+    condition: adhd
+    domain: late_identification
+    audience: nd_adults
+    angle: mechanism_why
+    working_title: "Habe ich ADHS? Selbsttest in 2 Minuten"
+    summary: "Diagnosefrage mit Selbsttest, bewusst ausgeschlossen."
+    list_tag: blacklist
+    source_likely: "no"
+    notes: "Beispiel ausgeschlossenes Thema (dokumentiert, nicht produzieren): Diagnosefrage"
+  # ---------------------------------------------------------------- strengths
+  - pillar: strengths
+    condition: autism
+    domain: focus_attention
+    audience: nd_adults
+    angle: strength_with_caveat
+    working_title: "Intensive Interessen als Ressource, mit ihren Grenzen"
+    summary: "Studien zu Interessen und Wohlbefinden autistischer Menschen, ohne Hype."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 + Studien zu Spezialinteressen"
+  - pillar: strengths
+    condition: adhd
+    domain: focus_attention
+    audience: nd_adults
+    angle: strength_with_caveat
+    working_title: "Hyperfokus: Stärke mit Preis"
+    summary: "Erste Fragebogenstudien zu Hyperfokus bei Erwachsenen mit ADHS, mit Vor- und Nachteilen."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 deckt das nicht ab; Studien (z. B. Hupfeld 2019)"
+  - pillar: strengths
+    condition: adhd
+    domain: work
+    audience: nd_adults
+    angle: study_explained
+    working_title: "Unternehmergeist und ADHS: was eine Studie wirklich gemessen hat"
+    summary: "Eine Studie zu ADHS und Selbstständigkeit erklärt, inklusive Grenzen der Stichprobe."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "Studien (z. B. Wiklund 2016)"
+  - pillar: strengths
+    condition: dyslexia
+    domain: school_learning
+    audience: general_public
+    angle: myth_vs_research
+    working_title: "Legasthenie und räumliches Denken: Mythos oder Befund?"
+    summary: "Ein verbreiteter Mythos im Abgleich mit Übersichtsarbeiten zu visuell-räumlichen Fähigkeiten."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews; zusätzlich prüfen: AWMF-Leitlinie für Kinder und Jugendliche (Registernummer verifizieren)"
+  - pillar: strengths
+    condition: autism
+    domain: work
+    audience: nd_adults
+    angle: strength_with_caveat
+    working_title: "Detailwahrnehmung bei autistischen Menschen: was Studien zeigen und was nicht"
+    summary: "Übersichtsarbeiten zur Detailverarbeitung, mit Hinweis auf große individuelle Unterschiede."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 + Übersichtsarbeiten"
+  - pillar: strengths
+    condition: adhd
+    domain: emotion_regulation
+    audience: nd_adults
+    angle: strength_with_caveat
+    working_title: "Neugier und Offenheit bei ADHS: was Persönlichkeitsforschung andeutet"
+    summary: "Persönlichkeitsstudien zu Offenheit für Erfahrungen bei Menschen mit ADHS, vorsichtig formuliert."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: strengths
+    condition: dyspraxia_dcd
+    domain: work
+    audience: nd_adults
+    angle: human_not_only_adhd
+    working_title: "Dyspraxie und Ausdauer: Strategien, die Erwachsene selbst entwickeln"
+    summary: "Qualitative Studien zu Bewältigungsstrategien von Erwachsenen mit Dyspraxie."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: strengths
+    condition: tourette
+    domain: social
+    audience: nd_adults
+    angle: strength_with_caveat
+    working_title: "Tourette und Selbstkontrolle: was ein paar Studien andeuten"
+    summary: "Kleine Studien zu kognitiver Kontrolle bei Tourette, mit deutlichem Vorbehalt."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: strengths
+    condition: autism
+    domain: communication
+    audience: nd_adults
+    angle: myth_vs_research
+    working_title: "Ehrlich und direkt: autistische Kommunikation ist kein Mangel"
+    summary: "Studien zu Kommunikationsstilen autistischer Menschen, gegen das Defizitbild eingeordnet."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 + Studien"
+  - pillar: strengths
+    condition: audhd
+    domain: sensory
+    audience: nd_adults
+    angle: strength_with_caveat
+    working_title: "AuDHS und Kreativität: was belegt ist und was Wunschdenken"
+    summary: "Studien zu divergentem Denken bei Autismus und ADHS, klar getrennt nach Befund und Vermutung."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: strengths
+    condition: nd_general
+    domain: work
+    audience: general_public
+    angle: study_explained
+    working_title: "Neurodiverse Teams: was Studien über Zusammenarbeit wirklich zeigen"
+    summary: "Studien zu Neurodiversitätsprogrammen am Arbeitsplatz, inklusive Schwächen der Evidenz."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: strengths
+    condition: adhd
+    domain: executive_function
+    audience: nd_adults
+    angle: try_this_strategy
+    working_title: "Wenn Routineaufgaben liegen bleiben, probier Neuheit und kurze Fristen"
+    summary: "Studien zu Belohnungssensitivität bei ADHS, übersetzt in eine vorsichtige Alltagsstrategie."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: strengths
+    condition: dyscalculia
+    domain: school_learning
+    audience: general_public
+    angle: human_not_only_adhd
+    working_title: "Dyskalkulie hat nichts mit Intelligenz zu tun"
+    summary: "Übersichtsarbeiten zeigen Dyskalkulie unabhängig von allgemeiner Intelligenz."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "pubmed_reviews; zusätzlich prüfen: AWMF-Leitlinie für Kinder und Jugendliche (Registernummer verifizieren)"
+  - pillar: strengths
+    condition: autism
+    domain: social
+    audience: nd_adults
+    angle: lived_story_consented
+    working_title: "Autistische Freundschaften: tief statt breit"
+    summary: "Erfahrungsbericht mit Zustimmung, eingeordnet durch qualitative Studien zu Freundschaft."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 deckt das nicht ab; qualitative Studien"
+  - pillar: strengths
+    condition: nd_general
+    domain: masking
+    audience: nd_adults
+    angle: what_research_doesnt_know
+    working_title: "Stärkenorientierte Forschung: warum sie noch so jung ist"
+    summary: "Überblick über die noch kleine stärkenbasierte Neurodiversitätsforschung und ihre Lücken."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: strengths
+    condition: dyslexia
+    domain: communication
+    audience: nd_adults
+    angle: strength_with_caveat
+    working_title: "Legasthenie und mündliches Erzählen: Stärke mit Einschränkung"
+    summary: "Vereinzelte Studien zu mündlicher Sprache bei Legasthenie, als offene Frage formuliert."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: strengths
+    condition: nd_general
+    domain: focus_attention
+    audience: general_public
+    angle: strength_with_caveat
+    working_title: "Mit Omega-3 die Konzentration stärken"
+    summary: "Nahrungsergänzung als Behandlung, bewusst ausgeschlossen."
+    list_tag: blacklist
+    source_likely: "no"
+    notes: "Beispiel ausgeschlossenes Thema (dokumentiert, nicht produzieren): Nahrungsergänzung"
+  - pillar: strengths
+    condition: autism
+    domain: family_life
+    audience: nd_adults
+    angle: strength_with_caveat
+    working_title: "Autismus heilen durch Ernährung?"
+    summary: "Heilungsversprechen, bewusst ausgeschlossen."
+    list_tag: blacklist
+    source_likely: "no"
+    notes: "Beispiel ausgeschlossenes Thema (dokumentiert, nicht produzieren): Heilungsversprechen"
+  # ---------------------------------------------------------------- parents
+  - pillar: parents
+    condition: adhd
+    domain: routines_household
+    audience: parents
+    angle: try_this_strategy
+    working_title: "Wenn der Morgen kippt, probier visuelle Abläufe"
+    summary: "Visuelle Strukturhilfen für Familien mit ADHS, eingeordnet mit der AWMF-S3-Leitlinie ADHS."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: parents
+    condition: autism
+    domain: parenting_coregulation
+    audience: parents
+    angle: mechanism_why
+    working_title: "Co-Regulation: warum ruhige Erwachsene beim Runterfahren helfen können"
+    summary: "Studien zu Co-Regulation zwischen Eltern und autistischen Kindern, vorsichtig formuliert."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 + Studien"
+  - pillar: parents
+    condition: autism
+    domain: sensory
+    audience: parents
+    angle: try_this_strategy
+    working_title: "Wenn der Supermarkt zu laut ist, probier einen Reizplan"
+    summary: "Sensorische Anpassungen im Alltag, gestützt auf Übersichtsarbeiten zur Reizverarbeitung."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 + Übersichtsarbeiten"
+  - pillar: parents
+    condition: adhd
+    domain: school_learning
+    audience: parents
+    angle: study_explained
+    working_title: "Hausaufgaben und ADHS: was Studien zu kurzen Lernblöcken sagen"
+    summary: "Schulbezogene Studien zu Hausaufgaben und Pausen bei Kindern mit ADHS."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: parents
+    condition: adhd
+    domain: emotion_regulation
+    audience: parents
+    angle: myth_vs_research
+    working_title: "Wutausbrüche sind kein Erziehungsfehler"
+    summary: "Forschung zu Emotionsregulation bei Kindern mit ADHS widerspricht dem Bild schlechter Erziehung."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: parents
+    condition: autism
+    domain: communication
+    audience: parents
+    angle: myth_vs_research
+    working_title: "Blickkontakt ist kein Beweis für Zuhören"
+    summary: "Studien zu Blickverhalten und Aufmerksamkeit bei autistischen Kindern."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 + Studien"
+  - pillar: parents
+    condition: dyslexia
+    domain: school_learning
+    audience: parents
+    angle: try_this_strategy
+    working_title: "Legasthenie in der Schule: welche Förderung Studien bei Kindern stützen"
+    summary: "Metaanalysen zu Lese- und Rechtschreibförderung, mit Hinweis auf Nachteilsausgleich."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "pubmed_reviews; zusätzlich prüfen: AWMF-Leitlinie für Kinder und Jugendliche (Registernummer verifizieren)"
+  - pillar: parents
+    condition: dyspraxia_dcd
+    domain: family_life
+    audience: parents
+    angle: human_not_only_adhd
+    working_title: "Ungeschickt ist das falsche Wort: Dyspraxie bei Kindern verstehen"
+    summary: "Übersichtsarbeiten zu UEMF/DCD bei Kindern, jenseits des ADHS-Fokus."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews; zusätzlich prüfen: AWMF-Leitlinie für Kinder und Jugendliche (Registernummer verifizieren)"
+  - pillar: parents
+    condition: tourette
+    domain: school_learning
+    audience: parents
+    angle: try_this_strategy
+    working_title: "Tics in der Schule: wenn Lehrkräfte fragen, probier eine kurze Erklärkarte"
+    summary: "Übersichtsarbeiten zu Tourette im Schulalltag und zu Aufklärung im Umfeld."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: parents
+    condition: dyscalculia
+    domain: school_learning
+    audience: parents
+    angle: mechanism_why
+    working_title: "Warum Fingerzählen bei Dyskalkulie kein Rückschritt sein muss"
+    summary: "Studien zu Fingerzählen und Zahlenverständnis bei Kindern mit Dyskalkulie."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews; zusätzlich prüfen: AWMF-Leitlinie für Kinder und Jugendliche (Registernummer verifizieren)"
+  - pillar: parents
+    condition: adhd
+    domain: sleep
+    audience: parents
+    angle: try_this_strategy
+    working_title: "Abendroutinen für Kinder mit ADHS und was Studien dazu sagen"
+    summary: "Verhaltensbasierte Schlafroutinen für Kinder mit ADHS, nur Routinen und Studienlage."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 + Studien; nur Routinen, keine Schlafmittel"
+  - pillar: parents
+    condition: autism
+    domain: family_life
+    audience: parents
+    angle: lived_story_consented
+    working_title: "Geschwister eines autistischen Kindes: eine Familie erzählt"
+    summary: "Erfahrungsbericht mit Zustimmung, eingeordnet durch Studien zu Geschwistern."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 deckt das nicht ab; Studien zu Geschwistern"
+  - pillar: parents
+    condition: nd_general
+    domain: parenting_coregulation
+    audience: parents
+    angle: what_research_doesnt_know
+    working_title: "Neurodivergente Eltern mit neurodivergenten Kindern: eine Forschungslücke"
+    summary: "Wenige Studien zu Familien, in denen Eltern und Kinder neurodivergent sind."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: parents
+    condition: audhd
+    domain: routines_household
+    audience: parents
+    angle: human_not_only_adhd
+    working_title: "AuDHS bei Kindern: wenn Struktur hilft und gleichzeitig nervt"
+    summary: "Übersichtsarbeiten zum gemeinsamen Auftreten von Autismus und ADHS im Kindesalter."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: parents
+    condition: autism
+    domain: energy_burnout
+    audience: parents
+    angle: mechanism_why
+    working_title: "Nach der Schule ist der Akku leer: was Forschung zu Anpassung bei Kindern zeigt"
+    summary: "Studien zu Camouflaging bei autistischen Kindern und Erschöpfung nach dem Schultag."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 deckt das nicht ab; Studien zu Camouflaging"
+  - pillar: parents
+    condition: adhd
+    domain: parenting_coregulation
+    audience: parents
+    angle: study_explained
+    working_title: "Elterntraining bei ADHS: was eine große Übersichtsarbeit zeigt"
+    summary: "Metaanalyse zu Elternprogrammen, eingeordnet mit der Empfehlung der AWMF-S3-Leitlinie ADHS."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: parents
+    condition: autism
+    domain: parenting_coregulation
+    audience: parents
+    angle: what_research_doesnt_know
+    working_title: "Ist mein Kind autistisch? Die Checkliste für Eltern"
+    summary: "Diagnosefrage mit Checkliste, bewusst ausgeschlossen."
+    list_tag: blacklist
+    source_likely: "no"
+    notes: "Beispiel ausgeschlossenes Thema (dokumentiert, nicht produzieren): Diagnosefrage"
+  - pillar: parents
+    condition: autism
+    domain: communication
+    audience: parents
+    angle: try_this_strategy
+    working_title: "ABA für Kleinkinder: lohnt sich das?"
+    summary: "ABA, bewusst ausgeschlossen."
+    list_tag: blacklist
+    source_likely: "no"
+    notes: "Beispiel ausgeschlossenes Thema (dokumentiert, nicht produzieren): ABA"
+  # ---------------------------------------------------------------- men_dads_partners
+  - pillar: men_dads_partners
+    condition: adhd
+    domain: relationships
+    audience: partners
+    angle: human_not_only_adhd
+    working_title: "Vergesslichkeit in der Partnerschaft: was ADHS erklärt und was nicht"
+    summary: "Studien zu ADHS in Paarbeziehungen, ohne alles auf ADHS zu schieben."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: men_dads_partners
+    condition: adhd
+    domain: work
+    audience: men
+    angle: study_explained
+    working_title: "Männer mit ADHS im Job: was Langzeitstudien zeigen"
+    summary: "Längsschnittstudien zu Beruf und ADHS im Erwachsenenalter, vorsichtig eingeordnet."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: men_dads_partners
+    condition: autism
+    domain: late_identification
+    audience: men
+    angle: lived_story_consented
+    working_title: "Spät erkannt als Mann: wie autistische Männer ihre Geschichte neu lesen"
+    summary: "Erfahrungsbericht mit Zustimmung, eingeordnet durch qualitative Studien zu später Identifikation."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 deckt das nicht ab; qualitative Studien; nie Selbsttest"
+  - pillar: men_dads_partners
+    condition: adhd
+    domain: parenting_coregulation
+    audience: dads
+    angle: try_this_strategy
+    working_title: "Väter mit ADHS: wenn die Geduld kippt, probier die Zehn-Sekunden-Pause"
+    summary: "Studien zu Emotionsregulation bei Eltern mit ADHS, übersetzt in eine einfache Pausenstrategie."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: men_dads_partners
+    condition: nd_general
+    domain: emotion_regulation
+    audience: men
+    angle: myth_vs_research
+    working_title: "Rückzug heißt nicht Gleichgültigkeit"
+    summary: "Forschung zu Reizüberflutung und Rückzug bei neurodivergenten Männern, gegen ein verbreitetes Missverständnis."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: men_dads_partners
+    condition: autism
+    domain: relationships
+    audience: partners
+    angle: mechanism_why
+    working_title: "Autistisch in der Partnerschaft: warum klare Absprachen Nähe schaffen können"
+    summary: "Qualitative Studien zu Paarbeziehungen mit autistischen Menschen."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 deckt das nicht ab; qualitative Studien"
+  - pillar: men_dads_partners
+    condition: adhd
+    domain: emotion_regulation
+    audience: partners
+    angle: study_explained
+    working_title: "Streit und Impulsivität: was Paarstudien zu ADHS zeigen"
+    summary: "Studien zu Konflikten in Partnerschaften, in denen eine Person ADHS hat."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: men_dads_partners
+    condition: audhd
+    domain: social
+    audience: men
+    angle: what_research_doesnt_know
+    working_title: "AuDHS bei Männern: warum es kaum Daten gibt"
+    summary: "Benennt die Forschungslücke zu autistischen Männern, die auch ADHS haben."
+    list_tag: whitelist
+    source_likely: "no"
+    notes: "pubmed_reviews"
+  - pillar: men_dads_partners
+    condition: dyslexia
+    domain: family_life
+    audience: dads
+    angle: human_not_only_adhd
+    working_title: "Vater mit Legasthenie: Vorlesen anders denken"
+    summary: "Studien zu Legasthenie in Familien plus alternative Vorleseformen wie Hörbücher."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: men_dads_partners
+    condition: tourette
+    domain: work
+    audience: men
+    angle: lived_story_consented
+    working_title: "Tics im Büro: ein Mann mit Tourette über Offenheit im Job"
+    summary: "Erfahrungsbericht mit Zustimmung, eingeordnet durch Studien zu Tourette am Arbeitsplatz."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: men_dads_partners
+    condition: adhd
+    domain: money
+    audience: partners
+    angle: try_this_strategy
+    working_title: "Geld als Paar mit ADHS: wenn Rechnungen liegen bleiben, probier feste Geldtermine"
+    summary: "Studien zu Finanzen und ADHS, übersetzt in eine gemeinsame Routine für Paare."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: men_dads_partners
+    condition: autism
+    domain: work
+    audience: men
+    angle: strength_with_caveat
+    working_title: "Spezialinteressen im Beruf: Stärke mit Grenzen für autistische Männer"
+    summary: "Studien zu Interessen und Beschäftigung autistischer Erwachsener, ohne Hype."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 + Studien"
+  - pillar: men_dads_partners
+    condition: adhd
+    domain: time_perception
+    audience: partners
+    angle: myth_vs_research
+    working_title: "Zu spät ist nicht gleich respektlos"
+    summary: "Forschung zu Zeitwahrnehmung bei ADHS, angewendet auf Unpünktlichkeit in Beziehungen."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 (AWMF-S3-Leitlinie) plus Übersichtsarbeiten"
+  - pillar: men_dads_partners
+    condition: nd_general
+    domain: family_life
+    audience: dads
+    angle: what_research_doesnt_know
+    working_title: "Neurodivergente Väter: warum es fast keine Studien gibt"
+    summary: "Die Forschung zu Elternschaft fokussiert auf Mütter; benennt die Lücke bei Vätern."
+    list_tag: whitelist
+    source_likely: "no"
+    notes: "pubmed_reviews"
+  - pillar: men_dads_partners
+    condition: dyspraxia_dcd
+    domain: social
+    audience: men
+    angle: human_not_only_adhd
+    working_title: "Dyspraxie bei Männern: Sport, Scham und Strategien"
+    summary: "Qualitative Studien zu Erwachsenen mit Dyspraxie und Erfahrungen mit Sport."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "pubmed_reviews"
+  - pillar: men_dads_partners
+    condition: autism
+    domain: communication
+    audience: partners
+    angle: try_this_strategy
+    working_title: "Wenn Gespräche eskalieren, probier schriftliche Absprachen"
+    summary: "Studien zu bevorzugten Kommunikationswegen autistischer Erwachsener, als Paarstrategie formuliert."
+    list_tag: whitelist
+    source_likely: "maybe"
+    notes: "awmf_s3 + Studien"
+  - pillar: men_dads_partners
+    condition: adhd
+    domain: sleep
+    audience: men
+    angle: mechanism_why
+    working_title: "Nachteule mit ADHS: was Studien über den späten Schlafrhythmus sagen"
+    summary: "Studien zu Chronotyp und verschobenem Schlafrhythmus bei Erwachsenen mit ADHS, keine Schlafmittel."
+    list_tag: whitelist
+    source_likely: "yes"
+    notes: "awmf_s3 + Studien; nur Rhythmus und Routinen"
+  - pillar: men_dads_partners
+    condition: adhd
+    domain: relationships
+    audience: partners
+    angle: myth_vs_research
+    working_title: "Hat mein Partner ADHS? 10 Anzeichen"
+    summary: "Diagnosefrage mit Anzeichenliste, bewusst ausgeschlossen."
+    list_tag: blacklist
+    source_likely: "no"
+    notes: "Beispiel ausgeschlossenes Thema (dokumentiert, nicht produzieren): Diagnosefrage"
