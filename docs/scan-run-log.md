@@ -247,3 +247,47 @@ collects posts for exactly the 50 `selected` rows unless the operator changes de
 Operator added 9 TikTok handles (EN: neuroduck0, adhdminds111, unique_adhd, hypeneo1, lix.psl; DE: jannes_patrick, leoniemachtsachen, adhs_deutschland, lebenmitadhs) and declared the list final ("So thats it"). Operator chose to KEEP the flagged possibly-off-niche accounts (daily.katze, le0zs, goxlr__, user8445982006957, @Gossipduckling).
 scan_run 22 (profile): ok 9, failed 5 (known). Re-select: de total 24 (mid 8), en total 35 (mid 13).
 Mid-tier TikTok after top-up: DE 8 (adhs.reise, adhsabenteuer, bene_adhso, daily.katze, jannes_patrick, neuroceline, robin.haegle, susis_synapsensalat) — exactly at the validity floor before the ≥8-posts check; EN 11.
+
+## Collection — posts
+
+Plan 01-08, 2026-10-25, outside the quiet hours, no `--force`, rule sha256 `ea401c5d…1b904b04`.
+Pre-registration ordering holds: rule commit b644eae (2026-10-24T21:03:08Z) precedes the first
+scan_run (2026-10-24T21:18:20Z). No scan_run note contains `quiet_hours_override`.
+
+| Step | Command | UTC | scan_run | Result |
+|---|---|---|---|---|
+| Posts DE | `scan fetch --stage posts --lang de` | 07:45:58–07:51:24 | 25 | ok 23, skipped fresh 1 (kirmesimkopf, plan 04), failed 0, stopped 0 |
+| Posts EN | `scan fetch --stage posts --lang en` | 07:56:34–08:16:06 | 26 | ok 34, skipped fresh 1 (@HowtoADHD, plan 04), failed 0, stopped 0 |
+
+Requests: TikTok one flat listing per account (playlistend 30); YouTube one Shorts listing plus
+18 per-video calls per channel (12 channels → ~228 calls). 3–6 s jitter throughout. No 429/403,
+no platform stop, so no `add-manual` / `operator_entered` fallback was needed.
+
+Selected accounts with posts: 59 of 59 (DE 24, EN 35). 1681 posts stored, 861 in the reach
+window (newest 15 posts ≥ 72 h old, pinned excluded).
+
+### Accounts by language × platform × tier, with ≥ 8 reach-window posts (usable for reach metrics)
+
+| Language | Platform | micro | mid | macro | mega | total | ≥ 8 reach posts |
+|---|---|---|---|---|---|---|---|
+| de | tiktok | 11 | 8 | 3 | 0 | 22 | 22 |
+| de | youtube | 2 | 0 | 0 | 0 | 2 | 2 |
+| **de** | | 13 | 8 | 3 | 0 | **24** | **24** |
+| en | tiktok | 6 | 11 | 7 | 1 | 25 | 24 |
+| en | youtube | 4 | 2 | 3 | 1 | 10 | 10 |
+| **en** | | 10 | 13 | 10 | 2 | **35** | **34** |
+
+**Usable mid-tier TikTok (n_reach_posts ≥ 8): DE 8 / EN 11.** DE is exactly at the validity
+floor of 8 (susis_synapsensalat, adhsabenteuer, neuroceline, adhs.reise, robin.haegle,
+bene_adhso, daily.katze, jannes_patrick — all 15 reach posts). EN: 11 (neuroduck0 has 13, the
+rest 15).
+
+Short of 8 reach posts:
+- **audhd30** (en, TikTok, micro): 30 posts, 0 in reach window. All 30 listed posts were
+  published between 2026-10-24 07:55 and 2026-10-25 08:08 UTC (a burst of ~30 posts in one
+  day), so none is ≥ 72 h old within the 30-entry listing. It drops out of reach metrics per
+  the rule; not mid-tier, so the floor is unaffected.
+- neuropinguin (de, TikTok, micro) has exactly 8 (only 9 posts total) — usable.
+
+Saves/shares per 1k views are exposed on TikTok only; YouTube rows carry views, likes and
+comments (saves/shares NULL), as designed.
