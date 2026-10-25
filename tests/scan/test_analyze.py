@@ -261,3 +261,53 @@ def test_analyze_stops_between_accounts_when_quiet_hours_begin(db, cfg, monkeypa
         db, cfg=cfg, transcriber=FakeTranscriber(), downloader=downloader, polite=_polite()
     )
     assert len(rep.results) == 1 and len(rep.skipped) == 1  # resumed with the other account
+
+
+def test_platform_stop_does_not_mark_unattempted_accounts_analyzed(db, cfg):
+    """HI-05: after Polite stops the platform, later accounts are not stored as analyzed and are
+    picked up again by the next run; attempted-but-failed accounts are retried too."""
+    ids = {}
+    for i, handle in enumerate(("alpha_adhs", "beta_adhs")):
+        posts = [(f"7{i}{j:04d}", "c", None) for j in range(3)]
+        ids[handle] = seed_account(db, handle, posts=posts)
+        conn = db.connect()
+        try:
+            conn.execute(
+                "UPDATE competitor_post SET posted_at = ? - id WHERE account_id = ?",
+                (int(NOW) - 5 * 86400, ids[handle]),
+            )
+        finally:
+            conn.close()
+    calls = []
+
+    def failing(url, out_dir, max_mb):
+        calls.append(url)
+        raise media.DownloadUnavailable("blocked")
+
+    rep = analyze.run_analyze(
+        db, cfg=cfg, transcriber=FakeTranscriber(), downloader=failing, polite=_polite()
+    )
+    by = {r.key: r for r in rep.results}
+    assert len(calls) == 3  # three consecutive failures stop the platform
+    assert by["tiktok:beta_adhs"].status == "not_attempted"
+    conn = db.connect()
+    try:
+        beta_rows = conn.execute(
+            "SELECT COUNT(*) FROM competitor_video WHERE account_id = ?", (ids["beta_adhs"],)
+        ).fetchone()[0]
+    finally:
+        conn.close()
+    assert beta_rows == 0
+    todo, done = analyze.target_accounts(db, None, None, False)
+    assert {a["handle"] for a in todo} == {"alpha_adhs", "beta_adhs"} and done == []
+
+    def ok(url, out_dir, max_mb):
+        return make_video(out_dir / "x.mp4")
+
+    rep = analyze.run_analyze(
+        db, cfg=cfg, transcriber=FakeTranscriber(), downloader=ok, polite=_polite()
+    )
+    assert {r.key: r.status for r in rep.results} == {
+        "tiktok:alpha_adhs": "analyzed",
+        "tiktok:beta_adhs": "analyzed",
+    }

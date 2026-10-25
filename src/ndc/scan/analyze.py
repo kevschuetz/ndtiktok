@@ -32,7 +32,7 @@ def key_dirname(platform: str, handle: str) -> str:
 class VideoResult:
     video_id: str
     posted_at: int | None
-    status: str  # ok | unavailable
+    status: str  # ok | unavailable | skipped (not attempted)
     error: str | None = None
     transcript: str | None = None
     language: str | None = None
@@ -45,7 +45,7 @@ class VideoResult:
 class AccountResult:
     account_id: int
     key: str
-    status: str  # analyzed | unavailable | no_posts
+    status: str  # analyzed | unavailable | no_posts | not_attempted
     videos: list = field(default_factory=list)
     voice: pitch.PitchEstimate | None = None
     contact_sheet: str | None = None
@@ -86,9 +86,11 @@ def target_accounts(
         rows = conn.execute(sql + " ORDER BY a.language, a.platform, a.handle", args).fetchall()
         todo, done = [], []
         for r in rows:
+            # HI-05: done = at least one successfully analyzed video. Not-attempted (skipped) or
+            # failed downloads never mark an account done, so later runs pick it up again.
             analyzed = conn.execute(
-                "SELECT 1 FROM competitor_video WHERE account_id = ? AND analyzed_at IS NOT NULL"
-                " LIMIT 1",
+                "SELECT 1 FROM competitor_video WHERE account_id = ? AND download_status = 'ok'"
+                " AND analyzed_at IS NOT NULL LIMIT 1",
                 (r["id"],),
             ).fetchone()
             (done if analyzed and not reanalyze else todo).append(dict(r))
@@ -141,6 +143,7 @@ def analyze_account(
                 url = media.video_url(platform, handle, p.post_id)
                 status, got = polite.call(platform, _try, url, tmp)
             except PlatformStopped:
+                vr.status = "skipped"
                 vr.error = "not attempted: platform stopped after consecutive download failures"
                 res.videos.append(vr)
                 continue
@@ -174,6 +177,9 @@ def analyze_account(
                     Path(f).unlink(missing_ok=True)
             res.videos.append(vr)
     ok = [v for v in res.videos if v.status == "ok"]
+    if not ok and all(v.status == "skipped" for v in res.videos):
+        res.status = "not_attempted"  # HI-05: nothing tried; store nothing, retry next run
+        return res
     res.status = "analyzed" if ok else "unavailable"
     if ok:
         res.voice = pitch.combine([v.estimate for v in ok if v.estimate], male_max, female_min)
@@ -219,7 +225,7 @@ def store_result(db: Database, res: AccountResult, run_id: int | None) -> None:
                         v.language,
                         v.pitch_hz,
                         res.contact_sheet if v.status == "ok" else None,
-                        now,
+                        None if v.status == "skipped" else now,  # HI-05: only attempted videos
                     ),
                 )
             if res.voice is not None:
@@ -280,7 +286,7 @@ def run_analyze(
         res = analyze_account(
             db, acc, acfg, transcriber, polite, downloader or media.download_video, now_ts
         )
-        if res.status != "no_posts":
+        if res.status not in ("no_posts", "not_attempted"):
             store_result(db, res, run_id)
         rep.results.append(res)
         ok = sum(v.status == "ok" for v in res.videos)
