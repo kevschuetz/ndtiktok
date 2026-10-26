@@ -6,6 +6,7 @@ from ndc import llm
 from ndc.config import db_path
 from ndc.db import Database
 from ndc.script import draft as draft_mod
+from ndc.sources.idcheck import IdCheckFailed
 
 app = typer.Typer(help="Scripts: draft, show.", no_args_is_help=True)
 
@@ -72,7 +73,7 @@ def draft_cmd(topic_id: int) -> None:
     db = _db()
     try:
         vid = draft_mod.draft(db, topic_id)
-    except (draft_mod.DraftError, llm.LlmError, llm.ConfigError) as e:
+    except (draft_mod.DraftError, llm.LlmError, llm.ConfigError, IdCheckFailed) as e:
         raise _fail(e) from e
     conn = db.connect()
     try:

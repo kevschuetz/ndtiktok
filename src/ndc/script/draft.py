@@ -14,6 +14,7 @@ from ndc import llm
 from ndc.checks.engine import check
 from ndc.config import db_path
 from ndc.db import Database
+from ndc.sources import idcheck
 from ndc.sources.split import normalize, split_sentences
 from ndc.sources.store import latest_corpus
 
@@ -290,6 +291,7 @@ def draft(
         ]
     finally:
         conn.close()
+    idcheck.ensure_corpus_ok(db, corpus["id"])  # SRC-04: fail before any LLM spend
     _pre_draft_hooks(db, corpus["id"])
     system, prompt_sha = llm.load_prompt(cfg.draft)
     request = build_draft_request(docs, topic, cfg.draft, system)

@@ -47,3 +47,12 @@ def corpus(db):
     store.pick(db, tid, b)
     store.lock_corpus(db, tid)
     return tid
+
+
+@pytest.fixture(autouse=True)
+def _idcheck_ok(monkeypatch):
+    """Offline: treat every source as verified (idcheck has its own tests)."""
+    from ndc.sources import idcheck
+
+    monkeypatch.setattr(idcheck, "ensure_corpus_ok", lambda db, corpus_id: None)
+    monkeypatch.setattr(idcheck, "latest_status", lambda conn, sid: ("ok", "2099-01-01T00:00:00Z"))

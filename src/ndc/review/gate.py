@@ -83,8 +83,9 @@ GATE_HOOKS: list = []
 
 def _register_default_hooks() -> None:
     from ndc.sources.awmf import awmf_gate_issues
+    from ndc.sources.idcheck import idcheck_gate_issues
 
-    GATE_HOOKS.append(awmf_gate_issues)
+    GATE_HOOKS.extend([awmf_gate_issues, idcheck_gate_issues])
 
 
 _register_default_hooks()

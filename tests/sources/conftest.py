@@ -54,3 +54,17 @@ def black_topic_id(db):
         ).lastrowid
     finally:
         conn.close()
+
+
+@pytest.fixture(autouse=True)
+def _no_crossref(monkeypatch, request):
+    """Offline: DOI checks resolve to ok unless a test opts in to the real checker."""
+    if "real_idcheck" in request.keywords:
+        return
+    from ndc.sources import idcheck
+
+    monkeypatch.setattr(idcheck, "_check_doi", lambda src: ("ok", src["title"], src["year"], ""))
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "real_idcheck: run the real DOI checker (offline mocks)")

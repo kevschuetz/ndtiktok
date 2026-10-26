@@ -43,6 +43,7 @@ def add(
     except (pubmed.SourceNotFound, pubmed.RetractedSource, store.StoreError) as e:
         raise _fail(e) from e
     typer.echo(f"snapshot {snap_id}: {len(rows)} sentences — {meta.title}")
+    _report_idcheck(db, snap_id)
 
 
 @app.command("show")
@@ -234,6 +235,7 @@ def pick_cmd(topic: int, ranks: list[int]) -> None:
                 ft_msg = f"Volltext {len(ft_rows)} Sätze (snapshot {ft_id})"
             except Exception as e:  # keep the abstract; report the full-text problem
                 ft_msg = f"Volltext fehlgeschlagen: {type(e).__name__}: {e}"
+        _report_idcheck(db, abs_id)
         typer.echo(
             f"rank {rk}: {meta.title[:80]} — Abstract {len(rows)} Sätze "
             f"(snapshot {abs_id}); {ft_msg}"
@@ -281,3 +283,50 @@ def import_awmf_cmd(
     typer.echo(
         f"snapshot {snap}: {n} Sätze — AWMF {register} ({version}, gültig bis {valid_until})"
     )
+
+
+def _report_idcheck(db: Database, snapshot_id: int) -> None:
+    from ndc.sources import idcheck
+
+    conn = db.connect()
+    try:
+        source_id = conn.execute(
+            "SELECT source_id FROM source_snapshot WHERE id = ?", (snapshot_id,)
+        ).fetchone()[0]
+    finally:
+        conn.close()
+    status = idcheck.check_source(db, source_id)
+    if status not in idcheck.OK_STATES:
+        typer.echo(
+            f"⚠ ID-Prüfung: {status} — diese Quelle blockiert Entwurf und Freigabe", err=True
+        )
+
+
+@app.command("check-ids")
+def check_ids(
+    topic: int = typer.Option(..., "--topic"),
+    force: bool = typer.Option(False, "--force", help="Re-check every source now"),
+) -> None:
+    """Mechanically verify every picked source's PMID/DOI (PubMed / Crossref)."""
+    from ndc.sources import idcheck
+
+    db = _db()
+    conn = db.connect()
+    try:
+        rows = idcheck.summary(conn, topic)
+    finally:
+        conn.close()
+    for r in rows:
+        if force or r["status"] not in idcheck.OK_STATES:
+            idcheck.check_source(db, r["id"])
+    conn = db.connect()
+    try:
+        rows = idcheck.summary(conn, topic)
+    finally:
+        conn.close()
+    t = Table("source", "id", "status", "checked")
+    t.add_column("title", no_wrap=True, overflow="ellipsis", max_width=36)
+    for r in rows:
+        t.add_row(str(r["id"]), str(r["ident"]), r["status"] or "—", r["checked_at"] or "",
+                  (r["title"] or "")[:60])
+    console.print(t)

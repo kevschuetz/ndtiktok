@@ -34,7 +34,9 @@ ROUTES = [
     ("POST", re.compile(rf"^/r/{SHA}/decide$"), "decide"),
 ]
 ALLOWED_HOSTS = {"localhost", "127.0.0.1"} | {
-    h.strip().lower() for h in os.environ.get("NDC_REVIEW_ALLOWED_HOSTS", "").split(",") if h.strip()
+    h.strip().lower()
+    for h in os.environ.get("NDC_REVIEW_ALLOWED_HOSTS", "").split(",")
+    if h.strip()
 }
 MAX_BODY = 8 * 1024
 NONCE_TTL = 24 * 3600
