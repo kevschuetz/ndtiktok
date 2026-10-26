@@ -9,11 +9,14 @@ from ndc.checks import cli as checks_cli
 from ndc.config import config_dir, db_path, load_env
 from ndc.db import Database
 from ndc.scan import cli as scan_cli
+from ndc.sources import cli as sources_cli
 
 app = typer.Typer(help="nd-content operator CLI.", no_args_is_help=True)
 app.add_typer(topics_cli.app, name="topic")
 app.add_typer(checks_cli.app, name="check")
 app.add_typer(scan_cli.app, name="scan")
+app.add_typer(sources_cli.app, name="source")
+app.add_typer(sources_cli.corpus_app, name="corpus")
 
 
 @app.callback()

@@ -193,15 +193,17 @@ def test_cli_import(db, tmp_path, runner):
 
 
 def test_no_anthropic_anywhere():
-    """D-21: no anthropic import or dependency (the env status line in ndc/cli.py only reports
-    whether ANTHROPIC_API_KEY is set, for Phase 2)."""
+    """D-21 (Phase 1) kept the scan in-session; Phase 2 D-01 allows real API calls, but only
+    through the single logging wrapper src/ndc/llm.py — nothing else may import anthropic."""
     import re
 
     root = Path(__file__).resolve().parents[2]
     pat = re.compile(r"^\s*(import|from)\s+anthropic\b", re.M)
+    allowed = {root / "src" / "ndc" / "llm.py"}
     for p in (root / "src").rglob("*.py"):
+        if p in allowed:
+            continue
         assert not pat.search(p.read_text(encoding="utf-8")), p
-    assert "anthropic" not in (root / "pyproject.toml").read_text(encoding="utf-8").lower()
 
 
 @pytest.mark.parametrize(
