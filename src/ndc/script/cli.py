@@ -95,3 +95,31 @@ def show(ref: str) -> None:
         print_version(conn, v)
     finally:
         conn.close()
+
+
+@app.command("verify")
+def verify_cmd(ref: str) -> None:
+    """Adversarially verify a script version with the verify model (one LLM call)."""
+    from ndc.script import verify as verify_mod
+
+    db = _db()
+    conn = db.connect()
+    try:
+        try:
+            v = resolve_version(conn, ref)
+        except ValueError as e:
+            raise _fail(e) from e
+    finally:
+        conn.close()
+    try:
+        run_id = verify_mod.verify(db, v["id"])
+    except (verify_mod.VerifyError, llm.LlmError, llm.ConfigError) as e:
+        raise _fail(e) from e
+    if run_id is None:
+        typer.echo("already verified")
+    conn = db.connect()
+    try:
+        counts = verify_mod.verdict_counts(conn, v["id"])
+    finally:
+        conn.close()
+    typer.echo(" · ".join(f"{k} {n}" for k, n in sorted(counts.items())))
