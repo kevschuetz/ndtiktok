@@ -101,7 +101,31 @@ Plans:
   4. The caption / pinned-comment source list is rendered only from stored source records
   5. Model IDs and prompts come from config, and each LLM call appears in a log with model, prompt hash, inputs and output
 
-**Plans**: TBD
+**Plans**: 10 plans
+
+**Wave 1**
+- [ ] 02-01-PLAN.md — Source store slice: `ndc source add --pmid`, immutable hashed sentence snapshots, `ndc corpus lock` (W1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 02-02-PLAN.md — Draft slice: logged LLM layer + `ndc script draft` (Opus, Citations over stored sentences, DE over EN) (W2)
+- [ ] 02-05-PLAN.md — Ranked PubMed/Europe PMC search, filters, `ndc source pick` with OA full text (W2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 02-03-PLAN.md — Adversarial verifier (Sonnet, structured, forced blockers) `ndc script verify` (W3)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 02-04-PLAN.md — Hash-bound review gate, CLI review, DB-rendered source list (W4)
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [ ] 02-06-PLAN.md — AWMF S3 PDF import with validity + gate warnings; operator supplies PDF (W5)
+- [ ] 02-08-PLAN.md — Edit flow: export/import with markers, new version, selective re-verify (W5)
+- [ ] 02-09-PLAN.md — Phone review web UI (localhost-only container, no secrets); operator phone check (W5)
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 02-07-PLAN.md — DOI/PMID mechanical check (Crossref/PubMed) blocking draft + approval (W6)
+
+**Wave 7** *(blocked on Wave 6 completion)*
+- [ ] 02-10-PLAN.md — Live end-to-end run, timed phone approval, runbook + docs (W7)
 
 ### Phase 3: Launch Readiness & First Publish
 
