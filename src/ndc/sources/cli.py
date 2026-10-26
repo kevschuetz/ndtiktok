@@ -125,6 +125,19 @@ def lock(topic_id: int) -> None:
     finally:
         conn.close()
     typer.echo(f"corpus {cid} sha256 {sha}")
+    from ndc.sources import search as search_mod
+
+    conn = _db().connect()
+    try:
+        missing = search_mod.missing_facets(conn, topic_id)
+    finally:
+        conn.close()
+    if missing:
+        typer.echo(
+            f"⚠ Kein Quelle für Facette(n) {', '.join(missing)} (z. B. 'Was hilft') — "
+            "der Payoff des Skripts bleibt dann unbelegt.",
+            err=True,
+        )
 
 
 @corpus_app.command("show")
@@ -173,7 +186,7 @@ def search_cmd(
         typer.echo(_json.dumps([dict(r) for r in rows], ensure_ascii=False, indent=1))
         return
     typer.echo(f"query: {run['query']}")
-    t = Table("rank", "score", "type", "year", "OA", "⚠", "pmid")
+    t = Table("rank", "score", "type", "year", "OA", "⚠", "facet", "pmid")
     t.add_column("title", no_wrap=True, overflow="ellipsis", max_width=42)
     for r in rows:
         oa = "?" if r["is_oa"] is None else ("ja" if r["is_oa"] else "–")
@@ -184,6 +197,10 @@ def search_cmd(
             str(r["year"] or ""),
             oa,
             "⚠" if r["safety_flag"] else "",
+            ",".join(
+                {"phenomenon": "Erleben", "mechanism": "Warum", "help": "Hilft"}.get(f, f)
+                for f in _json.loads(r["facets_json"] or "[]")
+            ),
             r["pmid"] or "",
             (r["title"] or "")[:90],
         )
@@ -327,6 +344,11 @@ def check_ids(
     t = Table("source", "id", "status", "checked")
     t.add_column("title", no_wrap=True, overflow="ellipsis", max_width=36)
     for r in rows:
-        t.add_row(str(r["id"]), str(r["ident"]), r["status"] or "—", r["checked_at"] or "",
-                  (r["title"] or "")[:60])
+        t.add_row(
+            str(r["id"]),
+            str(r["ident"]),
+            r["status"] or "—",
+            r["checked_at"] or "",
+            (r["title"] or "")[:60],
+        )
     console.print(t)

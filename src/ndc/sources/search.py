@@ -33,6 +33,7 @@ class Candidate:
     score: float = 0.0
     safety_flag: str | None = None
     meta: dict = field(default_factory=dict)
+    facets: list = field(default_factory=list)
 
 
 def load_cfg() -> dict:
@@ -111,12 +112,25 @@ def search(db: Database, topic_id: int, query: str | None = None) -> int:
     if topic is None or topic["list_tag"] != "whitelist":
         raise SearchError(f"topic {topic_id} not found or not whitelisted")
     q = build_query(topic, cfg, query)
-    ev = pubmed.esearch(f"{q} AND {cfg['evidence_filter']}", cfg["retmax_evidence"])
-    prim = pubmed.esearch(q, cfg["retmax_primary"])
+    facets = cfg.get("facets") or {}
+    if query or not facets:
+        plan = [("custom", None, cfg["retmax_evidence"], cfg["retmax_primary"])]
+    else:
+        plan = [
+            (name, f.get("clause"), f["retmax_evidence"], f["retmax_primary"])
+            for name, f in facets.items()
+        ]
     order: list[str] = []
-    for pmid in ev + prim:
-        if pmid not in order:
-            order.append(pmid)
+    facet_of: dict[str, list[str]] = {}
+    for name, clause, re_ev, re_pr in plan:
+        fq = f"{q} AND {clause}" if clause else q
+        hits = pubmed.esearch(f"{fq} AND {cfg['evidence_filter']}", re_ev)
+        hits += pubmed.esearch(fq, re_pr)
+        for pmid in hits:
+            if pmid not in order:
+                order.append(pmid)
+            if name not in facet_of.setdefault(pmid, []):
+                facet_of[pmid].append(name)
     if not order:
         raise SearchError(f"no PubMed results for: {q}")
     summ = pubmed.esummary(order)
@@ -126,6 +140,8 @@ def search(db: Database, topic_id: int, query: str | None = None) -> int:
         for i, p in enumerate(order)
         if p in summ and "error" not in summ[p]
     ]
+    for c in cands:
+        c.facets = facet_of.get(c.pmid, [])
     try:
         oa = europepmc.oa_status([c.pmid for c in cands])
         for c in cands:
@@ -152,8 +168,8 @@ def search(db: Database, topic_id: int, query: str | None = None) -> int:
             for i, c in enumerate(ranked, start=1):
                 conn.execute(
                     "INSERT INTO source_candidate (search_run_id, rank, score, pmid, doi, pmcid, "
-                    "title, year, tier, pubtypes_json, is_oa, safety_flag, meta_json) "
-                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    "title, year, tier, pubtypes_json, is_oa, safety_flag, meta_json, facets_json) "
+                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     (
                         run_id,
                         i,
@@ -168,6 +184,7 @@ def search(db: Database, topic_id: int, query: str | None = None) -> int:
                         None if c.is_oa is None else int(c.is_oa),
                         c.safety_flag,
                         json.dumps(c.meta, ensure_ascii=False),
+                        json.dumps(c.facets),
                     ),
                 )
             conn.execute("COMMIT")
@@ -183,3 +200,20 @@ def latest_run(conn, topic_id: int):
     return conn.execute(
         "SELECT * FROM search_run WHERE topic_id = ? ORDER BY id DESC LIMIT 1", (topic_id,)
     ).fetchone()
+
+
+def missing_facets(conn, topic_id: int, cfg: dict | None = None) -> list[str]:
+    """Required facets (e.g. 'help') not covered by any picked source of the topic."""
+    cfg = cfg or load_cfg()
+    required = cfg.get("required_facets") or []
+    covered: set[str] = set()
+    for r in conn.execute(
+        "SELECT DISTINCT sc.facets_json FROM topic_pick tp "
+        "JOIN source_snapshot ss ON ss.id = tp.snapshot_id JOIN source s ON s.id = ss.source_id "
+        "JOIN source_candidate sc ON sc.pmid = s.pmid "
+        "JOIN search_run sr ON sr.id = sc.search_run_id AND sr.topic_id = tp.topic_id "
+        "WHERE tp.topic_id = ?",
+        (topic_id,),
+    ):
+        covered.update(json.loads(r[0] or "[]"))
+    return [f for f in required if f not in covered]

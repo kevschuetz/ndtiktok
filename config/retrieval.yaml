@@ -70,3 +70,24 @@ awmf:  # manual AWMF S3 PDF import (SRC-02, D-13)
   # A line matching this (e.g. "3.2 Psychoedukation") becomes the section label of following text.
   section_pattern: '^(\d+(\.\d+)*)\s+[A-ZÄÖÜ]\S'
   header_footer_min_share: 0.5
+
+# Facet search (operator 2026-10-26, plan 02-11): every topic is searched three ways so the
+# corpus can carry the whole script arc — what people experience, why, and what helps.
+# Each facet's clause is AND-ed to the topic query; retmax per facet.
+facets:
+  phenomenon:
+    label: "Erleben/Häufigkeit"
+    clause: null
+    retmax_evidence: 8
+    retmax_primary: 4
+  mechanism:
+    label: "Warum (Mechanismus)"
+    clause: '(mechanism*[tiab] OR neural[tiab] OR neurobiolog*[tiab] OR cognitive[tiab] OR "executive function*"[tiab] OR model[tiab])'
+    retmax_evidence: 6
+    retmax_primary: 3
+  help:
+    label: "Was hilft"
+    clause: '(intervention*[tiab] OR training[tiab] OR psychoeducation[tiab] OR skills[tiab] OR coping[tiab] OR strateg*[tiab] OR "Psychotherapy"[MeSH] OR "Behavior Therapy"[MeSH] OR "Mindfulness"[MeSH] OR "Parenting"[MeSH]) NOT ("Drug Therapy"[MeSH] OR "Central Nervous System Stimulants"[MeSH] OR methylphenidate[tiab] OR pharmacolog*[tiab])'
+    retmax_evidence: 10
+    retmax_primary: 4
+required_facets: [help]   # corpus lock warns when no picked source covers these

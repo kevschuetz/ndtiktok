@@ -121,7 +121,9 @@ def test_cli_add_show_lock(runner, router, topic_id, db):
     assert r.exit_code == 0, r.output
     r = runner.invoke(app, ["corpus", "lock", str(topic_id)])
     assert r.exit_code == 0, r.output
-    assert len(r.output.strip().split()[-1]) == 64
+    import re
+
+    assert re.search(r"sha256 [0-9a-f]{64}", r.output)
 
 
 def test_cli_add_unknown_pmid(runner, router, topic_id):

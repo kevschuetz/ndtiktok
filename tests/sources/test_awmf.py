@@ -12,8 +12,7 @@ def make_pdf(pages=4, extra="") -> bytes:
         lines = [
             "S3-Leitlinie ADHS - Langfassung",
             f"Erster Satz auf Seite {n} beschreibt Psycho-",
-            f"edukation bei Erwachsenen mit ADHS genau. "
-            f"Zweiter Satz auf Seite {n} {extra}nennt",
+            f"edukation bei Erwachsenen mit ADHS genau. Zweiter Satz auf Seite {n} {extra}nennt",
             "ADHS- und Autismus-Diagnostik als getrennte Themen. "
             "Dritter Satz auf dieser Seite folgt.",
             f"Seite {n} von {pages}",
@@ -124,9 +123,15 @@ def test_gate_warning_for_outdated(db):
     assert issues[0].kind.startswith("warn")
 
 
-@pytest.mark.parametrize("status,until,exp", [
-    ("abgelaufen", "2030-01-01", True), ("gueltig", "2021-09-30", True),
-    ("in_ueberarbeitung", "2030-01-01", False), ("gueltig", "2030-01-01", False)])
+@pytest.mark.parametrize(
+    "status,until,exp",
+    [
+        ("abgelaufen", "2030-01-01", True),
+        ("gueltig", "2021-09-30", True),
+        ("in_ueberarbeitung", "2030-01-01", False),
+        ("gueltig", "2030-01-01", False),
+    ],
+)
 def test_expired_detection(status, until, exp):
     assert awmf.expired(status, until, today="2026-10-26") is exp
 

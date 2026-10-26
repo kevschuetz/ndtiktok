@@ -39,8 +39,12 @@ def _http() -> httpx.Client:
     return _client
 
 
-@retry(retry=retry_if_exception(_retryable), stop=stop_after_attempt(3),
-       wait=wait_exponential(multiplier=0.5, max=8), reraise=True)
+@retry(
+    retry=retry_if_exception(_retryable),
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=0.5, max=8),
+    reraise=True,
+)
 def _crossref(doi: str) -> httpx.Response:
     _LIMITER.wait(0.25)
     r = _http().get(f"{CROSSREF}/{doi}")
@@ -74,8 +78,10 @@ def _check_pmid(src) -> tuple[str, str | None, int | None, str]:
         return "unresolvable", None, None, "PubMed: not found"
     title, year = s.get("title"), s.get("pubdate", "")[:4]
     year = int(year) if year.isdigit() else None
-    pm_doi = next((a.get("value", "").lower() for a in s.get("articleids", [])
-                   if a.get("idtype") == "doi"), None)
+    pm_doi = next(
+        (a.get("value", "").lower() for a in s.get("articleids", []) if a.get("idtype") == "doi"),
+        None,
+    )
     if src["doi"] and pm_doi and pm_doi != src["doi"].lower():
         return "mismatch", title, year, f"doi differs: PubMed {pm_doi}"
     if not titles_match(src["title"], title):
@@ -193,8 +199,13 @@ def idcheck_gate_issues(conn, version_id: int) -> list:
         status, _ = latest_status(conn, s["id"])
         if status not in OK_STATES:
             ident = s["pmid"] or s["doi"] or s["id"]
-            out.append(Issue("block_idcheck", None,
-                             f"Quelle nicht verifizierbar: {ident} ({status or 'ungeprüft'})"))
+            out.append(
+                Issue(
+                    "block_idcheck",
+                    None,
+                    f"Quelle nicht verifizierbar: {ident} ({status or 'ungeprüft'})",
+                )
+            )
     return out
 
 
@@ -208,7 +219,13 @@ def summary(conn, topic_id: int) -> list[dict]:
     out = []
     for r in rows:
         st, at = latest_status(conn, r["id"])
-        out.append({"id": r["id"], "ident": r["pmid"] or r["doi"] or r["awmf_reg_no"],
-                    "title": r["title"], "status": st, "checked_at": at})
+        out.append(
+            {
+                "id": r["id"],
+                "ident": r["pmid"] or r["doi"] or r["awmf_reg_no"],
+                "title": r["title"],
+                "status": st,
+                "checked_at": at,
+            }
+        )
     return out
-

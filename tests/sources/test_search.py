@@ -21,6 +21,7 @@ SUMM = {
     "4": _summ("4", "Clinical guideline for ADHD.", ["Practice Guideline"]),
     "5": _summ("5", "Using stimulants to treat emotional lability.", ["Review"]),
     "6": _summ("6", "Second primary study here.", ["Journal Article"]),
+    "7": _summ("7", "Emotion regulation training: a meta-analysis.", ["Meta-Analysis"]),
 }
 
 
@@ -30,6 +31,10 @@ def fake_apis(monkeypatch):
 
     def esearch(term, retmax):
         calls.append(term)
+        if "intervention*[tiab]" in term:
+            return ["7"] if "systematic[sb]" in term else []
+        if "mechanism*[tiab]" in term:
+            return []
         return ["2", "3", "4", "5"] if "systematic[sb]" in term else ["1", "2", "6"]
 
     monkeypatch.setattr(pubmed, "esearch", esearch)
@@ -58,14 +63,16 @@ def test_build_query_mesh_domain_and_exclusions(db, topic_id):
 
 def test_search_ranks_evidence_first_and_caches(db, topic_id, fake_apis):
     run_id = search.search(db, topic_id)
-    assert len(fake_apis) == 2
+    assert len(fake_apis) == 6  # 3 facets x (evidence + primary)
     conn = db.connect()
     rows = conn.execute(
         "SELECT * FROM source_candidate WHERE search_run_id=? ORDER BY rank", (run_id,)
     ).fetchall()
     conn.close()
     pmids = [r["pmid"] for r in rows]
-    assert set(pmids) == {"1", "2", "3", "4", "5", "6"}
+    assert set(pmids) == {"1", "2", "3", "4", "5", "6", "7"}
+    facets = {r["pmid"]: json.loads(r["facets_json"]) for r in rows}
+    assert facets["7"] == ["help"] and facets["2"] == ["phenomenon"]
     tiers = {r["pmid"]: r["tier"] for r in rows}
     assert tiers == {
         "1": "primary",
@@ -74,6 +81,7 @@ def test_search_ranks_evidence_first_and_caches(db, topic_id, fake_apis):
         "4": "guideline",
         "5": "review",
         "6": "primary",
+        "7": "SR/MA",
     }
     pos = {p: i for i, p in enumerate(pmids)}
     assert pos["4"] < pos["3"] and pos["2"] < pos["3"]  # guideline, SR/MA above review
@@ -133,3 +141,24 @@ def test_cli_search_and_pick(runner, db, topic_id, fake_apis, router, monkeypatc
     assert "Volltext" in r.output and "Sätze" in r.output
     r = runner.invoke(app, ["source", "pick", str(topic_id), "99"])
     assert r.exit_code == 1
+
+
+def test_missing_help_facet_warns(db, topic_id, fake_apis):
+    from ndc.sources import store
+    from ndc.sources.pubmed import SentenceRow, SourceMeta
+
+    search.search(db, topic_id)
+    s2 = store.store_snapshot(
+        db, SourceMeta("pubmed", "x", pmid="2"), [SentenceRow("A b c d.")], "pubmed_abstract"
+    )
+    store.pick(db, topic_id, s2)
+    conn = db.connect()
+    assert search.missing_facets(conn, topic_id) == ["help"]
+    conn.close()
+    s7 = store.store_snapshot(
+        db, SourceMeta("pubmed", "y", pmid="7"), [SentenceRow("E f g h.")], "pubmed_abstract"
+    )
+    store.pick(db, topic_id, s7)
+    conn = db.connect()
+    assert search.missing_facets(conn, topic_id) == []
+    conn.close()

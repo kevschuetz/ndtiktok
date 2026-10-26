@@ -176,10 +176,16 @@ def awmf_gate_issues(conn, version_id: int) -> list:
         (version_id,),
     ):
         if expired(s["awmf_status"], s["awmf_valid_until"]):
-            out.append(Issue("warn_awmf_expired", None,
-                             f"AWMF-Leitlinie {s['awmf_reg_no']} abgelaufen seit "
-                             f"{s['awmf_valid_until']} — Aussagen bewusst prüfen"))
+            out.append(
+                Issue(
+                    "warn_awmf_expired",
+                    None,
+                    f"AWMF-Leitlinie {s['awmf_reg_no']} abgelaufen seit "
+                    f"{s['awmf_valid_until']} — Aussagen bewusst prüfen",
+                )
+            )
         elif s["awmf_status"] == "in_ueberarbeitung":
-            out.append(Issue("warn_awmf", None,
-                             f"AWMF-Leitlinie {s['awmf_reg_no']} in Überarbeitung"))
+            out.append(
+                Issue("warn_awmf", None, f"AWMF-Leitlinie {s['awmf_reg_no']} in Überarbeitung")
+            )
     return out
