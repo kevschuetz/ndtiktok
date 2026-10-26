@@ -27,12 +27,12 @@
 
 ### Script & fact-check
 
-- [ ] **SCR-01**: Operator can generate a 60–75s script with a hook for a topic, using only the retrieved sources (Claude Citations), with each claim cited to source sentences
+- [x] **SCR-01**: Operator can generate a 60–75s script with a hook for a topic, using only the retrieved sources (Claude Citations), with each claim cited to source sentences
 - [ ] **SCR-02**: A separate adversarial verification pass (different model, structured output) classifies every claim (supports / partial / overstated / unsupported / contradicts) and flags any certainty escalation vs the source
 - [ ] **SCR-03**: Operator reviews claim ↔ source-sentence pairs sorted by risk, in ≤10 min per script, and the approval is bound to the exact script hash (any edit voids it)
 - [ ] **SCR-04**: The source list for the caption/pinned comment is rendered from stored sources only (never model-written)
 - [ ] **SCR-05**: After recording, a Whisper transcript of the operator's take is diffed against the approved script; deviating sentences are fact-checked before publishing
-- [ ] **SCR-06**: Model IDs and prompts are config, not hard-coded, and each LLM call is logged (model, prompt hash, inputs, output)
+- [x] **SCR-06**: Model IDs and prompts are config, not hard-coded, and each LLM call is logged (model, prompt hash, inputs, output)
 
 ### Production & safety operations
 
@@ -90,12 +90,12 @@
 | SRC-02 | Phase 2 | Pending |
 | SRC-03 | Phase 2 | Complete |
 | SRC-04 | Phase 2 | Pending |
-| SCR-01 | Phase 2 | Pending |
+| SCR-01 | Phase 2 | Complete |
 | SCR-02 | Phase 2 | Pending |
 | SCR-03 | Phase 2 | Pending |
 | SCR-04 | Phase 2 | Pending |
 | SCR-05 | Phase 3 | Pending |
-| SCR-06 | Phase 2 | Pending |
+| SCR-06 | Phase 2 | Complete |
 | OPS-01 | Phase 3 | Pending |
 | OPS-02 | Phase 3 | Pending |
 | OPS-03 | Phase 4 | Pending |

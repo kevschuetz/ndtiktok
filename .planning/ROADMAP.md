@@ -107,7 +107,7 @@ Plans:
 - [x] 02-01-PLAN.md — Source store slice: `ndc source add --pmid`, immutable hashed sentence snapshots, `ndc corpus lock` (W1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 02-02-PLAN.md — Draft slice: logged LLM layer + `ndc script draft` (Opus, Citations over stored sentences, DE over EN) (W2)
+- [x] 02-02-PLAN.md — Draft slice: logged LLM layer + `ndc script draft` (Opus, Citations over stored sentences, DE over EN) (W2)
 - [ ] 02-05-PLAN.md — Ranked PubMed/Europe PMC search, filters, `ndc source pick` with OA full text (W2)
 
 **Wave 3** *(blocked on Wave 2 completion)*
@@ -162,6 +162,6 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Market Decision & Content Foundation | 15/15 | Complete    | 2026-10-25 |
-| 2. Grounded Script Pipeline | 1/10 | In Progress|  |
+| 2. Grounded Script Pipeline | 2/10 | In Progress|  |
 | 3. Launch Readiness & First Publish | 0/? | Not started | - |
 | 4. Validation Run & Go/No-Go | 0/? | Not started | - |
