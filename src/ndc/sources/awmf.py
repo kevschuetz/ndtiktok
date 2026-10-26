@@ -161,7 +161,8 @@ def expired(status: str | None, valid_until: str | None, today: str | None = Non
 
 
 def awmf_gate_issues(conn, version_id: int) -> list:
-    """Expired guidelines BLOCK (D-13 amended 2026-10-26); 'in Überarbeitung' only warns."""
+    """Warnings only (D-13; D-13a block reverted by operator 2026-10-26): expired guidelines may be
+    cited, but every script citing one says so loudly in review."""
     from ndc.review.gate import Issue
 
     out = []
@@ -175,33 +176,10 @@ def awmf_gate_issues(conn, version_id: int) -> list:
         (version_id,),
     ):
         if expired(s["awmf_status"], s["awmf_valid_until"]):
-            out.append(Issue("block_awmf_expired", None,
-                             f"AWMF-Leitlinie {s['awmf_reg_no']} abgelaufen (gültig bis "
-                             f"{s['awmf_valid_until']}) — nicht zitierbar"))
+            out.append(Issue("warn_awmf_expired", None,
+                             f"AWMF-Leitlinie {s['awmf_reg_no']} abgelaufen seit "
+                             f"{s['awmf_valid_until']} — Aussagen bewusst prüfen"))
         elif s["awmf_status"] == "in_ueberarbeitung":
             out.append(Issue("warn_awmf", None,
                              f"AWMF-Leitlinie {s['awmf_reg_no']} in Überarbeitung"))
     return out
-
-
-def corpus_expired_check(db: Database, corpus_id: int) -> None:
-    """PRE_DRAFT_HOOK: refuse to spend an LLM call on a corpus with an expired guideline."""
-    conn = db.connect()
-    try:
-        bad = [
-            r["awmf_reg_no"]
-            for r in conn.execute(
-                "SELECT s.awmf_reg_no, s.awmf_status, s.awmf_valid_until FROM corpus_source cs "
-                "JOIN source_snapshot ss ON ss.id = cs.snapshot_id "
-                "JOIN source s ON s.id = ss.source_id WHERE cs.corpus_id = ? AND s.kind = 'awmf'",
-                (corpus_id,),
-            )
-            if expired(r["awmf_status"], r["awmf_valid_until"])
-        ]
-    finally:
-        conn.close()
-    if bad:
-        raise AwmfError(
-            f"Korpus enthält abgelaufene AWMF-Leitlinie(n) {', '.join(bad)} — "
-            "ndc source unpick und neu sperren (D-13)"
-        )

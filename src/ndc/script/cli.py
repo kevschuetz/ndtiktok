@@ -70,12 +70,9 @@ def print_version(conn, v) -> None:
 def draft_cmd(topic_id: int) -> None:
     """Draft a grounded German script from the topic's locked corpus (one LLM call)."""
     db = _db()
-    import ndc.review.gate  # noqa: F401  registers PRE_DRAFT/GATE hooks
-    from ndc.sources.awmf import AwmfError
-
     try:
         vid = draft_mod.draft(db, topic_id)
-    except (draft_mod.DraftError, llm.LlmError, llm.ConfigError, AwmfError) as e:
+    except (draft_mod.DraftError, llm.LlmError, llm.ConfigError) as e:
         raise _fail(e) from e
     conn = db.connect()
     try:

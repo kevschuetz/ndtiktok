@@ -82,12 +82,9 @@ GATE_HOOKS: list = []
 
 
 def _register_default_hooks() -> None:
-    from ndc.script.draft import PRE_DRAFT_HOOKS
-    from ndc.sources.awmf import awmf_gate_issues, corpus_expired_check
+    from ndc.sources.awmf import awmf_gate_issues
 
     GATE_HOOKS.append(awmf_gate_issues)
-    if corpus_expired_check not in PRE_DRAFT_HOOKS:
-        PRE_DRAFT_HOOKS.append(corpus_expired_check)
 
 
 _register_default_hooks()

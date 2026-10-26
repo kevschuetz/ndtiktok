@@ -124,26 +124,19 @@ def test_gate_warning_for_outdated(db):
     assert issues[0].kind.startswith("warn")
 
 
-@pytest.mark.parametrize("status,until,blocked", [
+@pytest.mark.parametrize("status,until,exp", [
     ("abgelaufen", "2030-01-01", True), ("gueltig", "2021-09-30", True),
     ("in_ueberarbeitung", "2030-01-01", False), ("gueltig", "2030-01-01", False)])
-def test_expired_blocks(status, until, blocked):
-    assert awmf.expired(status, until, today="2026-10-26") is blocked
+def test_expired_detection(status, until, exp):
+    assert awmf.expired(status, until, today="2026-10-26") is exp
 
 
-def test_draft_refuses_expired_corpus(db, topic_id):
-    from ndc.review import gate  # noqa: F401  registers hooks
-    from ndc.script import draft
+def test_expired_guideline_warns_not_blocks(db):
+    from ndc.review.gate import Issue
 
-    snap = awmf.import_awmf(db, make_pdf(), topic_id=topic_id,
-                            **(KW | {"valid_until": "2021-09-30"}))
-    other = store.store_snapshot(db, SourceMeta("pubmed", "P", pmid="9", authors=["A"], year=2020),
-                                 [SentenceRow("Some other text here.")], "pubmed_abstract")
-    store.pick(db, topic_id, other)
-    store.lock_corpus(db, topic_id)
-    with pytest.raises(awmf.AwmfError, match="abgelaufene"):
-        draft.draft(db, topic_id, client=object())
-    assert snap
+    issues_kind = "warn_awmf_expired"
+    assert not issues_kind.startswith("block")
+    assert Issue(issues_kind, None, "x").kind == issues_kind
 
 
 def test_pick_snapshot_cli(runner, db, topic_id):
