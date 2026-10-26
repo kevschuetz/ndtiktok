@@ -60,6 +60,7 @@ services:
       NDC_DB: /data/ndc.db
       NDC_CONFIG_DIR: /app/config
       NDC_ENV_FILE: /nonexistent
+      NDC_REVIEW_ALLOWED_HOSTS: "10.0.0.213,10.8.0.1"  # Pi addresses the phone uses (Host header); arbitrary names still 400
     volumes:
       - /home/nd-content-volumes/data:/data
       - ./config:/app/config:ro

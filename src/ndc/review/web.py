@@ -12,6 +12,7 @@ The container running this has no API keys (no env_file).
 import hashlib
 import hmac
 import logging
+import os
 import re
 import secrets
 import time
@@ -32,7 +33,9 @@ ROUTES = [
     ("POST", re.compile(rf"^/r/{SHA}/ack$"), "ack"),
     ("POST", re.compile(rf"^/r/{SHA}/decide$"), "decide"),
 ]
-ALLOWED_HOSTS = {"localhost", "127.0.0.1"}
+ALLOWED_HOSTS = {"localhost", "127.0.0.1"} | {
+    h.strip().lower() for h in os.environ.get("NDC_REVIEW_ALLOWED_HOSTS", "").split(",") if h.strip()
+}
 MAX_BODY = 8 * 1024
 NONCE_TTL = 24 * 3600
 SECURITY_HEADERS = {
@@ -103,6 +106,8 @@ class Handler(BaseHTTPRequestHandler):
     def _dispatch(self) -> None:
         try:
             if not self._host_ok():
+                host = (self.headers.get("Host") or "")[:80]
+                log.warning("review rejected Host %r (allowed: %s)", host, sorted(ALLOWED_HOSTS))
                 return self._send(400, render_error(400, "Ungültige Anfrage."))
             name, args = self._route()
             if name is None:

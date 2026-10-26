@@ -197,3 +197,15 @@ def test_page_weight(server, db, version):
     verify_with(db, version, [row(0, **FR), row(1), row(2), row(3, **FR)])
     status, _, body = req(server, "GET", f"/r/{sha_of(db, version)}")
     assert len(body.encode()) < 60_000
+
+
+def test_env_allowed_hosts(monkeypatch):
+    import importlib
+
+    monkeypatch.setenv("NDC_REVIEW_ALLOWED_HOSTS", "10.0.0.213, 10.8.0.1")
+    mod = importlib.reload(web)
+    try:
+        assert {"localhost", "127.0.0.1", "10.0.0.213", "10.8.0.1"} == mod.ALLOWED_HOSTS
+    finally:
+        monkeypatch.delenv("NDC_REVIEW_ALLOWED_HOSTS")
+        importlib.reload(web)
