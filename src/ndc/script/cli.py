@@ -68,12 +68,27 @@ def print_version(conn, v) -> None:
 
 
 @app.command("draft")
-def draft_cmd(topic_id: int) -> None:
+def draft_cmd(
+    topic_id: int,
+    punch: bool = typer.Option(
+        False, "--punch", help="Run the TikTok editor + verify after drafting"
+    ),
+) -> None:
     """Draft a grounded German script from the topic's locked corpus (one LLM call)."""
+    from ndc.script import editor
+
     db = _db()
     try:
         vid = draft_mod.draft(db, topic_id)
-    except (draft_mod.DraftError, llm.LlmError, llm.ConfigError, IdCheckFailed) as e:
+        if punch:
+            vid = editor.punch(db, vid)["version_id"]
+    except (
+        draft_mod.DraftError,
+        llm.LlmError,
+        llm.ConfigError,
+        IdCheckFailed,
+        editor.PunchError,
+    ) as e:
         raise _fail(e) from e
     conn = db.connect()
     try:
@@ -193,3 +208,33 @@ def import_cmd(path: str) -> None:
         f"Gate: {'freigebbar' if g.approvable else 'nicht freigebbar'} "
         f"({len(g.blockers)} Blocker, {len(g.needs_ack)} offen)"
     )
+
+
+@app.command("punch")
+def punch_cmd(ref: str) -> None:
+    """TikTok editor pass on a version -> new version, re-verified."""
+    from ndc.script import editor
+
+    db = _db()
+    conn = db.connect()
+    try:
+        try:
+            v = resolve_version(conn, ref)
+        except ValueError as e:
+            raise _fail(e) from e
+    finally:
+        conn.close()
+    try:
+        res = editor.punch(db, v["id"])
+    except (editor.PunchError, llm.LlmError) as e:
+        raise _fail(e) from e
+    conn = db.connect()
+    try:
+        print_version(
+            conn,
+            conn.execute(
+                "SELECT * FROM script_version WHERE id = ?", (res["version_id"],)
+            ).fetchone(),
+        )
+    finally:
+        conn.close()

@@ -51,6 +51,7 @@ class LlmConfig:
     draft: StageConfig
     verify: StageConfig
     prices: dict = field(default_factory=dict)
+    editor: StageConfig | None = None
 
 
 def _stage(raw: dict, name: str) -> StageConfig:
@@ -75,9 +76,12 @@ def load_llm_config(path: Path | None = None) -> LlmConfig:
         draft=_stage(raw.get("draft") or {}, "draft"),
         verify=_stage(raw.get("verify") or {}, "verify"),
         prices=raw.get("prices") or {},
+        editor=_stage(raw["editor"], "editor") if raw.get("editor") else None,
     )
     if cfg.draft.model == cfg.verify.model:
         raise ConfigError("verify.model must differ from draft.model (D-02)")
+    if cfg.editor and cfg.editor.model == cfg.verify.model:
+        raise ConfigError("verify.model must differ from editor.model (D-02/D-21)")
     return cfg
 
 

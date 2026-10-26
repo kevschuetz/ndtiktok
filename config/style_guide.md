@@ -14,7 +14,7 @@ mehreren Themen, keine „Teil 1 von 5"-Serien innerhalb eines Videos.
 
 | Zeit | Beat | Inhalt |
 |---|---|---|
-| 0–2 s | **Hook** | Gesprochen = Text auf dem Bildschirm (identisch). Enthält das Such-Keyword (z. B. „ADHS und Zeitgefühl"). Keine Frage, die zur Selbstdiagnose einlädt. |
+| 0–2 s | **Hook** | 6–10 Wörter, gesprochen = Text auf dem Bildschirm. Taktiken (Playbook): Du-/Ich-Szene ohne Sachaussage, Neugierlücke, belegter Mythos-Bruch, überraschender belegter Befund. Nie Selbstdiagnose ("du hast …", Anzeichen-Listen), nie Disclaimer. |
 | 2–10 s | Erleben | Was manche Menschen erleben, vorsichtig formuliert: „Manche Menschen mit ADHS erleben …" |
 | 10–45 s | Erklärung | Kurze wissenschaftliche Erklärung mit 1–2 belegten Aussagen. Jede belegte Aussage bekommt eine Quellenkarte (1–2 s). |
 | 45–65 s | Was hilft | Umfeld, Strategien, kleine Anpassungen — keine Behandlungsempfehlung. |
@@ -49,8 +49,7 @@ Jede Aussage über Menschen ist eine Aussage über *manche* Menschen, nie über 
 
 - Caption/Bio: **„Kein Ersatz für ärztliche oder psychotherapeutische Beratung."**
   (*"Not a substitute for medical or psychotherapeutic advice."*)
-- Positionierung (gesprochen, wenn passend): „Ich bin kein Therapeut – ich lese die Forschung und
-  übersetze sie."
+- Positionierung und Disclaimer stehen NUR in Bio und Caption, nie im gesprochenen Skript (D-22, 2026-10-26).
 
 ## 4. Visuelle Regeln (visual rules)
 

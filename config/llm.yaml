@@ -5,8 +5,14 @@ draft:
   effort: high          # Opus 5.5 always thinks; effort is the only depth control (default medium)
   max_tokens: 8000      # thinking tokens count against this — 1500 truncated in the 2026-10-26 probe
   prompt: prompts/draft_de.md
-  append_files: [style_guide.md]   # appended verbatim after the prompt (style guide §header)
+  append_files: [style_guide.md, prompts/engagement_playbook.md]  # appended verbatim
   word_range: [140, 190]           # style_guide.md §1 word budget; outside = review warning
+editor:   # TikTok punch-up pass (D-21); output is always re-verified
+  model: claude-opus-5-5
+  effort: high
+  max_tokens: 8000
+  prompt: prompts/editor_de.md
+  append_files: [style_guide.md, prompts/engagement_playbook.md]
 verify:
   model: claude-sonnet-5-5
   effort: high
