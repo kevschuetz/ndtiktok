@@ -53,7 +53,8 @@ def reuse_key(text: str, cited_ids, prompt_sha: str, model: str) -> str:
 
 def _sentences(conn, version_id: int) -> list[dict]:
     rows = conn.execute(
-        "SELECT id, ordinal, text FROM script_sentence WHERE script_version_id = ? ORDER BY ordinal",
+        "SELECT id, ordinal, text FROM script_sentence WHERE script_version_id = ? "
+        "ORDER BY ordinal",
         (version_id,),
     ).fetchall()
     if not rows:

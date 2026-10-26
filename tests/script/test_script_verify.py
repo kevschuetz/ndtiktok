@@ -109,7 +109,9 @@ def test_missing_ordinal_stores_nothing(db, version):
 
 
 def test_extra_fields_forbidden():
-    with pytest.raises(Exception):
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
         vf.SentenceVerdict(**_row(0), extra="x")
 
 
