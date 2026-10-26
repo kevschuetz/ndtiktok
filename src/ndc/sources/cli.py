@@ -238,3 +238,46 @@ def pick_cmd(topic: int, ranks: list[int]) -> None:
             f"rank {rk}: {meta.title[:80]} — Abstract {len(rows)} Sätze "
             f"(snapshot {abs_id}); {ft_msg}"
         )
+
+
+@app.command("import-awmf")
+def import_awmf_cmd(
+    pdf: str,
+    register: str = typer.Option(..., "--register", help="AWMF register no., e.g. 028-045"),
+    version: str = typer.Option(..., "--version", help="Version text from the AWMF page"),
+    valid_until: str = typer.Option(..., "--valid-until", help="YYYY-MM-DD"),
+    status: str = typer.Option(..., "--status", help="gueltig | in_ueberarbeitung | abgelaufen"),
+    title: str = typer.Option(..., "--title", help="Guideline title, e.g. 'ADHS bei Kindern, …'"),
+    topic: int = typer.Option(None, "--topic", help="Also pick it for this topic"),
+    new_version: bool = typer.Option(False, "--new-version"),
+) -> None:
+    """Import a manually downloaded AWMF S3 PDF (never fetched programmatically)."""
+    from pathlib import Path
+
+    from ndc.sources import awmf
+
+    try:
+        data = Path(pdf).read_bytes()
+        snap = awmf.import_awmf(
+            _db(),
+            data,
+            register=register,
+            version=version,
+            valid_until=valid_until,
+            status=status,
+            title=title,
+            topic_id=topic,
+            new_version=new_version,
+        )
+    except (awmf.AwmfError, store.StoreError, OSError) as e:
+        raise _fail(e) from e
+    conn = _db().connect()
+    try:
+        n = conn.execute(
+            "SELECT n_sentences FROM source_snapshot WHERE id = ?", (snap,)
+        ).fetchone()[0]
+    finally:
+        conn.close()
+    typer.echo(
+        f"snapshot {snap}: {n} Sätze — AWMF {register} ({version}, gültig bis {valid_until})"
+    )

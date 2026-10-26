@@ -81,6 +81,15 @@ class Card:
 GATE_HOOKS: list = []
 
 
+def _register_default_hooks() -> None:
+    from ndc.sources.awmf import awmf_gate_issues
+
+    GATE_HOOKS.append(awmf_gate_issues)
+
+
+_register_default_hooks()
+
+
 def _sentence_rows(conn, version_id: int) -> list:
     return conn.execute(
         "SELECT ss.id, ss.ordinal, ss.text, cv.verdict, cv.kind, cv.certainty_escalation, "

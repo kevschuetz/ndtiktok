@@ -63,3 +63,10 @@ fulltext:
 # research but almost always off-limits for this channel (D-11 / safety.yaml medication rule).
 title_flag_terms: [pharmacolog, medication, stimulant, methylphenidate, atomoxetine, amphetamine,
                    lisdexamfetamine, guanfacine, clonidine, drug, dose, dosing, supplement, melatonin]
+
+awmf:  # manual AWMF S3 PDF import (SRC-02, D-13)
+  max_pdf_bytes: 52428800
+  register_pattern: '^\d{3}-\d{3}[A-Za-z]?$'
+  # A line matching this (e.g. "3.2 Psychoedukation") becomes the section label of following text.
+  section_pattern: '^(\d+(\.\d+)*)\s+[A-ZÄÖÜ]\S'
+  header_footer_min_share: 0.5
