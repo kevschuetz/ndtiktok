@@ -147,3 +147,48 @@ def sources_cmd(
     except (sources_list.NotApproved, ValueError) as e:
         raise _fail(e) from e
     typer.echo("\n\n".join(parts))
+
+
+@app.command("export")
+def export_cmd(sha_ref: str, out: str = typer.Option(None, "-o", "--out")) -> None:
+    """Write an editable copy (one sentence per line, citation markers) of a version."""
+    from pathlib import Path
+
+    from ndc.review.cli import resolve_sha
+    from ndc.script import edit
+
+    db = _db()
+    conn = db.connect()
+    try:
+        try:
+            sha = resolve_sha(conn, sha_ref)
+        except ValueError as e:
+            raise _fail(e) from e
+    finally:
+        conn.close()
+    path = Path(out or f"/data/edits/{sha[:10]}.txt")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(edit.export(db, sha), encoding="utf-8")
+    typer.echo(str(path))
+
+
+@app.command("import")
+def import_cmd(path: str) -> None:
+    """Create a new version from an edited export; re-verifies only changed sentences."""
+    from pathlib import Path
+
+    from ndc.review.gate import gate
+    from ndc.script import edit
+
+    db = _db()
+    try:
+        res = edit.import_edit(db, Path(path).read_text(encoding="utf-8"))
+    except (edit.EditError, llm.LlmError, OSError) as e:
+        raise _fail(e) from e
+    g = gate(db, res["version_id"])
+    typer.echo(f"neue Version {res['version_id']} sha256 {res['sha256']}")
+    typer.echo(f"{res['reverified']} neu geprüft · {res['reused']} übernommen")
+    typer.echo(
+        f"Gate: {'freigebbar' if g.approvable else 'nicht freigebbar'} "
+        f"({len(g.blockers)} Blocker, {len(g.needs_ack)} offen)"
+    )
