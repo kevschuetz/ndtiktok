@@ -8,6 +8,7 @@ from ndc import topics_cli
 from ndc.checks import cli as checks_cli
 from ndc.config import config_dir, db_path, load_env
 from ndc.db import Database
+from ndc.review import cli as review_cli
 from ndc.scan import cli as scan_cli
 from ndc.script import cli as script_cli
 from ndc.sources import cli as sources_cli
@@ -19,6 +20,7 @@ app.add_typer(scan_cli.app, name="scan")
 app.add_typer(sources_cli.app, name="source")
 app.add_typer(sources_cli.corpus_app, name="corpus")
 app.add_typer(script_cli.app, name="script")
+app.add_typer(review_cli.app, name="review")
 
 
 @app.callback()

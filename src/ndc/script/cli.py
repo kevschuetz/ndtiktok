@@ -123,3 +123,27 @@ def verify_cmd(ref: str) -> None:
     finally:
         conn.close()
     typer.echo(" · ".join(f"{k} {n}" for k, n in sorted(counts.items())))
+
+
+@app.command("sources")
+def sources_cmd(
+    sha_ref: str, variant: str = typer.Option("caption", "--variant", help="caption | comment")
+) -> None:
+    """Render the source list of an APPROVED version from stored source rows."""
+    from ndc.review.cli import resolve_sha
+    from ndc.script import sources_list
+
+    db = _db()
+    conn = db.connect()
+    try:
+        try:
+            sha = resolve_sha(conn, sha_ref)
+        except ValueError as e:
+            raise _fail(e) from e
+    finally:
+        conn.close()
+    try:
+        parts = sources_list.render(db, sha, variant)
+    except (sources_list.NotApproved, ValueError) as e:
+        raise _fail(e) from e
+    typer.echo("\n\n".join(parts))

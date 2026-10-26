@@ -1,0 +1,8 @@
+# Source-list rendering (SCR-04, D-08). Rendered only from DB rows of sources cited in an approved
+# script version — never written by a model. Citations are never truncated; long comment lists are
+# split into numbered parts.
+caption_max_chars: 4000
+comment_max_chars: 150   # TikTok comment limit (assumption A4 — confirm in-app)
+labels:
+  heading: "Quellen:"
+  comment_prefix: "Quellen"
