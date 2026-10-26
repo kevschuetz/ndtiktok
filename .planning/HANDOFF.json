@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-10-26T13:59:48.670Z",
+  "phase": "2",
+  "phase_name": "grounded-script-pipeline",
+  "phase_dir": ".planning/phases/02-grounded-script-pipeline",
+  "plan": 11,
+  "task": 3,
+  "total_tasks": 3,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "02-01", "name": "source store", "status": "done", "commit": "b911c17"},
+    {"id": "02-02", "name": "logged LLM + grounded draft", "status": "done", "commit": "db74e56"},
+    {"id": "02-03", "name": "adversarial verifier", "status": "done", "commit": "50d4a8f"},
+    {"id": "02-04", "name": "review gate + source list", "status": "done", "commit": "23be92c"},
+    {"id": "02-05", "name": "retrieval + OA full text", "status": "done", "commit": "1b73fbf"},
+    {"id": "02-07", "name": "DOI/PMID check", "status": "done", "commit": "7f42c53"},
+    {"id": "02-08", "name": "edit flow", "status": "done", "commit": "b3dc8ea"},
+    {"id": "02-09", "name": "phone review UI", "status": "done", "commit": "9a91c51"},
+    {"id": "02-06", "name": "AWMF import (Task 1 code)", "status": "in_progress", "progress": "code+tests done (584b801, aaffc54); Task 2 needs operator PDF"},
+    {"id": "02-11", "name": "script craft v2", "status": "in_progress", "progress": "playbook, prompts v2, editor pass, facet search done (7fa1876, 1487171, 042ef27); Task 3 operator refinement of topic-3 script pending"}
+  ],
+  "remaining_tasks": [
+    {"id": "02-11-T3", "name": "refine topic-3 script v6 with operator; write 02-11-SUMMARY", "status": "in_progress"},
+    {"id": "02-06-T2", "name": "import real AWMF 028-045 PDF (operator downloads via browser + scp; site has Anubis bot check)", "status": "not_started"},
+    {"id": "02-10", "name": "live end-to-end run, timed phone approval, runbook + docs (+ .env.example NCBI_EMAIL)", "status": "not_started"}
+  ],
+  "blockers": [
+    {"description": "AWMF PDF behind Anubis bot challenge — never bypass (Phase-1 D-16)", "type": "human_action", "workaround": "operator downloads in browser, scp to /home/nd-content-volumes/data/awmf/"}
+  ],
+  "human_actions_pending": [
+    {"action": "Decide refinements for topic-3 script version 6 (sha 9774dd8c…)", "context": "2 blockers (S3 uncited, 'Symptome' term warn) + 2 partials (S15 mindfulness, S16 'also')", "blocking": true},
+    {"action": "Upload 028-045l_S3_ADHS_2018-06-abgelaufen.pdf", "context": "plan 02-06 Task 2", "blocking": false},
+    {"action": "Fill Sonnet 5.5 prices in config/llm.yaml", "context": "verify cost_usd is NULL", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "D-13a reverted: expired AWMF guidelines WARN, not block", "rationale": "operator: 'we will use this S3 thing'", "phase": "2"},
+    {"decision": "D-18a: review host allow-list via NDC_REVIEW_ALLOWED_HOSTS=10.0.0.213,10.8.0.1 (Pi)", "rationale": "phone reaches UI via Pi", "phase": "2"},
+    {"decision": "D-20..D-23: TikTok hooks, editor pass re-verified, no in-script disclaimer, plan 02-11", "rationale": "operator: drafts too dry for TikTok", "phase": "2"},
+    {"decision": "Facet search phenomenon/mechanism/help; corpus lock warns without 'help'", "rationale": "no 'what helps' source = unbacked payoff", "phase": "2"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "Show operator script v6 (ndc script show 9774dd8c) and apply their refinements via ndc script export/import; then operator approves on phone (http://10.0.0.213:8090)",
+  "context_notes": "Operator explicitly wants inline execution, no subagents. Operator cares most about TikTok engagement; grounding must not loosen."
+}
