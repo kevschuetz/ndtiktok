@@ -99,7 +99,7 @@ None yet.
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| *(none)* | | | |
+| Human action | Import real AWMF S3 ADHS PDF 028-045 (operator browser download → `/home/nd-content-volumes/data/awmf/` → `ndc source import-awmf … --status abgelaufen`); plan 02-06 Task 2 | Deferred to Phase 3 (operator 2026-10-26: close Phase 2 without PDF) | 2026-10-26 |
 
 ## Session Continuity
 

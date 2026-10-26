@@ -19,7 +19,7 @@ steps:
 ## Phases
 
 - [x] **Phase 1: Market Decision & Content Foundation** - Language chosen from competitor data; topic matrix, style guide, terminology check and safety filter in place (completed 2026-10-25)
-- [ ] **Phase 2: Grounded Script Pipeline** - A topic goes in; a cited, adversarially fact-checked, operator-approved script and its rendered source list come out
+- [x] **Phase 2: Grounded Script Pipeline** - A topic goes in; a cited, adversarially fact-checked, operator-approved script and its rendered source list come out (completed 2026-10-26)
 - [ ] **Phase 3: Launch Readiness & First Publish** - Recording diff, crisis playbook, accounts, pre-registered readout and metrics log all exist, and video 1 is published and logged
 - [ ] **Phase 4: Validation Run & Go/No-Go** - 24–28 videos published on the rotation, readout names the winning formats (or "inconclusive"), and the monetization legal checklist is resolved
 
@@ -117,7 +117,7 @@ Plans:
 - [x] 02-04-PLAN.md — Hash-bound review gate, CLI review, DB-rendered source list (W4)
 
 **Wave 5** *(blocked on Wave 4 completion)*
-- [ ] 02-06-PLAN.md — AWMF S3 PDF import with validity + gate warnings; operator supplies PDF (W5)
+- [x] 02-06-PLAN.md — AWMF S3 PDF import with validity + gate warnings; operator supplies PDF (W5)
 - [x] 02-08-PLAN.md — Edit flow: export/import with markers, new version, selective re-verify (W5)
 - [x] 02-09-PLAN.md — Phone review web UI (localhost-only container, no secrets); operator phone check (W5)
 
@@ -165,6 +165,6 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Market Decision & Content Foundation | 15/15 | Complete    | 2026-10-25 |
-| 2. Grounded Script Pipeline | 10/11 | In Progress|  |
+| 2. Grounded Script Pipeline | 11/11 | Complete   | 2026-10-26 |
 | 3. Launch Readiness & First Publish | 0/? | Not started | - |
 | 4. Validation Run & Go/No-Go | 0/? | Not started | - |

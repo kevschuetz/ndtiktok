@@ -94,7 +94,8 @@ def test_bad_stop_reason_logged_then_raised(stop, exc):
 def test_null_price_gives_null_cost():
     db = Database(os.environ["NDC_DB"])
     client = FakeClient([FakeMessage([{"type": "text", "text": "ok"}])])
-    req = _request() | {"model": "claude-sonnet-5-5"}
+    # a model id that has no entry in llm.yaml prices (Sonnet 5.5 got its price on 2026-10-26)
+    req = _request() | {"model": "claude-unpriced-test-model"}
     _, run_id = llm.call("verify", req, client=client, db=db)
     conn = db.connect()
     assert conn.execute("SELECT cost_usd FROM llm_run WHERE id=?", (run_id,)).fetchone()[0] is None
