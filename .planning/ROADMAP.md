@@ -111,7 +111,7 @@ Plans:
 - [x] 02-05-PLAN.md — Ranked PubMed/Europe PMC search, filters, `ndc source pick` with OA full text (W2)
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 02-03-PLAN.md — Adversarial verifier (Sonnet, structured, forced blockers) `ndc script verify` (W3)
+- [x] 02-03-PLAN.md — Adversarial verifier (Sonnet, structured, forced blockers) `ndc script verify` (W3)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 02-04-PLAN.md — Hash-bound review gate, CLI review, DB-rendered source list (W4)
@@ -162,6 +162,6 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Market Decision & Content Foundation | 15/15 | Complete    | 2026-10-25 |
-| 2. Grounded Script Pipeline | 3/10 | In Progress|  |
+| 2. Grounded Script Pipeline | 4/10 | In Progress|  |
 | 3. Launch Readiness & First Publish | 0/? | Not started | - |
 | 4. Validation Run & Go/No-Go | 0/? | Not started | - |
