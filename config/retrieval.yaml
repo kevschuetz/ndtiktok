@@ -87,7 +87,8 @@ facets:
     retmax_primary: 3
   help:
     label: "Was hilft"
-    clause: '(intervention*[tiab] OR training[tiab] OR psychoeducation[tiab] OR skills[tiab] OR coping[tiab] OR strateg*[tiab] OR "Psychotherapy"[MeSH] OR "Behavior Therapy"[MeSH] OR "Mindfulness"[MeSH] OR "Parenting"[MeSH]) NOT ("Drug Therapy"[MeSH] OR "Central Nervous System Stimulants"[MeSH] OR methylphenidate[tiab] OR pharmacolog*[tiab])'
+    # intervention words in the TITLE + specific non-drug therapies; drug papers excluded by title
+    clause: '(intervention*[ti] OR treatment*[ti] OR training[ti] OR therapy[ti] OR psychotherap*[tiab] OR mindfulness[tiab] OR "cognitive behavioral"[tiab] OR "parent training"[tiab] OR psychoeducation[tiab] OR "skills training"[tiab]) NOT (methylphenidate[ti] OR stimulant*[ti] OR pharmacolog*[ti] OR pharmacother*[ti] OR medication[ti] OR drug[ti])'
     retmax_evidence: 10
     retmax_primary: 4
 required_facets: [help]   # corpus lock warns when no picked source covers these
