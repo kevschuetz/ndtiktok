@@ -159,7 +159,8 @@ def parse_efetch(xml_bytes: bytes, pmid: str) -> tuple[SourceMeta, list[Sentence
         doi=(ids.get("doi") or "").lower() or None,
         authors=[a for a in authors if a],
         year=year,
-        journal=_text(art.find(".//Journal/ISOAbbreviation")) or _text(art.find(".//Journal/Title")),
+        journal=_text(art.find(".//Journal/ISOAbbreviation"))
+        or _text(art.find(".//Journal/Title")),
         pubtypes=pubtypes,
         language=lang,
     )

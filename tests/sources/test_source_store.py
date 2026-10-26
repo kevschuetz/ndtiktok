@@ -1,17 +1,20 @@
 import sqlite3
 
 import pytest
+from sources_helpers import esummary_json
 
 from ndc.sources import pubmed, store
 from ndc.sources.pubmed import SentenceRow, SourceMeta
-from sources_helpers import esummary_json
 
 
 def _meta(pmid="1", title="Paper one", doi=None):
     return SourceMeta(kind="pubmed", title=title, pmid=pmid, doi=doi, authors=["A", "B"], year=2020)
 
 
-ROWS = [SentenceRow("First sentence is here.", "Abstract"), SentenceRow("Second one too.", "Abstract")]
+ROWS = [
+    SentenceRow("First sentence is here.", "Abstract"),
+    SentenceRow("Second one too.", "Abstract"),
+]
 
 
 def test_snapshot_sha_stable_and_sensitive():
@@ -28,8 +31,9 @@ def test_store_is_idempotent_and_immutable(db, router):
     s1 = store.store_snapshot(db, _meta(), ROWS, "pubmed_abstract", b"<x/>")
     s2 = store.store_snapshot(db, _meta(), ROWS, "pubmed_abstract", b"<x/>")
     assert s1 == s2
-    s3 = store.store_snapshot(db, _meta(), ROWS[:1] + [SentenceRow("Changed text now.")],
-                              "pubmed_abstract")
+    s3 = store.store_snapshot(
+        db, _meta(), ROWS[:1] + [SentenceRow("Changed text now.")], "pubmed_abstract"
+    )
     assert s3 != s1
     conn = db.connect()
     try:
@@ -47,23 +51,33 @@ def test_lock_corpus_bounds_and_reuse(db, router, topic_id):
     store.pick(db, topic_id, a)
     with pytest.raises(store.StoreError, match="topic has 1"):
         store.lock_corpus(db, topic_id)
-    b = store.store_snapshot(db, _meta("2", "Paper two"), [SentenceRow("Other paper text here.")],
-                             "pubmed_abstract")
+    b = store.store_snapshot(
+        db, _meta("2", "Paper two"), [SentenceRow("Other paper text here.")], "pubmed_abstract"
+    )
     store.pick(db, topic_id, b)
     c1 = store.lock_corpus(db, topic_id)
     assert store.lock_corpus(db, topic_id) == c1
     for i in range(3, 6):
-        s = store.store_snapshot(db, _meta(str(i), f"Paper {i}"),
-                                 [SentenceRow(f"Text of paper {i} here.")], "pubmed_abstract")
+        s = store.store_snapshot(
+            db,
+            _meta(str(i), f"Paper {i}"),
+            [SentenceRow(f"Text of paper {i} here.")],
+            "pubmed_abstract",
+        )
         store.pick(db, topic_id, s)
-    s6 = store.store_snapshot(db, _meta("6", "Paper 6"), [SentenceRow("Sixth paper text here.")],
-                              "pubmed_abstract")
+    s6 = store.store_snapshot(
+        db, _meta("6", "Paper 6"), [SentenceRow("Sixth paper text here.")], "pubmed_abstract"
+    )
     with pytest.raises(store.StoreError, match="already has 5"):
         store.pick(db, topic_id, s6)
     conn = db.connect()
     try:
-        cites = [r[0] for r in conn.execute(
-            "SELECT short_cite FROM corpus_source WHERE corpus_id = ? ORDER BY position", (c1,))]
+        cites = [
+            r[0]
+            for r in conn.execute(
+                "SELECT short_cite FROM corpus_source WHERE corpus_id = ? ORDER BY position", (c1,)
+            )
+        ]
         sha = conn.execute("SELECT sha256 FROM corpus WHERE id = ?", (c1,)).fetchone()[0]
     finally:
         conn.close()
@@ -81,13 +95,19 @@ def test_cli_add_show_lock(runner, router, topic_id, db):
     from ndc.cli import app
 
     router.add("esummary.fcgi", "27180913", esummary_json("27180913", "Second"))
-    router.add("efetch.fcgi", "27180913", (
-        b'<?xml version="1.0"?><PubmedArticleSet><PubmedArticle><MedlineCitation><Article>'
-        b"<Journal><ISOAbbreviation>Clin Psychol Rev</ISOAbbreviation><JournalIssue><PubDate>"
-        b"<Year>2016</Year></PubDate></JournalIssue></Journal><ArticleTitle>Second.</ArticleTitle>"
-        b"<Abstract><AbstractText>Children with ADHD show emotion dysregulation often.</AbstractText>"
-        b"</Abstract><AuthorList><Author><LastName>Graziano</LastName></Author></AuthorList>"
-        b"</Article></MedlineCitation></PubmedArticle></PubmedArticleSet>"))
+    router.add(
+        "efetch.fcgi",
+        "27180913",
+        (
+            b'<?xml version="1.0"?><PubmedArticleSet><PubmedArticle><MedlineCitation><Article>'
+            b"<Journal><ISOAbbreviation>Clin Psychol Rev</ISOAbbreviation><JournalIssue><PubDate>"
+            b"<Year>2016</Year></PubDate></JournalIssue></Journal><ArticleTitle>Second.</ArticleTitle>"
+            b"<Abstract><AbstractText>Children with ADHD show emotion dysregulation often."
+            b"</AbstractText>"
+            b"</Abstract><AuthorList><Author><LastName>Graziano</LastName></Author></AuthorList>"
+            b"</Article></MedlineCitation></PubmedArticle></PubmedArticleSet>"
+        ),
+    )
     r = runner.invoke(app, ["source", "add", "--pmid", "36608036", "--topic", str(topic_id)])
     assert r.exit_code == 0, r.output
     snap = int(r.output.split()[1].rstrip(":"))

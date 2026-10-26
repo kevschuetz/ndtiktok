@@ -76,12 +76,19 @@ def list_(topic: int = typer.Option(..., "--topic")) -> None:
         for r in conn.execute(
             "SELECT ss.id, ss.origin, ss.n_sentences, s.year, "
             "COALESCE(s.pmid, s.doi, s.awmf_reg_no) AS ident, s.title FROM topic_pick tp "
-            "JOIN source_snapshot ss ON ss.id = tp.snapshot_id JOIN source s ON s.id = ss.source_id "
+            "JOIN source_snapshot ss ON ss.id = tp.snapshot_id "
+            "JOIN source s ON s.id = ss.source_id "
             "WHERE tp.topic_id = ? ORDER BY tp.picked_at",
             (topic,),
         ):
-            t.add_row(str(r["id"]), r["origin"], str(r["n_sentences"]), str(r["year"] or ""),
-                      str(r["ident"] or ""), (r["title"] or "")[:80])
+            t.add_row(
+                str(r["id"]),
+                r["origin"],
+                str(r["n_sentences"]),
+                str(r["year"] or ""),
+                str(r["ident"] or ""),
+                (r["title"] or "")[:80],
+            )
         console.print(t)
     finally:
         conn.close()

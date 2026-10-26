@@ -43,10 +43,20 @@ def _upsert_source(conn, meta: SourceMeta) -> int:
             (meta.awmf_reg_no, meta.awmf_version),
         ).fetchone()
     vals = (
-        meta.kind, meta.pmid, meta.pmcid, meta.doi, meta.awmf_reg_no, meta.awmf_version,
-        meta.awmf_valid_until, meta.awmf_status, _nfc(meta.title),
-        json.dumps(meta.authors, ensure_ascii=False), meta.year, meta.journal,
-        json.dumps(meta.pubtypes, ensure_ascii=False), meta.language,
+        meta.kind,
+        meta.pmid,
+        meta.pmcid,
+        meta.doi,
+        meta.awmf_reg_no,
+        meta.awmf_version,
+        meta.awmf_valid_until,
+        meta.awmf_status,
+        _nfc(meta.title),
+        json.dumps(meta.authors, ensure_ascii=False),
+        meta.year,
+        meta.journal,
+        json.dumps(meta.pubtypes, ensure_ascii=False),
+        meta.language,
     )
     if row is None:
         cur = conn.execute(

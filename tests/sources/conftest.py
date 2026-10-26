@@ -54,5 +54,3 @@ def black_topic_id(db):
         ).lastrowid
     finally:
         conn.close()
-
-

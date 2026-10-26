@@ -1,7 +1,7 @@
 import pytest
+from sources_helpers import fixture_bytes
 
 from ndc.sources import pubmed
-from sources_helpers import fixture_bytes
 
 
 def test_fetch_abstract_parses_metadata(router):
