@@ -188,3 +188,20 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 > Profile not yet configured. Run `/gsd-profile-user` to generate your developer profile.
 > This section is managed by `generate-claude-profile` -- do not edit manually.
 <!-- GSD:profile-end -->
+
+## Script pipeline (Phase 2)
+
+Operator runbook: `docs/script-pipeline.md`. Live evidence: `.planning/phases/02-grounded-script-pipeline/02-LIVE-RUN.md`.
+
+- **Subsystems** — `src/ndc/sources/` (PubMed/Europe PMC search, hashed sentence snapshots, DOI/PMID check, AWMF PDF import),
+  `src/ndc/script/` (Citations draft, editor "punch" pass, structured verify, export/import edit flow, DB-rendered source list),
+  `src/ndc/review/` (hash-bound gate, CLI review, phone web UI). `src/ndc/llm.py` is the only module that calls Anthropic.
+- **Config only** — model IDs, effort, max_tokens, prompt paths and USD prices live in `config/llm.yaml`; prompts in
+  `config/prompts/*.md` (+ `style_guide.md`, `engagement_playbook.md` appended verbatim and hashed together). Never hard-code a model ID.
+  Draft/editor and verify must be different models. If a price is missing, `cost_usd` stays NULL (operator fills `prices:`).
+- **Grounding rules** — drafts cite stored `source_sentence` rows only (markers `⟦snapshot:ordinal⟧`); any uncited tip or hidden
+  claim blocks approval; edits create a new hashed version and void old approvals; expired AWMF guidelines warn, never block (D-13a reverted).
+- **ndc-review container** — binds `127.0.0.1:8090` only, no `.env`, read-only rootfs, cap_drop ALL, 256 MB. Host allow-list via
+  `NDC_REVIEW_ALLOWED_HOSTS`. **Never add a generic static-file handler** or serve arbitrary paths (D-19); keep `pymupdf` imports lazy.
+- **Artifacts** — every LLM request/response is stored content-hashed under `/data/artifacts`; the `llm_run` table is the audit log.
+- **Testing** — `bash scripts/test.sh` inside the container; `pyproject.toml` is baked into the image, so `docker compose build ndc` after changing it.

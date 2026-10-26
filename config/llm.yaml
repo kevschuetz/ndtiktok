@@ -21,4 +21,4 @@ verify:
 # USD per million tokens. null = unknown -> cost_usd stays NULL and one WARNING is logged.
 prices:
   claude-opus-5-5: {input: 4.0, output: 20.0, cache_read: 0.20, cache_write_5m: 5.0}
-  claude-sonnet-5-5: {input: null, output: null, cache_read: null, cache_write_5m: null}  # operator: fill from the Anthropic pricing page
+  claude-sonnet-5-5: {input: 2.0, output: 10.0, cache_read: 0.20, cache_write_5m: 2.5}  # Anthropic pricing, filled 2026-10-26 (cache write = 1.25x input)
