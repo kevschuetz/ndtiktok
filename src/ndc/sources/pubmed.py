@@ -184,3 +184,11 @@ def fetch_abstract(pmid: str) -> tuple[SourceMeta, list[SentenceRow], bytes]:
     raw = get("efetch.fcgi", {"db": "pubmed", "retmode": "xml", "id": pmid}).content
     meta, rows = parse_efetch(raw, pmid)
     return meta, rows, raw
+
+
+def esearch(term: str, retmax: int) -> list[str]:
+    r = get(
+        "esearch.fcgi",
+        {"db": "pubmed", "retmode": "json", "sort": "relevance", "retmax": retmax, "term": term},
+    )
+    return r.json().get("esearchresult", {}).get("idlist", [])

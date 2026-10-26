@@ -1,0 +1,65 @@
+# Retrieval config (SRC-01, D-10..D-12). Query = condition MeSH AND domain terms [AND audience terms]
+# + exclusions. The operator can always override the topic part with `ndc source search --query`.
+version: 1
+
+mesh:  # condition key (config/matrix.yaml) -> PubMed MeSH clause
+  adhd: '"Attention Deficit Disorder with Hyperactivity"[MeSH]'
+  autism: '"Autism Spectrum Disorder"[MeSH]'
+  audhd: '("Attention Deficit Disorder with Hyperactivity"[MeSH] AND "Autism Spectrum Disorder"[MeSH])'
+  dyslexia: '"Dyslexia"[MeSH]'
+  dyspraxia_dcd: '("Motor Skills Disorders"[MeSH] OR "developmental coordination disorder"[tiab])'
+  tourette: '"Tourette Syndrome"[MeSH]'
+  dyscalculia: '("Dyscalculia"[MeSH] OR dyscalculia[tiab])'
+  nd_general: '(neurodivergen*[tiab] OR neurodiversity[tiab] OR "Neurodevelopmental Disorders"[MeSH])'
+
+domain_terms:  # domain key -> English title/abstract terms (OR-joined)
+  focus_attention: [attention, concentration, focus]
+  executive_function: ["executive function", procrastination, "task initiation", planning]
+  time_perception: ["time perception", "time estimation", "temporal processing"]
+  emotion_regulation: ["emotion regulation", "emotional dysregulation", "emotion dysregulation"]
+  sensory: ["sensory processing", "sensory sensitivity", "sensory over-responsivity"]
+  sleep: [sleep, insomnia, "sleep hygiene"]
+  routines_household: [routines, "daily living", household, organization]
+  school_learning: [school, homework, learning, "academic performance"]
+  work: [employment, work, workplace, occupational]
+  relationships: ["romantic relationships", couples, partner]
+  communication: [communication, "social communication"]
+  social: ["social functioning", friendship, peer]
+  energy_burnout: [burnout, fatigue, exhaustion]
+  masking: [camouflaging, masking]
+  money: ["financial", money, spending, impulsivity]
+  late_identification: ["late diagnosis", "adult diagnosis", "late-diagnosed"]
+  family_life: [family, siblings, "family functioning"]
+  parenting_coregulation: [parenting, "parent training", "co-regulation", "parent-child"]
+
+audience_terms:  # optional extra clause per audience (AND-joined when present)
+  parents: [parent, parents, parenting, mother, father]
+  dads: [father, fathers, paternal]
+  partners: [partner, partners, couples, spouse]
+
+evidence_filter: '(systematic[sb] OR "Meta-Analysis"[pt] OR "Review"[pt] OR "Practice Guideline"[pt] OR "Guideline"[pt])'
+exclusions: 'NOT "Retracted Publication"[pt] NOT ("animals"[MeSH] NOT "humans"[MeSH])'
+
+retmax_evidence: 20
+retmax_primary: 10
+
+tier_weights:  # first matching publication type wins (checked in this order)
+  - {match: ["Practice Guideline", "Guideline"], weight: 3, label: guideline}
+  - {match: ["Systematic Review", "Meta-Analysis"], weight: 2, label: SR/MA}
+  - {match: ["Review"], weight: 1, label: review}
+relevance_top_n: 5
+relevance_bonus: 1.0
+oa_bonus: 0.5
+
+fulltext:
+  keep_sections: [introduction, background, results, discussion, conclusion, conclusions,
+                  findings, "results and discussion"]
+  drop_sections: [method, methods, "materials and methods", "supporting information",
+                  "data availability", funding, acknowledgements, acknowledgments, references,
+                  "conflict of interest", "competing interests", "author contributions"]
+  max_xml_bytes: 20971520
+
+# Candidate-title flags (shown as ⚠, never hidden): medication/treatment-trial papers are legitimate
+# research but almost always off-limits for this channel (D-11 / safety.yaml medication rule).
+title_flag_terms: [pharmacolog, medication, stimulant, methylphenidate, atomoxetine, amphetamine,
+                   lisdexamfetamine, guanfacine, clonidine, drug, dose, dosing, supplement, melatonin]
