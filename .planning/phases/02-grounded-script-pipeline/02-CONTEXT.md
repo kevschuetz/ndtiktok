@@ -36,7 +36,7 @@ Not in this phase: Whisper recording diff (SCR-05), crisis playbook, accounts, m
 - **D-13:** AWMF import records register number, version and the "gültig bis" date (operator-entered); citing an expired or under-revision guideline shows a warning in review but does not block.
 - SRC-04: an unresolvable or mismatched DOI/PMID (Crossref/PubMed, title/year match) blocks the script — mechanical, never LLM-judged.
 
-- **D-13a (operator amendment, 2026-10-26, during execution):** the ADHS S3 guideline 028-045 has been invalid for ~4 years. Expired guidelines (status `abgelaufen` or past `gültig bis`) may still be imported but **block** approval (gate) and drafting (pre-draft hook); `in Überarbeitung` within its validity date only warns. Supersedes the "expired → warn only" part of D-13.
+- **D-13a (operator amendment, 2026-10-26, during execution):** the ADHS S3 guideline 028-045 has been invalid for ~4 years. Expired guidelines (status `abgelaufen` or past `gültig bis`) may still be imported but **block** approval (gate) and drafting (pre-draft hook); `in Überarbeitung` within its validity date only warns. Supersedes the "expired → warn only" part of D-13. **REVERTED same day by operator ("we will use this S3 thing"): expired guidelines warn only, with the message "abgelaufen seit <date> — Aussagen bewusst prüfen"; no draft refusal.**
 - **D-18a (operator, 2026-10-26):** the phone reaches the UI through the Pi, so the Host allow-list also accepts `10.0.0.213` and `10.8.0.1` via `NDC_REVIEW_ALLOWED_HOSTS` (compose env). The container still publishes on 127.0.0.1 only; arbitrary hostnames still get 400.
 
 ### Review & approval

@@ -119,7 +119,7 @@ Plans:
 **Wave 5** *(blocked on Wave 4 completion)*
 - [ ] 02-06-PLAN.md — AWMF S3 PDF import with validity + gate warnings; operator supplies PDF (W5)
 - [x] 02-08-PLAN.md — Edit flow: export/import with markers, new version, selective re-verify (W5)
-- [ ] 02-09-PLAN.md — Phone review web UI (localhost-only container, no secrets); operator phone check (W5)
+- [x] 02-09-PLAN.md — Phone review web UI (localhost-only container, no secrets); operator phone check (W5)
 
 **Wave 6** *(blocked on Wave 5 completion)*
 - [ ] 02-07-PLAN.md — DOI/PMID mechanical check (Crossref/PubMed) blocking draft + approval (W6)
@@ -162,6 +162,6 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Market Decision & Content Foundation | 15/15 | Complete    | 2026-10-25 |
-| 2. Grounded Script Pipeline | 6/10 | In Progress|  |
+| 2. Grounded Script Pipeline | 7/10 | In Progress|  |
 | 3. Launch Readiness & First Publish | 0/? | Not started | - |
 | 4. Validation Run & Go/No-Go | 0/? | Not started | - |
