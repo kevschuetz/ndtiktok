@@ -128,7 +128,7 @@ Plans:
 - [x] 02-11-PLAN.md — Script craft v2: TikTok hooks, draft prompt v2, editor pass, no in-script disclaimer (operator feedback) (W7)
 
 **Wave 8** *(blocked on Wave 7 completion)*
-- [ ] 02-10-PLAN.md — Live end-to-end run, timed phone approval, runbook + docs (W7)
+- [x] 02-10-PLAN.md — Live end-to-end run, timed phone approval, runbook + docs (W7)
 
 ### Phase 3: Launch Readiness & First Publish
 
@@ -165,6 +165,6 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Market Decision & Content Foundation | 15/15 | Complete    | 2026-10-25 |
-| 2. Grounded Script Pipeline | 9/11 | In Progress|  |
+| 2. Grounded Script Pipeline | 10/11 | In Progress|  |
 | 3. Launch Readiness & First Publish | 0/? | Not started | - |
 | 4. Validation Run & Go/No-Go | 0/? | Not started | - |

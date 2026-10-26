@@ -93,14 +93,27 @@ Gate: ✗ 3 Blocker. Over-flag-Prüfung (must_have): 8 zitierte Sätze, 2 vom Op
 Verdikte Version 11 (20 Sätze): supports 9 (7 empirical, 2 advice), partial 1, framing 10; 15 von 20 Verdikten aus der Vorversion übernommen (byte-identischer Satz + identische Evidenz).
 
 **Phone-Review (Task 2):** Operator öffnet http://10.0.0.213:8090 (Pi-Tunnel → 127.0.0.1:8090), ackt/ändert Satz 17, entscheidet.
-Review-Zeit: *(ausstehend)*
-Entscheidung: *(ausstehend)*
+Review-Zeit: **2 min** (Operator-Angabe „roughly 2 mins“; Ziel ≤ 10 min — erfüllt)
+Entscheidung: **approved** — `review` Zeile 3, channel `web`, 2026-10-26T18:55:55Z; `claim_ack` Zeile 3 für Satz 17 (18:55:34Z).
+Operator-Urteil zum Inhalt: „a little bit too clumsy, technical and detailed for me but not completely bad — let's keep it for now.“
+→ Als offener Craft-Punkt für den Draft-/Editor-Prompt notiert (weniger Zahlen/Fachbegriffe, mehr Alltagssprache), kein Blocker.
 
 ## Kriterium 4 — Quellenliste nur aus DB-Zeilen
 
 `ndc script sources <sha> --variant caption|comment` rendert ausschließlich `source`-Zeilen der zitierten Snapshots einer **freigegebenen** Version (Jinja-Template `config/source_list.yaml`, kein LLM). Ausgabe wird nach der Freigabe hier eingefügt:
 
-*(ausstehend — nach Approval)*
+```
+$ ndc script sources 4299e91a --variant caption
+Quellen:
+Boonstra et al. (2005). Psychol Med. doi:10.1017/s003329170500499x
+Cortese et al. (2012). Am J Psychiatry. doi:10.1176/appi.ajp.2012.11101521
+Lopez et al. (2018). Cochrane Database Syst Rev. doi:10.1002/14651858.cd010840.pub2
+Kim et al. (2025). Medicine (Baltimore). doi:10.1097/md.0000000000044308
+
+$ ndc script sources 4299e91a --variant comment
+Quellen: Boonstra 2005 (PMID 16116936); Cortese 2012 (PMID 22983386); Lopez 2018 (PMID 29566425); Kim 2025 (PMID 40958241)
+```
+Jede DOI/PMID oben entspricht einer `source`-Zeile (ids 6, 8, 7, 9) mit aktuellem `id_check` = ok. Vor der Freigabe verweigert `ndc script sources` die Ausgabe (`NotApproved`). Die Variante `comment` hält das 150-Zeichen-Limit (Annahme A4, in der App bestätigen).
 
 ## Kriterium 5 — Modelle/Prompts aus Config, jeder Call im Log
 
