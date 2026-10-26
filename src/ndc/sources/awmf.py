@@ -5,7 +5,6 @@ import re
 from collections import Counter
 from datetime import date
 
-import pymupdf
 import yaml
 
 from ndc.config import config_dir
@@ -31,6 +30,8 @@ def _cfg() -> dict:
 
 
 def extract_pages(pdf_bytes: bytes) -> list[tuple[int, str]]:
+    import pymupdf  # lazy: heavy import (pulls onnxruntime); never loaded by the review server
+
     doc = pymupdf.open(stream=pdf_bytes, filetype="pdf")
     try:
         return [(i + 1, page.get_text()) for i, page in enumerate(doc)]

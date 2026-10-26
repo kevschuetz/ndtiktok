@@ -56,6 +56,9 @@ src = ["src", "tests"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
 
+[tool.ruff.lint.per-file-ignores]
+"src/ndc/review/web_render.py" = ["E501"]  # inline HTML/CSS templates
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 

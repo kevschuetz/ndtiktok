@@ -150,3 +150,23 @@ def decide_cmd(ref: str, decision: str, note: str = typer.Option(None, "--note")
     except store.ReviewRefused as e:
         raise _fail(e) from e
     typer.echo(f"{decision}: {sha[:10]}")
+
+
+@app.command("serve")
+def serve(
+    host: str = typer.Option("127.0.0.1", "--host"),
+    port: int = typer.Option(8090, "--port"),
+    db: str = typer.Option(None, "--db"),
+) -> None:
+    """Run the phone review server (bind localhost; reach it through an SSH tunnel)."""
+    import logging
+
+    from ndc.review.web import make_server
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    srv = make_server(db or db_path(), host, port)
+    typer.echo(f"ndc review serving on {host}:{port}")
+    try:
+        srv.serve_forever()
+    finally:
+        srv.server_close()

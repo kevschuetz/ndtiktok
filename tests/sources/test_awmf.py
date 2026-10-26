@@ -14,7 +14,8 @@ def make_pdf(pages=4, extra="") -> bytes:
             f"Erster Satz auf Seite {n} beschreibt Psycho-",
             f"edukation bei Erwachsenen mit ADHS genau. "
             f"Zweiter Satz auf Seite {n} {extra}nennt",
-            "ADHS- und Autismus-Diagnostik als getrennte Themen. Dritter Satz auf dieser Seite folgt.",
+            "ADHS- und Autismus-Diagnostik als getrennte Themen. "
+            "Dritter Satz auf dieser Seite folgt.",
             f"Seite {n} von {pages}",
         ]
         y = 72
