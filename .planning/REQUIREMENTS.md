@@ -22,7 +22,7 @@
 
 - [ ] **SRC-01**: Operator can retrieve candidate sources for a topic from PubMed (reviews/guidelines first) and Europe PMC, cached with citation metadata (PMID/DOI)
 - [ ] **SRC-02**: Operator can manually import AWMF S3 guideline PDFs (ADHS, Autismus), with the version/validity status recorded
-- [ ] **SRC-03**: Each source is stored as an immutable, content-hashed snapshot split into addressable sentences
+- [x] **SRC-03**: Each source is stored as an immutable, content-hashed snapshot split into addressable sentences
 - [ ] **SRC-04**: Every cited DOI/PMID is automatically checked against Crossref/PubMed; an unresolvable or mismatched identifier blocks the script
 
 ### Script & fact-check
@@ -88,7 +88,7 @@
 | CONT-04 | Phase 1 | Complete |
 | SRC-01 | Phase 2 | Pending |
 | SRC-02 | Phase 2 | Pending |
-| SRC-03 | Phase 2 | Pending |
+| SRC-03 | Phase 2 | Complete |
 | SRC-04 | Phase 2 | Pending |
 | SCR-01 | Phase 2 | Pending |
 | SCR-02 | Phase 2 | Pending |
