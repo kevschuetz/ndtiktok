@@ -101,7 +101,7 @@ Plans:
   4. The caption / pinned-comment source list is rendered only from stored source records
   5. Model IDs and prompts come from config, and each LLM call appears in a log with model, prompt hash, inputs and output
 
-**Plans**: 10 plans
+**Plans**: 11 plans
 
 **Wave 1**
 - [x] 02-01-PLAN.md — Source store slice: `ndc source add --pmid`, immutable hashed sentence snapshots, `ndc corpus lock` (W1)
@@ -125,6 +125,9 @@ Plans:
 - [x] 02-07-PLAN.md — DOI/PMID mechanical check (Crossref/PubMed) blocking draft + approval (W6)
 
 **Wave 7** *(blocked on Wave 6 completion)*
+- [ ] 02-11-PLAN.md — Script craft v2: TikTok hooks, draft prompt v2, editor pass, no in-script disclaimer (operator feedback) (W7)
+
+**Wave 8** *(blocked on Wave 7 completion)*
 - [ ] 02-10-PLAN.md — Live end-to-end run, timed phone approval, runbook + docs (W7)
 
 ### Phase 3: Launch Readiness & First Publish

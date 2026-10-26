@@ -39,6 +39,12 @@ Not in this phase: Whisper recording diff (SCR-05), crisis playbook, accounts, m
 - **D-13a (operator amendment, 2026-10-26, during execution):** the ADHS S3 guideline 028-045 has been invalid for ~4 years. Expired guidelines (status `abgelaufen` or past `gültig bis`) may still be imported but **block** approval (gate) and drafting (pre-draft hook); `in Überarbeitung` within its validity date only warns. Supersedes the "expired → warn only" part of D-13. **REVERTED same day by operator ("we will use this S3 thing"): expired guidelines warn only, with the message "abgelaufen seit <date> — Aussagen bewusst prüfen"; no draft refusal.**
 - **D-18a (operator, 2026-10-26):** the phone reaches the UI through the Pi, so the Host allow-list also accepts `10.0.0.213` and `10.8.0.1` via `NDC_REVIEW_ALLOWED_HOSTS` (compose env). The container still publishes on 127.0.0.1 only; arbitrary hostnames still get 400.
 
+### Script craft (operator feedback during execution, 2026-10-26)
+- **D-20:** Hooks must land in the first 2 s using emotional/curiosity language. Allowed tactics: relatable "du" scene (no claim), curiosity gap/open loop, myth-bust/pattern break (a claim → must be cited), surprising cited finding.
+- **D-21:** A TikTok-editor LLM pass punches up the grounded draft; it may only reuse existing citation markers and its output is a new version that is fully re-verified (rewrite risk accepted by the operator).
+- **D-22:** No disclaimer/positioning line ("Ich bin kein Therapeut …") in the script; the disclaimer lives in bio + caption only.
+- **D-23:** Implemented as plan 02-11, inserted before the live run (02-10).
+
 ### Review & approval
 - **D-14:** Blocking rules: any `unsupported` or `contradicts` claim makes the script unapprovable. `overstated` / `partial` / certainty-escalation claims each need an explicit per-claim operator OK (optional note). `supports` needs no action.
 - **D-15:** The claim extractor tags every sentence (empirical / hedged generalization / advice / framing). Framing lines (hook, transitions, CTA) need no citation, but the verifier flags any framing line that smuggles in a factual claim. Terminology + safety checks (Phase 1 engine) run on the script and every claim.
