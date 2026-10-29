@@ -1,0 +1,6 @@
+{
+  "sha256": "dcf1855343b05dcac85cf04b3bb65dc3b6fcdf3752da4aadbc1b9fbd226c046e",
+  "committed_at": "2026-10-29T19:59:50Z",
+  "rule_file": "readout_rule.yaml",
+  "version": 1
+}
