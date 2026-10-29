@@ -1,0 +1,34 @@
+# Recording diff (SCR-05, plan 03-03, D-01/D-02/D-04). Whisper runs in the ndc-heavy container
+# (CPU, int8); the approved script is the reference, the spoken take is aligned sentence by sentence.
+version: 1
+recordings_dir: /data/recordings      # `ndc recording add` accepts files inside this directory only
+whisper_model: large-v3               # Austrian German; weights download once to /data/models
+compute_type: int8
+cpu_threads: 2
+language: de
+similarity_threshold: 0.80            # token-ratio below this = deviation (calibrate on the first real take)
+min_candidate_similarity: 0.30        # below this two sentences are not even considered a pair
+window_merge: 2                       # try merging up to 2 adjacent sentences when aligning
+low_confidence_word_prob: 0.50        # words below this probability are listed as warnings
+# A hedge present in the approved sentence but missing from the spoken one = deviation, whatever the ratio.
+# Single words match as word prefixes (häufig -> häufiger); multi-word entries as phrases.
+hedge_tokens:
+  - manche
+  - mancher
+  - manchen
+  - häufig
+  - oft
+  - kann
+  - könnte
+  - könnten
+  - vielleicht
+  - möglicherweise
+  - vorläufig
+  - "deuten darauf hin"
+  - "legt nahe"
+  - "legen nahe"
+  - "in studien"
+  - hinweise
+  - "nicht alle"
+  - "im schnitt"
+  - teilweise

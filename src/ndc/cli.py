@@ -9,6 +9,7 @@ from ndc.checks import cli as checks_cli
 from ndc.config import config_dir, db_path, load_env
 from ndc.db import Database
 from ndc.publish import cli as publish_cli
+from ndc.recording import cli as recording_cli
 from ndc.review import cli as review_cli
 from ndc.scan import cli as scan_cli
 from ndc.script import cli as script_cli
@@ -26,6 +27,7 @@ app.add_typer(publish_cli.readout_app, name="readout")
 app.add_typer(publish_cli.publish_app, name="publish")
 app.add_typer(publish_cli.metrics_app, name="metrics")
 app.add_typer(moderation_cli.app, name="moderation")
+app.add_typer(recording_cli.app, name="recording")
 
 
 @app.callback()

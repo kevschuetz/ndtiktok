@@ -65,3 +65,56 @@ class Transcriber:
         segments, info = self._load().transcribe(audio, language=None, vad_filter=True)
         text = " ".join(s.text.strip() for s in segments).strip()
         return Transcript(text=text, language=info.language, duration_s=info.duration)
+
+
+@dataclass
+class Word:
+    start: float
+    end: float
+    word: str
+    prob: float
+
+
+@dataclass
+class Segment:
+    start: float
+    end: float
+    text: str
+    words: list[Word]
+
+
+@dataclass
+class WordTranscript:
+    segments: list[Segment]
+    language: str | None
+    duration_s: float | None
+
+    @property
+    def text(self) -> str:
+        return " ".join(s.text.strip() for s in self.segments).strip()
+
+    @property
+    def words(self) -> list[Word]:
+        return [w for s in self.segments for w in s.words]
+
+
+def transcribe_words(self: Transcriber, audio, language: str | None = "de") -> WordTranscript:
+    """Word-timestamped transcription for the recording diff (plan 03-03). Same decoding path as
+    transcribe(); `language` fixed to the script language so Whisper never guesses."""
+    if isinstance(audio, (str, Path)):
+        from ndc.scan.pitch import decode_audio
+
+        audio = decode_audio(audio)
+    segments, info = self._load().transcribe(
+        audio, language=language, vad_filter=True, word_timestamps=True
+    )
+    out = []
+    for s in segments:
+        words = [
+            Word(w.start, w.end, w.word.strip(), float(w.probability)) for w in (s.words or [])
+        ]
+        out.append(Segment(s.start, s.end, s.text.strip(), words))
+    return WordTranscript(out, info.language, info.duration)
+
+
+Transcriber.transcribe_words = transcribe_words  # type: ignore[attr-defined]
