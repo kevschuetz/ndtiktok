@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
+status: executing
 stopped_at: Phase 3 context gathered
-last_updated: "2026-10-29T19:35:50.446Z"
-last_activity: 2026-10-26
+last_updated: "2026-10-29T19:51:55.407Z"
+last_activity: 2026-10-29 -- Phase 3 planning complete
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 26
+  total_plans: 31
   completed_plans: 26
   percent: 50
 ---
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-10-24)
 
 Phase: 3
 Plan: Not started
-Status: Ready to plan
-Last activity: 2026-10-26
+Status: Ready to execute
+Last activity: 2026-10-29 -- Phase 3 planning complete
 
 Progress: [██████████] 96%
 
@@ -100,6 +100,7 @@ None yet.
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
+| Craft follow-up | Prompt pass on draft_de.md/editor_de.md (operator: topic-2 script „too technical/detailed“), „kein Tipp ohne Marker“, 02-REVIEW WR-01 (hidden_claim overrides supports) and WR-02 (custom facet bypasses help warning) | Deferred to Phase 4 planning (first production batch) | 2026-10-29 |
 | Human action | Import real AWMF S3 ADHS PDF 028-045 (operator browser download → `/home/nd-content-volumes/data/awmf/` → `ndc source import-awmf … --status abgelaufen`); plan 02-06 Task 2 | Deferred to Phase 3 (operator 2026-10-26: close Phase 2 without PDF) | 2026-10-26 |
 
 ## Session Continuity

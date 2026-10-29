@@ -144,7 +144,20 @@ Plans:
   4. The Whisper transcript of the operator's recording is diffed against the approved script, and any deviating sentence is fact-checked before publishing
   5. Video 1 is logged at publish time (platform, post id, topic, pillar/angle/hook, script hash), and its 72h and 7d metric snapshots are recorded (views, retention, saves, shares, follows, For You eligibility)
 
-**Plans**: TBD
+**Plans**: 5 plans
+
+**Wave 1**
+- [ ] 03-01-PLAN.md — Pre-registered readout rule + lock, publish log, metric snapshots, TikTok CSV import, due list, caption/pinned renderer (W1)
+- [ ] 03-02-PLAN.md — Moderation/crisis playbook (config → doc), launch doc (bio, handles, settings), accounts config, Creator Rewards/YPP eligibility doc; operator creates accounts (W1)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 03-03-PLAN.md — Recording diff: Whisper word timestamps, sentence alignment + hedge rule, deviation verify, hash-bound recording approval, SRT, publish gate hook; first real take (W2)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 03-04-PLAN.md — Phone UI: recording review routes + due list; runbook sections, cron doc, README/CLAUDE.md (W3)
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 03-05-PLAN.md — Video 1 live run: pre-flight, publish + cross-post + publish log, 24 h / 72 h / 7 d snapshots, 03-LIVE-RUN.md (W4)
 
 ### Phase 4: Validation Run & Go/No-Go
 
