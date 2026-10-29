@@ -147,7 +147,7 @@ Plans:
 **Plans**: 5 plans
 
 **Wave 1**
-- [ ] 03-01-PLAN.md — Pre-registered readout rule + lock, publish log, metric snapshots, TikTok CSV import, due list, caption/pinned renderer (W1)
+- [x] 03-01-PLAN.md — Pre-registered readout rule + lock, publish log, metric snapshots, TikTok CSV import, due list, caption/pinned renderer (W1)
 - [ ] 03-02-PLAN.md — Moderation/crisis playbook (config → doc), launch doc (bio, handles, settings), accounts config, Creator Rewards/YPP eligibility doc; operator creates accounts (W1)
 
 **Wave 2** *(blocked on Wave 1 completion)*
@@ -179,5 +179,5 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Market Decision & Content Foundation | 15/15 | Complete    | 2026-10-25 |
 | 2. Grounded Script Pipeline | 11/11 | Complete    | 2026-10-26 |
-| 3. Launch Readiness & First Publish | 0/5 | Ready to execute | - |
+| 3. Launch Readiness & First Publish | 1/5 | In Progress|  |
 | 4. Validation Run & Go/No-Go | 0/? | Not started | - |
