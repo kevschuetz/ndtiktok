@@ -63,3 +63,65 @@ def readout_amend(
     except (readout.ReadoutChanged, readout.ReadoutNotLocked, ValueError) as e:
         raise _fail(e) from e
     typer.echo(f"amended · sha {data['sha256'][:12]} · committed_at {data['committed_at']}")
+
+
+# ---------------------------------------------------------------- ndc publish (Task 2)
+from ndc.publish import store as pstore  # noqa: E402
+
+publish_app = typer.Typer(help="Publish log: log, caption, list.", no_args_is_help=True)
+
+
+@publish_app.command("log")
+def publish_log(
+    platform: str = typer.Option(..., "--platform", help="tiktok | youtube | instagram"),
+    script: str = typer.Option(..., "--script", help="approved script version sha (prefix ok)"),
+    post_url: str = typer.Option(..., "--post-url"),
+    recording: str = typer.Option(None, "--recording", help="approved recording transcript sha"),
+    posted_at: str = typer.Option(None, "--posted-at", help="ISO UTC, default now"),
+    hook: str = typer.Option(None, "--hook", help="hook tactic label (exploratory)"),
+) -> None:
+    """Log a published post (append-only); refuses unapproved content or an unlocked readout."""
+    try:
+        pid = pstore.log_publication(
+            Database(db_path()),
+            platform=platform,
+            script_sha=script,
+            post_url=post_url,
+            recording_sha=recording,
+            posted_at=posted_at,
+            hook_tactic=hook,
+        )
+    except (pstore.PublishRefused, ValueError) as e:
+        raise _fail(e) from e
+    typer.echo(f"publication {pid} · {platform} · geloggt")
+
+
+@publish_app.command("caption")
+def publish_caption(script: str) -> None:
+    """Caption (source list + hashtags) and pinned comment(s), from DB rows and config only."""
+    db = Database(db_path())
+    try:
+        cap = pstore.render_caption(db, script)
+        pinned = pstore.render_pinned(db, script)
+    except Exception as e:  # NotApproved / PublishRefused
+        raise _fail(e) from e
+    typer.echo(cap)
+    typer.echo("---")
+    for p in pinned:
+        typer.echo(p)
+
+
+@publish_app.command("list")
+def publish_list() -> None:
+    conn = Database(db_path()).connect()
+    try:
+        rows = pstore.list_publications(conn)
+    finally:
+        conn.close()
+    if not rows:
+        typer.echo("keine Veröffentlichungen")
+    for r in rows:
+        typer.echo(
+            f"{r['id']}  {r['platform']:<9} {r['posted_at']}  {r['pillar']}  "
+            f"{r['script_sha256'][:10]}  {r['post_url']}  — {r['working_title']}"
+        )

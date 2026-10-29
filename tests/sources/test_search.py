@@ -31,7 +31,7 @@ def fake_apis(monkeypatch):
 
     def esearch(term, retmax):
         calls.append(term)
-        if "intervention*[ti]" in term:  # help facet clause (retrieval.yaml, title-level since 042ef27)
+        if "intervention*[ti]" in term:  # help facet clause (title-level since 042ef27)
             return ["7"] if "systematic[sb]" in term else []
         if "mechanism*[tiab]" in term:
             return []

@@ -1,0 +1,28 @@
+# Metric snapshots + publish helpers (MEAS-02/03, plan 03-01). Snapshot ages are fixed horizons with
+# tolerance windows (hours); the actual post age is stored with every row.
+version: 1
+ages:
+  24h: [20, 30]
+  72h: [66, 84]
+  7d: [156, 192]
+platform_fields:
+  tiktok: full
+  youtube: [views]
+  instagram: [views]
+# Pinned comment gets the crisis short form (config/crisis_lines.yaml) on these topic domains.
+pinned_crisis_domains: [emotion_regulation, energy_burnout, late_identification]
+# TikTok Studio CSV export: header names are not documented by TikTok and depend on the UI language.
+# First match wins (case-insensitive, BOM/whitespace stripped). Confirm against the first real export
+# (plan 03-05) and extend here; unknown columns are kept in metric_snapshot.raw_json.
+csv_columns:
+  post_url: ["Video-Link", "Video link", "Link", "Video URL", "URL"]
+  post_id: ["Video-ID", "Video ID", "ID"]
+  posted_at: ["Veröffentlichungszeit", "Veröffentlicht", "Post time", "Publish time", "Create time"]
+  views: ["Videoaufrufe", "Aufrufe", "Video views", "Views", "Total views"]
+  likes: ["Likes", "Gefällt mir", "Gefällt mir-Angaben", "Total likes"]
+  comments: ["Kommentare", "Comments", "Total comments"]
+  shares: ["Geteilt", "Shares", "Total shares"]
+  saves: ["Favoriten", "Gespeichert", "Saves", "Favorites", "Total saves"]
+  follows: ["Neue Follower", "Follower", "New followers", "Followers gained"]
+  avg_watch_s: ["Durchschnittliche Wiedergabezeit", "Average watch time", "Avg. watch time"]
+  watched_full_pct: ["Vollständig angesehen", "Watched full video", "Full video watched"]
