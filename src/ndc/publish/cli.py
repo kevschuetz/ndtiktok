@@ -125,3 +125,118 @@ def publish_list() -> None:
             f"{r['id']}  {r['platform']:<9} {r['posted_at']}  {r['pillar']}  "
             f"{r['script_sha256'][:10]}  {r['post_url']}  — {r['working_title']}"
         )
+
+
+# ---------------------------------------------------------------- ndc metrics (Task 3)
+from datetime import datetime  # noqa: E402
+
+from ndc.publish import metrics as pm  # noqa: E402
+
+metrics_app = typer.Typer(help="Metric snapshots: add, import, due, show.", no_args_is_help=True)
+
+
+@metrics_app.command("add")
+def metrics_add(
+    publication_id: int,
+    age: str = typer.Option(None, "--age", help="24h | 72h | 7d | adhoc (default: from post age)"),
+    views: int = typer.Option(None, "--views"),
+    likes: int = typer.Option(None, "--likes"),
+    comments: int = typer.Option(None, "--comments"),
+    shares: int = typer.Option(None, "--shares"),
+    saves: int = typer.Option(None, "--saves"),
+    follows: int = typer.Option(None, "--follows"),
+    avg_watch_s: float = typer.Option(None, "--avg-watch-s"),
+    watched_full_pct: float = typer.Option(None, "--watched-full-pct"),
+    fyf: str = typer.Option(
+        "unknown", "--fyf", help="yes | no | unknown (For-You-Feed eligibility)"
+    ),
+    fyf_reason: str = typer.Option(None, "--fyf-reason"),
+    captured_at: str = typer.Option(None, "--captured-at", help="ISO UTC, default now"),
+) -> None:
+    """Hand-entered snapshot (append-only)."""
+    vals = {
+        "views": views,
+        "likes": likes,
+        "comments": comments,
+        "shares": shares,
+        "saves": saves,
+        "follows": follows,
+        "avg_watch_s": avg_watch_s,
+        "watched_full_pct": watched_full_pct,
+    }
+    try:
+        sid = pm.add_snapshot(
+            Database(db_path()),
+            publication_id,
+            age,
+            vals,
+            "manual",
+            captured_at=captured_at,
+            fyf_status=fyf,
+            fyf_reason=fyf_reason,
+        )
+    except (pm.MetricsError, ValueError) as e:
+        raise _fail(e) from e
+    typer.echo(f"snapshot {sid} gespeichert")
+
+
+@metrics_app.command("import")
+def metrics_import(
+    csv_path: str,
+    age: str = typer.Option(None, "--age"),
+    captured_at: str = typer.Option(None, "--captured-at"),
+) -> None:
+    """Import a TikTok Studio CSV export (headers mapped via config/metrics.yaml)."""
+    try:
+        rep = pm.import_csv(Database(db_path()), csv_path, captured_at=captured_at, age_label=age)
+    except (pm.MetricsError, OSError, ValueError) as e:
+        raise _fail(e) from e
+    typer.echo(f"Spalten erkannt: {rep['mapped']}")
+    typer.echo(f"{len(rep['matched'])} Zeilen importiert · {len(rep['unmatched'])} ohne Treffer")
+    for u in rep["unmatched"]:
+        typer.echo(f"  ohne Treffer: {u}")
+
+
+@metrics_app.command("due")
+def metrics_due(
+    write: str = typer.Option(None, "--write", help="write JSON here (must be under /data)"),
+    now: str = typer.Option(None, "--now", help="ISO UTC (tests)"),
+) -> None:
+    """Publications whose snapshot window is open and still empty."""
+    when = datetime.fromisoformat(now.replace("Z", "+00:00")) if now else None
+    conn = Database(db_path()).connect()
+    try:
+        items = pm.due(conn, when)
+    finally:
+        conn.close()
+    if write:
+        try:
+            pm.write_due(write, items, when)
+        except pm.MetricsError as e:
+            raise _fail(e) from e
+    if not items:
+        typer.echo("nichts fällig")
+    for i in items:
+        typer.echo(
+            f"publication {i['publication_id']} · {i['platform']} · {i['age']} fällig "
+            f"(Alter {i['post_age_hours']} h, Fenster schließt in "
+            f"{i['window_closes_in_h']} h) — {i['title']}"
+        )
+
+
+@metrics_app.command("show")
+def metrics_show(publication_id: int) -> None:
+    conn = Database(db_path()).connect()
+    try:
+        rows = pm.snapshots(conn, publication_id)
+    finally:
+        conn.close()
+    if not rows:
+        typer.echo("keine Snapshots")
+    for r in rows:
+        typer.echo(
+            f"{r['age_label']:<5} {r['post_age_hours']:>6} h  views={r['views']} "
+            f"likes={r['likes']} comments={r['comments']} shares={r['shares']} "
+            f"saves={r['saves']} follows={r['follows']} avg_watch={r['avg_watch_s']} "
+            f"full%={r['watched_full_pct']} fyf={r['fyf_status']} ({r['source']})"
+        )

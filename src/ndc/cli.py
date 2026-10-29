@@ -24,6 +24,7 @@ app.add_typer(script_cli.app, name="script")
 app.add_typer(review_cli.app, name="review")
 app.add_typer(publish_cli.readout_app, name="readout")
 app.add_typer(publish_cli.publish_app, name="publish")
+app.add_typer(publish_cli.metrics_app, name="metrics")
 
 
 @app.callback()
