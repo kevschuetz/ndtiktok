@@ -1,7 +1,7 @@
 <!-- generated from config/moderation.yaml by `ndc moderation render` — do not edit -->
 # Moderations- und Krisen-Playbook (OPS-01)
 
-Version 1 · Sprache de · freigegeben: **noch nicht** (Operator setzt approved_at in moderation.yaml)
+Version 1 · Sprache de · freigegeben: 2026-10-29
 
 ## 1. Grundsatz: nie automatisch antworten
 

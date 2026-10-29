@@ -5,7 +5,7 @@
 # approved_at is set by the operator after reading the rendered playbook (plan 03-02 Task 3).
 version: 1
 language: de
-approved_at: null
+approved_at: 2026-10-29   # operator: "playbook approved" (chat, 2026-10-29)
 
 policies:
   auto_reply: never                 # no bot, no saved auto-messages, no LLM replies (project rule)
