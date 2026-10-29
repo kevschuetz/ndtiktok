@@ -101,3 +101,11 @@ def approved_sha(db, version):
 def locked(db):
     readout.lock(db)
     return True
+
+
+@pytest.fixture(autouse=True)
+def _no_publish_gates(monkeypatch):
+    """Publish-log tests exercise their own gate hooks; the recording hook has its own tests."""
+    from ndc.publish import store as pstore
+
+    monkeypatch.setattr(pstore, "PUBLISH_GATES", [])

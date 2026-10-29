@@ -7,6 +7,7 @@ import pytest
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "tests" / "review"))
+sys.path.insert(0, str(REPO / "tests" / "recording"))
 sys.path.insert(0, str(REPO / "tests" / "script"))
 
 from review_helpers import BLOCKS, EN_A, EN_B, FakeClient, FakeMessage, row, sha_of, verify_with  # noqa: E402
@@ -101,31 +102,6 @@ def approved_sha(db, version):
 def locked(db):
     readout.lock(db)
     return True
-
-
-# ---------------------------------------------------------------- fake transcriber
-from ndc.scan.transcribe import Segment, Word, WordTranscript  # noqa: E402
-
-
-class FakeTranscriber:
-    """Word timestamps from plain sentences: 0.3 s per word, 0.5 s pause between sentences."""
-
-    def __init__(self, sentences, probs=None):
-        self.sentences = list(sentences)
-        self.probs = probs or {}
-        self.calls = []
-
-    def transcribe_words(self, audio, language="de"):
-        self.calls.append((str(audio), language))
-        t, segs = 0.0, []
-        for s in self.sentences:
-            words = []
-            for w in s.split():
-                words.append(Word(t, t + 0.3, w, self.probs.get(w, 0.95)))
-                t += 0.3
-            segs.append(Segment(words[0].start, words[-1].end, s, words))
-            t += 0.5
-        return WordTranscript(segs, language, t)
 
 
 @pytest.fixture

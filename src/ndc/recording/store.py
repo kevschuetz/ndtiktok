@@ -285,3 +285,90 @@ def sentences(conn, recording_id: int) -> list:
         "ON rv.recording_sentence_id = rs.id WHERE rs.recording_id = ? ORDER BY rs.ordinal",
         (recording_id,),
     ).fetchall()
+
+
+# ---------------------------------------------------------------- deviation verification (D-02)
+def verify_deviations(db: Database, recording_id: int, *, client=None, config=None) -> int | None:
+    """Verify every deviation/extra sentence that has no verdict yet with the script verifier
+    (same model, prompt and forced rules). Spoken text is judged against the cited source
+    sentences of its matched approved sentence; extras are judged uncited. Returns llm_run id."""
+    from ndc import llm
+    from ndc.script import verify as vf
+
+    cfg = config or llm.load_llm_config()
+    conn = db.connect()
+    try:
+        rec = conn.execute("SELECT * FROM recording WHERE id = ?", (recording_id,)).fetchone()
+        if rec is None:
+            raise RecordingError(f"Aufnahme {recording_id} nicht gefunden")
+        rows = conn.execute(
+            "SELECT rs.* FROM recording_sentence rs LEFT JOIN recording_verdict rv "
+            "ON rv.recording_sentence_id = rs.id WHERE rs.recording_id = ? "
+            "AND rs.status IN ('deviation', 'extra') AND rv.id IS NULL ORDER BY rs.ordinal",
+            (recording_id,),
+        ).fetchall()
+        if not rows:
+            return None
+        approved = {s["ordinal"]: s for s in vf._sentences(conn, rec["script_version_id"])}
+    finally:
+        conn.close()
+    todo = []
+    for r in rows:
+        cited = []
+        if r["approved_ordinal"] is not None and r["approved_ordinal"] in approved:
+            cited = approved[r["approved_ordinal"]]["cited"]
+        todo.append(
+            {"row_id": r["id"], "ordinal": r["ordinal"], "text": r["spoken_text"], "cited": cited}
+        )
+    system, prompt_sha = llm.load_prompt(cfg.verify)
+    request = vf.build_verify_request(todo, cfg.verify, system)
+    msg, run_id = llm.call(
+        "verify",
+        request,
+        prompt_sha=prompt_sha,
+        input_shas=[rec["transcript_sha256"]],
+        subject=("recording", recording_id),
+        client=client,
+        parse_model=vf.VerifyReport,
+        db=db,
+        config=cfg,
+    )
+    report = getattr(msg, "parsed_output", None)
+    if report is None:
+        raise vf.VerifyIncomplete(f"llm_run {run_id}: no parsed output")
+    by_ord = {x.ordinal: x for x in report.verdicts}
+    missing = [t["ordinal"] for t in todo if t["ordinal"] not in by_ord]
+    if missing:
+        raise vf.VerifyIncomplete(f"llm_run {run_id}: verifier skipped sentences {missing}")
+    conn = db.connect()
+    try:
+        conn.execute("BEGIN IMMEDIATE")
+        try:
+            for t in todo:
+                x = by_ord[t["ordinal"]]
+                final, reason = vf.force(x, bool(t["cited"]))
+                conn.execute(
+                    "INSERT INTO recording_verdict (recording_sentence_id, llm_run_id, verdict, "
+                    "kind, "
+                    "certainty_escalation, hidden_claim, forced_reason, model_verdict, note_de, "
+                    "suggested_fix_de) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                    (
+                        t["row_id"],
+                        run_id,
+                        final,
+                        x.kind,
+                        int(x.certainty_escalation),
+                        int(x.hidden_claim),
+                        reason,
+                        x.verdict,
+                        x.note_de,
+                        x.suggested_fix_de,
+                    ),
+                )
+            conn.execute("COMMIT")
+        except Exception:
+            conn.execute("ROLLBACK")
+            raise
+    finally:
+        conn.close()
+    return run_id

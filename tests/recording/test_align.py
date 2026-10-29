@@ -1,4 +1,5 @@
 import pytest
+from recording_helpers import FakeTranscriber
 
 from ndc.recording import align as al
 from ndc.recording import store as rs
@@ -74,9 +75,7 @@ def test_split_keep_all_keeps_fragments():
 def test_add_recording_persists_alignment(db, approved_sha, rec_cfg):
     cfg, path = rec_cfg
     spoken = [APPROVED[0], APPROVED[1], "Auch Kinder mit ADHS zeigen das.", APPROVED[3]]
-    res = rs.add_recording(
-        db, path, approved_sha, transcriber=__import__("conftest").FakeTranscriber(spoken), cfg=cfg
-    )
+    res = rs.add_recording(db, path, approved_sha, transcriber=FakeTranscriber(spoken), cfg=cfg)
     assert res["match"] == 3 and res["deviation"] == 1 and res["extra"] == 0 and res["missing"] == 0
     conn = db.connect()
     r = conn.execute("SELECT * FROM recording WHERE id=?", (res["recording_id"],)).fetchone()
@@ -103,7 +102,7 @@ def test_add_recording_persists_alignment(db, approved_sha, rec_cfg):
             db,
             path,
             approved_sha,
-            transcriber=__import__("conftest").FakeTranscriber(spoken),
+            transcriber=FakeTranscriber(spoken),
             cfg=cfg,
         )
 
@@ -120,7 +119,7 @@ def test_add_recording_refuses_outside_dir_and_unapproved(
             db,
             outside,
             approved_sha,
-            transcriber=__import__("conftest").FakeTranscriber(APPROVED),
+            transcriber=FakeTranscriber(APPROVED),
             cfg=cfg,
         )
     # an unapproved version of another script
@@ -129,7 +128,7 @@ def test_add_recording_refuses_outside_dir_and_unapproved(
             db,
             path,
             "0" * 64,
-            transcriber=__import__("conftest").FakeTranscriber(APPROVED),
+            transcriber=FakeTranscriber(APPROVED),
             cfg=cfg,
         )
 
@@ -140,9 +139,7 @@ def test_cli_add_show_list(runner, db, approved_sha, rec_cfg, monkeypatch):
 
     cfg, path = rec_cfg
     monkeypatch.setattr(st, "load_config", lambda *a, **k: cfg)
-    monkeypatch.setattr(
-        st, "_default_transcriber", lambda c: __import__("conftest").FakeTranscriber(APPROVED)
-    )
+    monkeypatch.setattr(st, "_default_transcriber", lambda c: FakeTranscriber(APPROVED))
     r = runner.invoke(
         app, ["recording", "add", str(path), "--script", approved_sha[:12], "--force"]
     )
