@@ -4,7 +4,7 @@ import os
 
 import typer
 
-from ndc import topics_cli
+from ndc import moderation_cli, topics_cli
 from ndc.checks import cli as checks_cli
 from ndc.config import config_dir, db_path, load_env
 from ndc.db import Database
@@ -25,6 +25,7 @@ app.add_typer(review_cli.app, name="review")
 app.add_typer(publish_cli.readout_app, name="readout")
 app.add_typer(publish_cli.publish_app, name="publish")
 app.add_typer(publish_cli.metrics_app, name="metrics")
+app.add_typer(moderation_cli.app, name="moderation")
 
 
 @app.callback()

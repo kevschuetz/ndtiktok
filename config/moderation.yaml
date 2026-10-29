@@ -1,0 +1,74 @@
+# nd-content comment-moderation & crisis playbook (OPS-01, plan 03-02; research PITFALLS Pitfall 10).
+# Source of truth for docs/moderation-playbook.md (`ndc moderation render`). German only (D-08).
+# RULE ONE: nothing here is ever sent automatically. Every reply is read, chosen and sent by the operator.
+# Numbers come from config/crisis_lines.yaml and must stay in sync (tests/test_moderation.py).
+# approved_at is set by the operator after reading the rendered playbook (plan 03-02 Task 3).
+version: 1
+language: de
+approved_at: null
+
+policies:
+  auto_reply: never                 # no bot, no saved auto-messages, no LLM replies (project rule)
+  dms: restricted                   # DMs only from followers / mutuals; no advice over DM
+  comment_filters: [keywords, spam_offensive]   # platform-side filters, switched on before post 1
+  escalation: in_app_report_for_imminent_risk   # imminent danger -> platform report + reply with numbers
+  advice: none                      # never diagnosis, medication, dosing or therapy advice
+  delete_policy: harassment_scam_only   # criticism stays; slurs, scams, doxxing go
+
+# Platform keyword filter seeds (operator pastes these into TikTok/Instagram/YouTube filters).
+keyword_filters:
+  scam: ["Link in Bio", "Teste dich", "Test hier", "DM für", "schreib mir privat", "WhatsApp", "Telegram-Gruppe", "gratis Beratung"]
+  diagnosis_bait: ["Diagnose per Nachricht", "Online-Diagnose", "Selbsttest"]
+  medication: ["Ritalin", "Medikinet", "Elvanse", "Concerta", "Methylphenidat", "Dosierung"]
+  slurs_note: "Plattform-Standardliste 'beleidigende Begriffe' aktivieren; eigene Slur-Liste nur im App-Filter, nie im Repo."
+
+# Canned replies: <= 150 chars (TikTok comment limit, assumption A4), hedged, never diagnostic.
+# {short_form} is replaced with crisis_lines.short_form at render time.
+replies:
+  crisis_disclosure:
+    when: "Jemand schreibt von Verzweiflung, Selbstverletzung, nicht mehr können, Hoffnungslosigkeit"
+    text: "Danke, dass du das schreibst. Du musst da nicht allein durch: AT 142 · DE 0800 111 0 111 · CH 143, rund um die Uhr. Im Notfall 144/112."
+    then: "Kommentar nicht löschen. Bei akuter Gefahr zusätzlich in der App melden (Eskalation)."
+  diagnosis_request:
+    when: "„Hab ich ADHS?“, „Ist mein Kind autistisch?“, Bitte um Einschätzung"
+    text: "Das kann ich hier nicht beurteilen – ich stelle keine Diagnosen. Erste Anlaufstelle: Hausärzt:in oder eine Fachstelle, in AT z. B. über 1450."
+  medication_request:
+    when: "Fragen zu Wirkstoffen, Dosierung, Absetzen"
+    text: "Dazu sage ich bewusst nichts – das gehört in die ärztliche Sprechstunde. Hier geht es um Forschung zu Alltag und Erleben."
+  source_request:
+    when: "„Quelle?“, „Welche Studie?“"
+    text: "Gern! Die Quellen stehen im angepinnten Kommentar und in der Beschreibung (Autor, Jahr, DOI/PMID)."
+  critique:
+    when: "Sachliche Kritik an Inhalt, Begriffen oder Rahmung"
+    text: "Danke für den Hinweis – ich schau mir das an und korrigiere, wenn nötig öffentlich."
+  hostile:
+    when: "Beleidigungen, Ableismus, Trolling"
+    text: null
+    then: "Nicht antworten. Löschen/verbergen, bei Wiederholung blockieren. Keine Diskussion."
+  scam:
+    when: "Spam, Fake-Tests, Links, „schreib mir privat“"
+    text: null
+    then: "Löschen, melden, blockieren."
+  thank_you:
+    when: "Zuspruch, eigene Erfahrung ohne Krisenzeichen"
+    text: "Danke dir fürs Teilen. Schön, dass es hilft."
+
+spike_protocol:
+  trigger_multiple_of_median_views: 10   # vs rolling median views of the last `median_window_posts`
+  median_window_posts: 10
+  sweeps_per_day: 2
+  duration_hours: 72
+  fallback: restrict_comments            # if sweeps can't keep up: comments only from followers / off
+  checklist:
+    - "Kommentare 2x täglich lesen, zuerst nach Krisenzeichen"
+    - "Krisenkommentare: Vorlage crisis_disclosure, nicht löschen, bei Gefahr melden"
+    - "Spam/Scam sofort löschen"
+    - "Bei Überlastung: Kommentare auf Follower einschränken, Hinweis im angepinnten Kommentar"
+
+sensitive_topic_pin: true   # pin sources + crisis short form on domains listed in config/metrics.yaml pinned_crisis_domains
+
+pre_post_checklist:
+  - "Keyword-Filter und Spam-/Beleidigungsfilter auf allen drei Plattformen aktiv"
+  - "DMs eingeschränkt; keine Auto-Antworten/gespeicherten Auto-Nachrichten aktiv"
+  - "Angepinnter Kommentar vorbereitet (Quellen + ggf. Krisen-Kurzform)"
+  - "Vorlagen auf dem Handy griffbereit (Notizen-App)"
