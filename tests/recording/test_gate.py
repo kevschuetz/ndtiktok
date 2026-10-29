@@ -194,6 +194,3 @@ def test_cli_ack_decide_srt(runner, db, approved_sha, locked, rec_cfg, monkeypat
     flat = text.replace("\n", " ")
     assert text.startswith("1\n00:00:00,000 --> ")
     assert "Auch Kinder mit ADHS zeigen das." in flat and APPROVED[1] in flat
-        and "Auch Kinder mit ADHS zeigen das." in text
-        and APPROVED[1] in text
-    )
