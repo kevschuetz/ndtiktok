@@ -31,7 +31,7 @@ replies:
     then: "Kommentar nicht löschen. Bei akuter Gefahr zusätzlich in der App melden (Eskalation)."
   diagnosis_request:
     when: "„Hab ich ADHS?“, „Ist mein Kind autistisch?“, Bitte um Einschätzung"
-    text: "Das kann ich hier nicht beurteilen – ich stelle keine Diagnosen. Erste Anlaufstelle: Hausärzt:in oder eine Fachstelle, in AT z. B. über 1450."
+    text: "Das kann ich hier nicht beurteilen – dafür braucht es eine Fachperson. Erste Anlaufstelle: Hausarztpraxis oder Fachstelle, in AT z. B. über 1450."
   medication_request:
     when: "Fragen zu Wirkstoffen, Dosierung, Absetzen"
     text: "Dazu sage ich bewusst nichts – das gehört in die ärztliche Sprechstunde. Hier geht es um Forschung zu Alltag und Erleben."

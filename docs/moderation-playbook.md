@@ -1,7 +1,7 @@
 <!-- generated from config/moderation.yaml by `ndc moderation render` — do not edit -->
 # Moderations- und Krisen-Playbook (OPS-01)
 
-Version 1 · Sprache de · freigegeben: **noch nicht** (Operator setzt approved_at in config/moderation.yaml)
+Version 1 · Sprache de · freigegeben: **noch nicht** (Operator setzt approved_at in moderation.yaml)
 
 ## 1. Grundsatz: nie automatisch antworten
 
@@ -24,7 +24,7 @@ Keine Bots, keine gespeicherten Auto-Nachrichten, keine LLM-Antworten. Jede Antw
 
 **Wann:** „Hab ich ADHS?“, „Ist mein Kind autistisch?“, Bitte um Einschätzung
 
-> Das kann ich hier nicht beurteilen – ich stelle keine Diagnosen. Erste Anlaufstelle: Hausärzt:in oder eine Fachstelle, in AT z. B. über 1450.
+> Das kann ich hier nicht beurteilen – dafür braucht es eine Fachperson. Erste Anlaufstelle: Hausarztpraxis oder Fachstelle, in AT z. B. über 1450.
 
 ### medication_request
 

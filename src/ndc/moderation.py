@@ -106,7 +106,7 @@ def validate_replies(mod: Moderation | None = None, db=None) -> list[tuple[str, 
 
 
 def crisis_numbers_in_sync(mod: Moderation | None = None) -> bool:
-    """The crisis reply must carry at least the AT 142 and DE 0800 111 0 111 numbers from crisis_lines."""
+    """The crisis reply must carry at least AT 142 and DE 0800 111 0 111 from crisis_lines."""
     mod = mod or load_moderation()
     text = mod.replies["crisis_disclosure"].text or ""
     numbers = {e.number for e in load_crisis_lines().entries}
@@ -123,18 +123,20 @@ def render_playbook(mod: Moderation | None = None) -> str:
     L.append("# Moderations- und Krisen-Playbook (OPS-01)\n")
     L.append(
         f"Version {mod.version} · Sprache {mod.language} · freigegeben: "
-        f"{mod.approved_at or '**noch nicht** (Operator setzt approved_at in config/moderation.yaml)'}\n"
+        f"{mod.approved_at or '**noch nicht** (Operator setzt approved_at in moderation.yaml)'}\n"
     )
     L.append("## 1. Grundsatz: nie automatisch antworten\n")
     L.append(
-        "Keine Bots, keine gespeicherten Auto-Nachrichten, keine LLM-Antworten. Jede Antwort wird vom "
-        "Operator gelesen, ausgewählt und selbst gesendet. Keine Diagnosen, keine Medikamenten- oder "
-        "Therapieberatung, nirgends.\n"
+        "Keine Bots, keine gespeicherten Auto-Nachrichten, keine LLM-Antworten. Jede Antwort "
+        "wird vom Operator gelesen, ausgewählt und selbst gesendet. Keine Diagnosen, keine "
+        "Medikamenten- oder Therapieberatung, nirgends.\n"
     )
     p = mod.policies
     L.append(
-        f"- Auto-Antwort: **{p.auto_reply}** · DMs: **{p.dms}** · Filter: {', '.join(p.comment_filters)}\n"
-        f"- Eskalation: {p.escalation.replace('_', ' ')} · Löschen: {p.delete_policy.replace('_', ' ')}\n"
+        f"- Auto-Antwort: **{p.auto_reply}** · DMs: **{p.dms}** · "
+        f"Filter: {', '.join(p.comment_filters)}\n"
+        f"- Eskalation: {p.escalation.replace('_', ' ')} · "
+        f"Löschen: {p.delete_policy.replace('_', ' ')}\n"
     )
     L.append("## 2. Antwortvorlagen (manuell senden, ≤ 150 Zeichen)\n")
     for key, r in mod.replies.items():
@@ -159,9 +161,10 @@ def render_playbook(mod: Moderation | None = None) -> str:
     s = mod.spike_protocol
     L.append("## 5. Spike-Protokoll\n")
     L.append(
-        f"Auslöser: ein Video überschreitet **{s.trigger_multiple_of_median_views:g}×** den Median der "
-        f"letzten {s.median_window_posts} Posts. Dann {s.sweeps_per_day}× täglich Kommentare durchsehen, "
-        f"{s.duration_hours} h lang. Wenn das nicht reicht: **{s.fallback.replace('_', ' ')}**.\n"
+        f"Auslöser: ein Video überschreitet **{s.trigger_multiple_of_median_views:g}×** den "
+        f"Median der letzten {s.median_window_posts} Posts. Dann {s.sweeps_per_day}× täglich "
+        f"Kommentare durchsehen, {s.duration_hours} h lang. Wenn das nicht reicht: "
+        f"**{s.fallback.replace('_', ' ')}**.\n"
     )
     for item in s.checklist:
         L.append(f"- {item}")
@@ -171,7 +174,8 @@ def render_playbook(mod: Moderation | None = None) -> str:
         L.append(f"- [ ] {item}")
     if mod.sensitive_topic_pin:
         L.append(
-            "- [ ] Bei sensiblen Themen (config/metrics.yaml pinned_crisis_domains): Quellen + Krisen-Kurzform anpinnen"
+            "- [ ] Bei sensiblen Themen (config/metrics.yaml pinned_crisis_domains): "
+            "Quellen + Krisen-Kurzform anpinnen"
         )
     L.append("")
     return "\n".join(L)

@@ -1,0 +1,17 @@
+# nd-content live accounts (OPS-02, plan 03-02). Filled by the operator after creating the accounts
+# (Task 3). Loaded by src/ndc/launch_sets.load_accounts(); the publish log reads platform URLs here.
+# Public data only — never tokens, never a private address (D-09 keeps the Impressum deferred).
+version: 1
+handle: null                         # same handle on all three platforms, lowercase
+bio: "ADHS & Autismus, erklärt aus Studien. Keine Diagnosen, keine Therapie – Quellen in jedem Video."
+posting_slot_local: null             # e.g. "18:30 Europe/Vienna" — held constant for the validation run
+platforms:
+  tiktok:
+    url: null                        # https://www.tiktok.com/@<handle>
+    account_type: personal           # Personal (not Business): keeps creator tools; Creator Rewards check in-app
+  youtube:
+    url: null                        # https://www.youtube.com/@<handle>
+    account_type: channel
+  instagram:
+    url: null                        # https://www.instagram.com/<handle>/
+    account_type: creator            # Professional -> Creator (Graph insights in M2)

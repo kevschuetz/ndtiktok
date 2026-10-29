@@ -66,3 +66,20 @@ def test_crisis_lines_language_content():
 @pytest.mark.parametrize("bad", ["#Ritalin", "#ADHSMedikamente"])
 def test_safety_filter_catches_examples(bad):
     assert check(bad, "de", level="topic").status == "blocked"
+
+
+def test_accounts_config_loads_with_nulls_and_rejects_unknown_platform(tmp_path):
+    import yaml
+    from pydantic import ValidationError
+
+    from ndc.config import config_dir
+    from ndc.launch_sets import load_accounts
+
+    acc = load_accounts()
+    assert acc.bio.startswith("ADHS & Autismus") and acc.ready() is False
+    data = yaml.safe_load((config_dir() / "accounts.yaml").read_text(encoding="utf-8"))
+    data["platforms"]["threads"] = {"url": None, "account_type": "personal"}
+    p = tmp_path / "a.yaml"
+    p.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
+    with pytest.raises(ValidationError):
+        load_accounts(p)

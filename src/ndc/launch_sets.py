@@ -169,3 +169,40 @@ def load_hashtags(path: Path | None = None) -> HashtagSet:
 
 def load_crisis_lines(path: Path | None = None) -> CrisisLines:
     return _cached_crisis(str(path or config_dir() / "crisis_lines.yaml"))
+
+
+# ---------------------------------------------------------------- accounts (OPS-02, plan 03-02)
+class Platform(_Strict):
+    url: str | None
+    account_type: Literal["personal", "channel", "creator", "business"]
+
+    @field_validator("url")
+    @classmethod
+    def _https(cls, v):
+        if v is not None and not v.startswith("https://"):
+            raise ValueError("account url must start with https://")
+        return v
+
+
+class Accounts(_Strict):
+    version: int
+    handle: str | None
+    bio: str
+    posting_slot_local: str | None
+    platforms: dict[Literal["tiktok", "youtube", "instagram"], Platform]
+
+    @model_validator(mode="after")
+    def _complete(self) -> "Accounts":
+        if set(self.platforms) != {"tiktok", "youtube", "instagram"}:
+            raise ValueError("platforms must be exactly tiktok, youtube, instagram")
+        if self.handle is not None and not re.fullmatch(r"[a-z0-9._]{3,24}", self.handle):
+            raise ValueError("handle: lowercase letters, digits, . and _ only (3-24 chars)")
+        return self
+
+    def ready(self) -> bool:
+        return bool(self.handle and all(p.url for p in self.platforms.values()))
+
+
+def load_accounts(path: Path | None = None) -> Accounts:
+    p = path or config_dir() / "accounts.yaml"
+    return Accounts.model_validate(yaml.safe_load(p.read_text(encoding="utf-8")))

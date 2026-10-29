@@ -1,4 +1,4 @@
-"""`ndc moderation` sub-app: check (validate + safety check replies) and render (write the playbook)."""
+"""`ndc moderation` sub-app: check (validate + safety-check replies), render (write playbook)."""
 
 from pathlib import Path
 
