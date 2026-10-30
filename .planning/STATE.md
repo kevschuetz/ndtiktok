@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: "03-02 T3 + 03-03 T3 operator checkpoints; 03-04 next"
+stopped_at: "waiting on operator: accounts, recording, UI ok; then 03-05"
 last_updated: "2026-10-29T20:08:25.266Z"
 last_activity: 2026-10-29 -- Phase 3 planning complete
 progress:
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-10-24)
 
 Phase: 3
 Plan: 2 of 5
-Status: Phase 3 executing inline — 03-01 done; 03-02 waits on operator (accounts); 03-03 code done, waits on recording
+Status: Phase 3 executing inline — code for 03-01..03-04 done; three operator checkpoints open (accounts, recording, UI check)
 Last activity: 2026-10-29 -- Phase 3 planning complete
 
 Progress: [█████████░] 87%
@@ -105,6 +105,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-10-29T20:32:52.000Z
-Stopped at: two operator checkpoints open (03-02 T3 accounts; 03-03 T3 recording); 03-04 T1-2 can proceed
+Last session: 2026-10-30T12:23:55.000Z
+Stopped at: waiting on operator (03-02 T3 accounts, 03-03 T3 recording, 03-04 T3 UI ok); then 03-05
 Resume file: .planning/phases/03-launch-readiness-first-publish/.continue-here.md
