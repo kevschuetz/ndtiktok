@@ -73,7 +73,16 @@ def partial_recording(db, approved_sha, locked, rec_cfg):
 
 
 def test_web_imports_no_heavy_modules():
-    assert "faster_whisper" not in sys.modules and "pymupdf" not in sys.modules
+    """Fresh interpreter: importing the web server must not pull whisper/pymupdf (256 MB container)."""
+    import subprocess
+
+    code = (
+        "import sys; import ndc.review.web; "
+        "bad=[m for m in ('faster_whisper','pymupdf','onnxruntime','av') if m in sys.modules]; "
+        "print(bad); sys.exit(1 if bad else 0)"
+    )
+    r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
 
 
 def test_list_shows_recordings_and_due_link(server, partial_recording):
