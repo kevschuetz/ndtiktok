@@ -189,9 +189,9 @@ Do not make direct repo edits outside a GSD workflow unless the user explicitly 
 > This section is managed by `generate-claude-profile` -- do not edit manually.
 <!-- GSD:profile-end -->
 
-## Script pipeline (Phase 2)
+## Script & publish pipeline (Phases 2–3)
 
-Operator runbook: `docs/script-pipeline.md`. Live evidence: `.planning/phases/02-grounded-script-pipeline/02-LIVE-RUN.md`.
+Operator runbook: `docs/script-pipeline.md` (§1–7 script, §8–13 recording → publish → metrics). Live evidence: `.planning/phases/02-grounded-script-pipeline/02-LIVE-RUN.md`, `.planning/phases/03-launch-readiness-first-publish/03-LIVE-RUN.md`.
 
 - **Subsystems** — `src/ndc/sources/` (PubMed/Europe PMC search, hashed sentence snapshots, DOI/PMID check, AWMF PDF import),
   `src/ndc/script/` (Citations draft, editor "punch" pass, structured verify, export/import edit flow, DB-rendered source list),
@@ -204,4 +204,6 @@ Operator runbook: `docs/script-pipeline.md`. Live evidence: `.planning/phases/02
 - **ndc-review container** — binds `127.0.0.1:8090` only, no `.env`, read-only rootfs, cap_drop ALL, 256 MB. Host allow-list via
   `NDC_REVIEW_ALLOWED_HOSTS`. **Never add a generic static-file handler** or serve arbitrary paths (D-19); keep `pymupdf` imports lazy.
 - **Artifacts** — every LLM request/response is stored content-hashed under `/data/artifacts`; the `llm_run` table is the audit log.
+- **Recording gate (Phase 3)** — `src/ndc/recording/`: Whisper word timestamps → DP sentence alignment + hedge rule → deviations verified by the script verifier → approval keyed on `transcript_sha256` (auto when clean). `publish.store.PUBLISH_GATES` carries the recording hook; `ndc publish log` refuses without an approved recording of the same script sha.
+- **Publish + metrics (Phase 3)** — `src/ndc/publish/`: append-only `publication` and `metric_snapshot`; `config/readout_rule.yaml` is pre-registered and locked (`readout.check_locked` gates publishing); `ndc metrics due --write` only under `/data`; the UI reads the constant `/data/due.json`. Never automate replies — `config/moderation.yaml` enforces `auto_reply: never`; the UI stays read-only for metrics.
 - **Testing** — `bash scripts/test.sh` inside the container; `pyproject.toml` is baked into the image, so `docker compose build ndc` after changing it.

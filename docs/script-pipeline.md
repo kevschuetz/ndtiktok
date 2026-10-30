@@ -98,3 +98,74 @@ ndc source import-awmf /data/awmf/<datei>.pdf --register 028-045 --version "<Tex
   --valid-until YYYY-MM-DD --status abgelaufen|in_ueberarbeitung|gueltig --title "ADHS bei Kindern, Jugendlichen und Erwachsenen" [--topic <t>]
 ndc source show <snapshot_id> --sample 10
 ```
+
+## 8. Aufnahme → Diff → Freigabe (SCR-05, Phase 3)
+
+Geprüft wird das, was wirklich gesagt wurde — nicht der Entwurf.
+
+```bash
+# Aufnahme (Audio oder Video vom Handy) auf den Host kopieren:
+#   /home/nd-content-volumes/data/recordings/<datei>
+docker compose run --rm ndc-heavy recording add /data/recordings/<datei> --script <skript-sha>   # 1. Lauf lädt large-v3 (~3 GB) nach /data/models
+ndc recording show <aufnahme-sha|id>     # Satz für Satz: stimmt / Abweichung / nicht im Skript / nicht gesprochen, Ähnlichkeit, Prüfer-Verdikt
+ndc recording ack <sha> <satz>           # TEILWEISE / ÜBERZOGEN bestätigen (oder auf dem Handy)
+ndc recording decide <sha> approved|changes_requested|rejected --note "…"
+```
+
+- **Ohne Abweichung** wird die Aufnahme automatisch freigegeben (Zeile `reviewer=system`), der Diff bleibt gespeichert.
+- **Abweichung** = anderer Wortlaut einer Aussage, ein weggelassener Hedge („häufiger“, „könnte“, „manche“ … aus `config/recording.yaml hedge_tokens`) oder ein Satz, der nicht im Skript steht. Solche Sätze gehen durch denselben Prüfer wie das Skript, gegen die zitierten Quellensätze des passenden Skriptsatzes. Ein neuer Satz mit Aussage ist immer UNGESTÜTZT → neu aufnehmen oder streichen (Schnitt).
+- **Schwelle** `similarity_threshold: 0.80` (Token-Ähnlichkeit). Fällt ein eindeutig gleicher Satz darunter (Aussprache/ASR), Schwelle einmal senken und im Summary festhalten; fällt ein geänderter Satz als „stimmt“ durch, erhöhen.
+- Die Freigabe hängt am **Transkript-Hash**; eine neue Aufnahme ist immer ein neuer Hash. `ndc publish log` verweigert ohne freigegebene Aufnahme (`--recording <sha>`).
+- Läuft nicht 00:15–06:00 UTC (`--force` überschreibt).
+
+## 9. Untertitel (SRT)
+
+```bash
+ndc recording srt <sha> -o /data/recordings/<name>.srt
+```
+Cue-Text = finales Transkript (Skript-Wortlaut bei „stimmt“, gesprochener Wortlaut bei freigegebenen Abweichungen), Zeiten aus den Whisper-Wortzeiten, ≤ 2 Zeilen à 42 Zeichen. Datei in CapCut/TikTok importieren; Styling in der App.
+
+## 10. Veröffentlichen
+
+```bash
+ndc publish caption <skript-sha>         # Caption (Quellenliste + 3–5 Hashtags) und angepinnter Kommentar (+ Krisen-Kurzform bei sensiblen Themen)
+# posten: TikTok zuerst, dann Original-Render (nie der TikTok-Download) auf YouTube Shorts und Instagram Reels
+ndc publish log --platform tiktok --script <sha> --recording <aufnahme-sha> --post-url <url> [--posted-at ISO] [--hook <taktik>]
+ndc publish log --platform youtube  --script <sha> --recording <aufnahme-sha> --post-url <url>
+ndc publish log --platform instagram --script <sha> --recording <aufnahme-sha> --post-url <url>
+ndc publish list
+```
+Verweigert: Skript nicht freigegeben, Aufnahme nicht freigegeben oder zu einer anderen Skriptversion, Readout-Regel nicht gesperrt, fremder URL-Host, Cross-Post vor dem TikTok-Eintrag.
+
+## 11. Kennzahlen (24 h · 72 h · 7 d)
+
+```bash
+ndc metrics due                          # was gerade fällig ist (Fenster: 20–30 h, 66–84 h, 156–192 h)
+ndc metrics add <publication-id> --age 24h --views N --likes N --comments N --shares N --saves N --follows N \
+  --avg-watch-s F --watched-full-pct F --fyf yes|no|unknown --fyf-reason "…"
+ndc metrics import /data/exports/<tiktok-studio>.csv [--age 72h]   # Desktop: TikTok Studio → Analytics → Daten exportieren
+ndc metrics show <publication-id>
+```
+- TikTok vollständig; YouTube/Instagram nur Views bei 7 d. Zeilen sind append-only (Korrektur = neue Zeile).
+- CSV-Spalten werden über `config/metrics.yaml csv_columns` erkannt; unbekannte Spalten landen in `raw_json`. Beim ersten echten Export die Kopfzeilen prüfen und ergänzen.
+- **For-You-Feed-Status**: in der App Video → „Mehr Insights“ → Übersicht; Hinweis „für einige Zielgruppen nicht verfügbar“/„nicht für den Für-dich-Feed geeignet“ wörtlich in `--fyf-reason`.
+- Erinnerung: Cron schreibt alle 30 min `/data/due.json` (`docs/ops-cron.md`); die Handy-UI zeigt es unter `/due`.
+
+## 12. Readout-Regel (vorregistriert)
+
+`config/readout_rule.yaml` ist mit `ndc readout lock` gesperrt (Datei `.lock` + DB-Zeile mit committed_at). `ndc readout show` zeigt den Zustand; eine Änderung braucht `ndc readout amend --reason "…"` (im Container mit `--lock-out /data`, Datei dann in `config/` kopieren). Ohne Sperre lässt sich nichts veröffentlichen.
+
+## 13. Fehlerbehebung (Aufnahme, Veröffentlichung, Kennzahlen)
+
+| Symptom | Ursache | Behebung |
+|---|---|---|
+| `recording add` sehr langsam beim ersten Mal | large-v3-Gewichte werden geladen | warten; Modell liegt danach in `/data/models` |
+| `quiet hours` (Exit 4) | 00:15–06:00 UTC | später oder `--force` |
+| `Aufnahme muss unter /data/recordings liegen` | Datei außerhalb des erlaubten Ordners | nach `/home/nd-content-volumes/data/recordings/` kopieren |
+| fast alle Sätze „Abweichung“ mit niedriger Ähnlichkeit | falsche Sprache/Modell oder falsches Skript | `config/recording.yaml language/whisper_model` prüfen; richtige `--script` sha |
+| `identische Aufnahme (Transkript) existiert bereits` | gleicher finaler Text schon gespeichert | bestehende Aufnahme verwenden (`ndc recording list`) |
+| `Satz n: Abweichung nicht geprüft` | `--no-verify` benutzt | `ndc recording add` ohne `--no-verify` wiederholen (neue Datei) oder Verifikation nachholen |
+| `PublishRefused: Aufnahme fehlt / nicht freigegeben` | kein `--recording` oder Aufnahme nicht approved | Aufnahme freigeben (Handy oder CLI), Sha mitgeben |
+| `Readout-Regel ist nicht gesperrt` / `geändert` | Lock fehlt oder Datei geändert | `ndc readout show`; `amend --reason` oder Datei zurücksetzen |
+| `CSV: keine Spalte für post_url/post_id erkannt` | Export-Kopfzeilen unbekannt | Kopfzeilen in `config/metrics.yaml csv_columns` eintragen |
+| `/due` zeigt nichts, obwohl fällig | Cron läuft nicht / Datei fehlt | `crontab -l`, `cat /home/nd-content-volumes/data/due.json`, `ndc metrics due --write /data/due.json` |

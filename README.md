@@ -12,6 +12,9 @@ Run via `docker compose run --rm ndc <cmd>`; tests via `bash scripts/test.sh tes
 | Sources | `ndc source search|pick|pick-snapshot|check-ids|list|show|add|import-awmf`, `ndc corpus lock|show` | `docs/script-pipeline.md` §1, §7 |
 | Scripts | `ndc script draft [--punch]|punch|show|export|import|verify|sources` | `docs/script-pipeline.md` §1, §4 |
 | Review | `ndc review status|show|ack|decide|serve` | `docs/script-pipeline.md` §2–3 |
+| Recording (Phase 3) | `ndc recording add|show|list|ack|decide|srt` | `docs/script-pipeline.md` §8–9 |
+| Publish + metrics (Phase 3) | `ndc publish log|caption|list`, `ndc metrics add|import|due|show`, `ndc readout show|lock|amend` | `docs/script-pipeline.md` §10–12, `docs/ops-cron.md` |
+| Moderation (Phase 3) | `ndc moderation check|render` | `docs/moderation-playbook.md`, `docs/launch-accounts.md` |
 
 ## Services (docker compose)
 
@@ -19,4 +22,4 @@ Run via `docker compose run --rm ndc <cmd>`; tests via `bash scripts/test.sh tes
 - `ndc-heavy` — on-demand media analysis, niced, 3 GB.
 - `ndc-review` — phone review UI, the only long-running service: `127.0.0.1:8090`, no secrets, read-only rootfs, 256 MB.
 
-Data lives in `/home/nd-content-volumes/data` (`ndc.db`, `artifacts/`, `edits/`, `awmf/`). Model IDs, prompts and prices are config only (`config/llm.yaml`, `config/prompts/`).
+Data lives in `/home/nd-content-volumes/data` (`ndc.db`, `artifacts/`, `edits/`, `awmf/`, `recordings/`, `due.json`). Model IDs, prompts and prices are config only (`config/llm.yaml`, `config/prompts/`).
