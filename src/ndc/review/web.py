@@ -20,9 +20,17 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs
 
 from ndc.db import Database
+from ndc.recording import gate as rgate
+from ndc.recording import store as rstore
 from ndc.review import store
 from ndc.review.gate import cards, gate, latest_version_of, sorted_cards
-from ndc.review.web_render import render_error, render_list, render_review
+from ndc.review.web_render import (
+    render_due,
+    render_error,
+    render_list,
+    render_recording,
+    render_review,
+)
 
 log = logging.getLogger(__name__)
 
@@ -32,7 +40,12 @@ ROUTES = [
     ("GET", re.compile(rf"^/r/{SHA}$"), "review"),
     ("POST", re.compile(rf"^/r/{SHA}/ack$"), "ack"),
     ("POST", re.compile(rf"^/r/{SHA}/decide$"), "decide"),
+    ("GET", re.compile(rf"^/rec/{SHA}$"), "rec"),
+    ("POST", re.compile(rf"^/rec/{SHA}/ack$"), "rec_ack"),
+    ("POST", re.compile(rf"^/rec/{SHA}/decide$"), "rec_decide"),
+    ("GET", re.compile(r"^/due$"), "due"),
 ]
+DUE_PATH = "/data/due.json"  # constant: written by `ndc metrics due --write`; never from a request
 ALLOWED_HOSTS = {"localhost", "127.0.0.1"} | {
     h.strip().lower()
     for h in os.environ.get("NDC_REVIEW_ALLOWED_HOSTS", "").split(",")
@@ -171,9 +184,27 @@ class Handler(BaseHTTPRequestHandler):
                         else "bereit"
                     )
                     pending.append(item | {"state": state})
+            recs = []
+            for r in conn.execute(
+                "SELECT r.*, t.working_title FROM recording r "
+                "JOIN script_version v ON v.id = r.script_version_id "
+                "JOIN script s ON s.id = v.script_id JOIN topic t ON t.id = s.topic_id "
+                "ORDER BY r.id DESC LIMIT 20"
+            ):
+                rdec = rgate.latest_recording_decision(conn, r["transcript_sha256"])
+                recs.append(
+                    {
+                        "sha": r["transcript_sha256"],
+                        "title": r["working_title"],
+                        "state": rdec["decision"]
+                        if rdec
+                        else rgate.banner(rgate.recording_gate(db, r["id"], conn=conn)),
+                        "pending": rdec is None,
+                    }
+                )
         finally:
             conn.close()
-        self._send(200, render_list(pending, decided[:10]))
+        self._send(200, render_list(pending, decided[:10], recs, len(_due_items())))
 
     def _review_page(
         self, sha: str, code: int = 200, flash: str | None = None, note_error: str | None = None
@@ -280,6 +311,115 @@ class Handler(BaseHTTPRequestHandler):
         except store.ReviewRefused as exc:
             return self._review_page(sha, code=422, note_error=str(exc))
         self._send(303, "", location=f"/r/{sha}?ok={decision}")
+
+    # -- recordings ------------------------------------------------------------------------------
+    def _rec_page(self, sha: str, code: int = 200, flash=None, note_error=None) -> None:
+        db = self._db()
+        conn = db.connect()
+        try:
+            rec = conn.execute(
+                "SELECT * FROM recording WHERE transcript_sha256 = ?", (sha,)
+            ).fetchone()
+            if rec is None:
+                return self._send(404, render_error(404, "Nicht gefunden."))
+            topic = conn.execute(
+                "SELECT t.working_title FROM script_version v JOIN script s ON s.id = v.script_id "
+                "JOIN topic t ON t.id = s.topic_id WHERE v.id = ?",
+                (rec["script_version_id"],),
+            ).fetchone()
+            res = rgate.recording_gate(db, rec["id"], conn=conn)
+            rows = rstore.sentences(conn, rec["id"])
+            dec = rgate.latest_recording_decision(conn, sha)
+        finally:
+            conn.close()
+        self._send(
+            code,
+            render_recording(
+                title=topic["working_title"],
+                rec=rec,
+                res=res,
+                rows=rows,
+                decision=dec,
+                nonce=issue_nonce(sha),
+                flash=flash,
+                note_error=note_error,
+            ),
+        )
+
+    def h_rec(self, sha: str) -> None:
+        q = self.path.split("?", 1)[1] if "?" in self.path else ""
+        flash = parse_qs(q).get("ok", [None])[0]
+        self._rec_page(
+            sha,
+            flash=flash if flash in ("approved", "changes_requested", "rejected", "ack") else None,
+        )
+
+    def _rec_stale(self, sha: str) -> bool:
+        db = self._db()
+        conn = db.connect()
+        try:
+            rec = conn.execute(
+                "SELECT id FROM recording WHERE transcript_sha256 = ?", (sha,)
+            ).fetchone()
+            if rec is None:
+                self._send(404, render_error(404, "Nicht gefunden."))
+                return True
+            res = rgate.recording_gate(db, rec["id"], conn=conn)
+        finally:
+            conn.close()
+        if any(i.kind == "block_stale" for i in res.blockers):
+            self._send(
+                409, render_error(409, "Skriptversion ist veraltet — neue Aufnahme nötig.", "/")
+            )
+            return True
+        return False
+
+    def h_rec_ack(self, sha: str) -> None:
+        form = self._checked_form(sha)
+        if form is None or self._rec_stale(sha):
+            return
+        try:
+            n = int(form.get("sentence", ""))
+            rgate.ack(self._db(), sha, n, channel="web")
+        except (ValueError, rstore.RecordingError) as exc:
+            return self._rec_page(sha, code=422, note_error=str(exc))
+        self._send(303, "", location=f"/rec/{sha}?ok=ack#s{n}")
+
+    def h_rec_decide(self, sha: str) -> None:
+        form = self._checked_form(sha)
+        if form is None or self._rec_stale(sha):
+            return
+        decision = form.get("decision", "")
+        if decision not in store.DECISIONS:
+            return self._send(400, render_error(400, "Ungültige Anfrage."))
+        try:
+            rgate.decide(self._db(), sha, decision, note=form.get("note"), channel="web")
+        except rstore.RecordingError as exc:
+            return self._rec_page(sha, code=422, note_error=str(exc))
+        self._send(303, "", location=f"/rec/{sha}?ok={decision}")
+
+    # -- due snapshots ---------------------------------------------------------------------------
+    def h_due(self) -> None:
+        data = _due_payload()
+        self._send(200, render_due(data.get("due", []), data.get("generated_at")))
+
+
+def _due_payload() -> dict:
+    """Read the constant due-list file (written by `ndc metrics due --write`); never a request path."""
+    import json
+    from pathlib import Path
+
+    p = Path(DUE_PATH)
+    if not p.is_file():
+        return {}
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def _due_items() -> list:
+    return _due_payload().get("due", []) or []
 
 
 def make_server(db_path: str, host: str = "127.0.0.1", port: int = 8090) -> ThreadingHTTPServer:

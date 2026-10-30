@@ -77,8 +77,16 @@ def render_error(code: int, message: str, link: str | None = None) -> str:
     return page(f"Fehler {code}", body)
 
 
-def render_list(pending: list[dict], decided: list[dict]) -> str:
-    body = '<h1>Skript-Prüfung</h1><p class="meta"><a href="/">Neu laden</a></p>'
+def render_list(
+    pending: list[dict],
+    decided: list[dict],
+    recordings: list[dict] | None = None,
+    due_count: int = 0,
+) -> str:
+    body = (
+        '<h1>Skript-Prüfung</h1><p class="meta"><a href="/">Neu laden</a> · '
+        f'<a href="/due">Kennzahlen fällig: {int(due_count)}</a></p>'
+    )
     if not pending:
         body += (
             '<div class="card"><h1>Nichts zu prüfen</h1><p>Neue Skripte erscheinen hier nach '
@@ -96,7 +104,120 @@ def render_list(pending: list[dict], decided: list[dict]) -> str:
                 f'<p><a href="/r/{e(p["sha"])}">{e(p["title"])}</a> '
                 f'<span class="meta">v{p["version_no"]} · {e(p["decision"])}</span></p>'
             )
+    if recordings:
+        body += '<div class="lbl">Aufnahmen</div>'
+        for r in recordings:
+            body += (
+                f'<div class="card"><a href="/rec/{e(r["sha"])}"><b>{e(r["title"])}</b></a>'
+                f'<div class="meta">Aufnahme {e(r["sha"][:10])} · {e(r["state"])}</div></div>'
+            )
     return page("Skript-Prüfung", body)
+
+
+STATUS_DE = {
+    "match": ("stimmt", "c-ok"),
+    "deviation": ("Abweichung", "c-warn"),
+    "extra": ("nicht im Skript", "c-bad"),
+    "missing": ("nicht gesprochen", "c-neu"),
+}
+
+
+def render_due(items: list[dict], generated_at: str | None) -> str:
+    body = (
+        '<h1>Kennzahlen fällig</h1><p class="meta">Stand '
+        f'{e(generated_at or "—")} · <a href="/">Zur Liste</a></p>'
+    )
+    if not items:
+        body += '<div class="card"><p>Keine fälligen Kennzahlen.</p></div>'
+    for i in items:
+        body += (
+            f'<div class="card"><b>{e(str(i.get("title", "")))}</b>'
+            f'<div class="meta">{e(str(i.get("platform", "")))} · {e(str(i.get("age", "")))} · '
+            f"Alter {e(str(i.get('post_age_hours', '')))} h · Fenster schließt in "
+            f"{e(str(i.get('window_closes_in_h', '')))} h</div>"
+            f'<p class="meta">ndc metrics add {e(str(i.get("publication_id", "")))} '
+            f"--age {e(str(i.get('age', '')))} …</p></div>"
+        )
+    return page("Kennzahlen fällig", body)
+
+
+def render_recording(
+    *,
+    title: str,
+    rec,
+    res: GateResult,
+    rows: list,
+    decision,
+    nonce: str,
+    flash=None,
+    note_error=None,
+) -> str:
+    sha = rec["transcript_sha256"]
+    stale = any(i.kind == "block_stale" for i in res.blockers)
+    needs = {i.sentence_ordinal for i in res.needs_ack}
+    body = [_banner(res, decision, "/" if stale else None)]
+    if flash in FLASH:
+        body.append(f'<div class="flash">{e(FLASH[flash])}</div>')
+    body.append(
+        f'<h1>Aufnahme: {e(title)}</h1><div class="meta">{e(rec["file_name"])} · '
+        f"{e(str(rec['whisper_model']))} · {e(str(rec['duration_s'] or '?'))} s · "
+        f"stimmt {rec['n_match']} · Abweichungen {rec['n_deviation']} · neu {rec['n_extra']} · "
+        f'fehlt {rec["n_missing"]} · {e(sha[:10])} · <a href="/rec/{e(sha)}">Neu laden</a></div>'
+    )
+    for i in res.blockers:
+        body.append(f'<div class="warnline">✗ {e(i.message_de)}</div>')
+    for i in res.warnings:
+        body.append(f'<div class="warnline">⚠ {e(i.message_de)}</div>')
+    order = {"extra": 0, "deviation": 1, "missing": 2, "match": 3}
+    for r in sorted(rows, key=lambda r: (order[r["status"]], r["ordinal"])):
+        label, cls = STATUS_DE[r["status"]]
+        card = [f'<div class="card" id="s{r["ordinal"]}">']
+        card.append(f'<span class="chip {cls}">{e(label)}</span>')
+        if r["similarity"] is not None:
+            card.append(f'<span class="chip c-neu">{int(round(r["similarity"] * 100))} %</span>')
+        if r["verdict"]:
+            card.append(
+                f'<span class="chip {CHIP_CLASS.get(r["verdict"], "c-neu")}">'
+                f"{e(VERDICT_LABELS_DE.get(r['verdict'], r['verdict']))}</span>"
+            )
+        if r["spoken_text"]:
+            card.append(f'<div class="lbl">Gesagt</div><p class="claim">{e(r["spoken_text"])}</p>')
+        if r["approved_text"]:
+            card.append(f'<div class="lbl">Skript</div><p class="src">{e(r["approved_text"])}</p>')
+        if r["reason"]:
+            card.append(f'<p class="meta">{e(r["reason"])}</p>')
+        if r["note_de"]:
+            card.append(f'<div class="lbl">Prüfer</div><p>{e(r["note_de"])}</p>')
+        if r["suggested_fix_de"]:
+            card.append(f'<div class="lbl">Vorschlag</div><p>{e(r["suggested_fix_de"])}</p>')
+        if r["ordinal"] in needs and not stale and decision is None:
+            card.append(
+                f'<form method="post" action="/rec/{e(sha)}/ack">'
+                f'<input type="hidden" name="nonce" value="{e(nonce)}">'
+                f'<input type="hidden" name="script_sha" value="{e(sha)}">'
+                f'<input type="hidden" name="sentence" value="{r["ordinal"]}">'
+                '<button type="submit">Bestätigen</button></form>'
+            )
+        card.append("</div>")
+        body.append("".join(card))
+    body.append('<details><summary>Transkript (final)</summary><div class="script">')
+    body.append(f"<p>{e(rec['transcript_final'])}</p></div></details>")
+    if not stale and decision is None:
+        dis = "" if res.approvable else " disabled"
+        label = "Aufnahme freigeben" if res.approvable else "Freigeben (gesperrt)"
+        err = f'<p class="warnline">{e(note_error)}</p>' if note_error else ""
+        body.append(
+            f'<form class="decide" method="post" action="/rec/{e(sha)}/decide">{err}'
+            f'<input type="hidden" name="nonce" value="{e(nonce)}">'
+            f'<input type="hidden" name="script_sha" value="{e(sha)}">'
+            '<label class="lbl" for="note">Notiz (Pflicht bei Ablehnen / Änderungen)</label>'
+            '<textarea id="note" name="note"></textarea>'
+            f'<button class="primary" type="submit" name="decision" value="approved"{dis}>{label}</button>'
+            '<button type="submit" name="decision" value="changes_requested">Neue Aufnahme nötig</button>'
+            '<button class="danger" type="submit" name="decision" value="rejected">Ablehnen</button>'
+            "</form>"
+        )
+    return page(f"Aufnahme: {title}", "".join(body))
 
 
 def _banner(res: GateResult, decision, stale_link: str | None) -> str:
