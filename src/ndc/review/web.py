@@ -405,7 +405,8 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def _due_payload() -> dict:
-    """Read the constant due-list file (written by `ndc metrics due --write`); never a request path."""
+    """Read the constant due-list file (written by `ndc metrics due --write`); never a request
+    path."""
     import json
     from pathlib import Path
 
